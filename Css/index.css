@@ -1,0 +1,97 @@
+
+/*Body */
+body{
+  font-family: "Manrope", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 5px;
+  font-style: normal;
+}
+
+/*Menu */
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 10px  40px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+
+}
+ul li a {
+  display: block;
+  color: rgb(0, 0, 0);
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+/*Botões */
+#Login {
+  background-color:#E60023;
+  border: none;
+  color: white;
+  padding: 17px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius:  15px ;
+
+}
+#Login:hover {
+  background-color:#CB011F;
+  border-color:#E60023;
+
+}
+#Conta {
+  background-color: #dfdfdf;
+  border: none;
+  color: #000000;
+  padding: 15px 42px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius:  15px ;
+ 
+}
+#Conta:hover{
+  background-color: #EFEFEF;
+  color: rgb(0, 0, 0);
+}
+/*Logo */
+#logo{
+    height: 42px;
+    width: 115px;
+    object-fit: contain;
+}
+/*Input pesquisa*/
+.pesquisa {
+    display: flex;
+    align-items: center;
+    background-color: #EFEFEF;
+    border-radius: 10px;
+    padding: 5px 17px;
+    width: 700px !important;
+    height: 42px;
+    gap: 10px;
+    box-sizing: border-box;
+}
+
+.pesquisa input {
+    flex: 1;
+    min-width: 0;
+    border: none;
+    outline: none;
+    background: transparent;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.pesquisa button {
+    flex-shrink: 0;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+}
