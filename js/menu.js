@@ -3,7 +3,7 @@
 function configurarMenuResponsivo() {
   const menu = document.querySelector('.menu');
 const botaoPerfil = document.querySelector('#abrir-perfil');
-
+//Pagina de perfil
 if (botaoPerfil) {
     botaoPerfil.addEventListener('click', () => {
         window.location.href = '../html/perfil.html';
@@ -17,7 +17,7 @@ if (botaoPerfil) {
     if (!(evento.target instanceof Element)) {
       return;
     }
-
+//Abrir Pastas
     const botaoPastas = evento.target.closest('[data-menu-action="boards"]');
     if (botaoPastas) {
       evento.preventDefault();
@@ -25,7 +25,7 @@ if (botaoPerfil) {
       atualizarOpcaoAtiva(menu, botaoPastas);
       return;
     }
-
+//Criar Pin
     const botaoCriarPin = evento.target.closest(
       '[data-menu-action="create-pin"]'
     );
@@ -35,8 +35,8 @@ if (botaoPerfil) {
       atualizarOpcaoAtiva(menu, botaoCriarPin);
       return;
     }
-
-    const linkInicio = evento.target.closest('a[href="#feed"]');
+//Voltar pagina inicial
+    const linkInicio = evento.target.closest('a[href="../html/Principal.html"]');
     if (linkInicio) {
       evento.preventDefault();
       document.dispatchEvent(new CustomEvent('boards:home'));
