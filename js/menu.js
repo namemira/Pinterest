@@ -2,12 +2,12 @@
 
 function configurarMenuResponsivo() {
   const menu = document.querySelector('.menu');
-  const botaoPerfil = document.querySelector('#abrir-perfil');
+const botaoPerfil = document.querySelector('#abrir-perfil');
 
 if (botaoPerfil) {
-botaoPerfil.addEventListener('click', () => {
-    window.location.href = 'perfil.html';
-  });
+    botaoPerfil.addEventListener('click', () => {
+        window.location.href = '../html/perfil.html';
+    });
 }
   if (!menu) {
     return;
