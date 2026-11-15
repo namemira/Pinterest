@@ -2,6 +2,13 @@
 
 function configurarMenuResponsivo() {
   const menu = document.querySelector('.menu');
+  const botaoPerfil = document.querySelector('#abrir-perfil');
+
+if (botaoPerfil) {
+botaoPerfil.addEventListener('click', () => {
+    window.location.href = 'perfil.html';
+  });
+}
   if (!menu) {
     return;
   }
@@ -53,5 +60,14 @@ function atualizarOpcaoAtiva(menu, opcaoAtiva) {
     }
   });
 }
+  document.addEventListener('profile:open', () => {
+  const perfil = document.querySelector('#pagina-pastas');
+  const feed = document.querySelector('#conteudo-pins');
+  const criarPin = document.querySelector('#pagina-criar-pin');
+
+  if (perfil) perfil.hidden = false;
+  if (feed) feed.hidden = true;
+  if (criarPin) criarPin.hidden = true;
+});
 
 document.addEventListener('DOMContentLoaded', configurarMenuResponsivo);

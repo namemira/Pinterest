@@ -56,66 +56,13 @@
                     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h3l1.5-2h7L17 7h3a1 1 0 0 1 1 1v11H3V8a1 1 0 0 1 1-1z"/><circle cx="12" cy="13" r="4"/></svg>
                 </button>
             </div>
-            <button class="perfil" type="button" aria-label="Perfil e opções" aria-disabled="true">
-                <img src="../Imagens/dog.jpg" alt="">
+            <button class="perfil" type="button" aria-label="abrir-perfil" id="abrir-perfil">
+                <img src="../Imagens/dog.jpg" alt="Foto perfil">
                 <svg class="perfil-seta" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
             </button>
+            
         </header>
-<!--Pagina perfil-->
-        <section class="pagina-pastas" id="pagina-pastas" hidden aria-labelledby="perfil-nome">
-            <header class="perfil-pastas">
-                <img class="perfil-pastas-foto" src="../Imagens/dog.jpg" alt="Foto do perfil">
-                <div class="perfil-pastas-identidade">
-                    <h1 id="perfil-nome">Seu perfil</h1>
-                    <p>Seguidores e pessoas seguindo ainda não disponíveis</p>
-                </div>
-                <button class="perfil-compartilhar" type="button">Compartilhar perfil</button>
-            </header>
-            <p class="perfil-pastas-status" role="status" aria-live="polite"></p>
 
-            <div class="perfil-abas" role="tablist" aria-label="Conteúdo do perfil">
-                <button id="aba-perfil-pins" type="button" role="tab" aria-selected="false" aria-controls="conteudo-pins">Pins</button>
-                <button id="aba-perfil-pastas" type="button" role="tab" aria-selected="true" aria-controls="conteudo-pastas">Pastas</button>
-            </div>
-
-            <section class="organizacao-pastas" id="conteudo-pastas" role="tabpanel" aria-labelledby="aba-perfil-pastas">
-                <header class="pastas-pagina-cabecalho">
-                    <div class="pastas-filtros">
-                        <button class="botao-filtros" type="button" aria-expanded="false" aria-controls="opcoes-filtros-pastas">
-                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M7 12h10m-7 6h4"/></svg>
-                            Filtros
-                        </button>
-                        <div class="opcoes-filtros-pastas" id="opcoes-filtros-pastas" hidden>
-                            <button type="button" data-filtro-pastas="todas" aria-pressed="true">Todas as pastas</button>
-                            <button type="button" data-filtro-pastas="compartilhadas" aria-pressed="false">Pastas compartilhadas</button>
-                        </div>
-                    </div>
-                    <button class="pastas-criar-pagina" type="button">
-                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
-                        Criar
-                    </button>
-                </header>
-
-                <div class="pastas-vazio-pagina" id="pastas-vazio-pagina" hidden>
-                    <div class="pastas-vazio-ilustracao" aria-hidden="true">
-                        <svg viewBox="0 0 180 140"><rect x="34" y="34" width="92" height="76" rx="14"/><path d="M48 34V22a8 8 0 0 1 8-8h66a8 8 0 0 1 8 8v62"/><path d="M57 63h48M57 78h34"/><circle cx="127" cy="94" r="25"/><path d="M127 82v24m-12-12h24"/></svg>
-                    </div>
-                    <h2>Organize suas ideias</h2>
-                    <p>Crie pastas para reunir e organizar os Pins que você salvou.</p>
-                    <button class="pastas-criar-vazia" type="button">Criar uma pasta</button>
-                </div>
-
-                <p class="pastas-pagina-mensagem" id="pastas-pagina-mensagem" role="status" aria-live="polite" hidden></p>
-                <div class="pastas-grade" id="pastas-grade"></div>
-                <section class="pastas-detalhe-pagina" id="pastas-detalhe-pagina" hidden aria-live="polite"></section>
-
-                <section class="ideias-nao-organizadas" aria-labelledby="ideias-nao-organizadas-titulo">
-                    <h2 id="ideias-nao-organizadas-titulo">Ideias não organizadas</h2>
-                    <p class="ideias-nao-organizadas-vazio">Todos os Pins salvos estão organizados nas pastas correspondentes.</p>
-                    <div class="ideias-nao-organizadas-grade" id="ideias-nao-organizadas-grade"></div>
-                </section>
-            </section>
-        </section>
 <!--Criacao do Pin-->
         <main class="pagina-criar-pin" id="pagina-criar-pin" hidden aria-labelledby="titulo-criar-pin">
             <header class="criar-pin-cabecalho">

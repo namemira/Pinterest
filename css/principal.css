@@ -188,7 +188,7 @@
 .pesquisa-camera[aria-disabled="true"] {
     cursor: not-allowed;
 }
-
+/* Perfil*/
 .perfil {
     display: flex;
     align-items: center;
