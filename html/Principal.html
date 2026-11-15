@@ -12,21 +12,21 @@
 </head>
 <body>
 <!--Menu-->
-        <nav class="menu" aria-label="Navegação principal">
+       <nav class="menu" aria-label="Navegação principal">
             <a class="menu-logo" href="#feed" aria-label="Pinterest, página inicial">
                 <img src="../Imagens/Icone.png" alt="">
             </a>
-            <a class="menu-item ativo" href="#feed" aria-label="Página inicial" aria-current="page">
+            <a class="menu-item ativo" href="Principal.html" aria-label="Página inicial" aria-current="page">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.8 12 3l9 7.8v9.1a1.1 1.1 0 0 1-1.1 1.1h-5.3v-6.3H9.4V21H4.1A1.1 1.1 0 0 1 3 19.9z"/></svg>
                 <span class="menu-tooltip">Página inicial</span>
             </a>
-            <button class="menu-item" type="button" aria-label="Explorar" aria-disabled="true">
+            <button class="menu-item" type="button" aria-label="Explorar"  onclick="window.location.href='Explore.html'">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m15.8 8.2-2.2 5.4-5.4 2.2 2.2-5.4z"/></svg>
                 <span class="menu-tooltip">Explorar</span>
             </button>
-            <button class="menu-item" type="button" data-menu-action="boards" aria-label="Pastas" onclick="window.location.href='perfil.html'">
+            <button class="menu-item" type="button" data-menu-action="boards" aria-label="Pastas" onclick="window.location.href='Perfil.html'">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="5" rx="1.5"/><rect x="13" y="10" width="8" height="11" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/></svg>
-                <span class="menu-tooltip">Pastas</span>
+                <span class="menu-tooltip">Suas pasta</span>
             </button>
             <button class="menu-item" type="button" data-menu-action="create-pin" aria-label="Criar novo Pin" onclick="window.location.href='CriarPin.html'">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><path d="M12 7v10M7 12h10"/></svg>
