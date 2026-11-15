@@ -1,0 +1,57 @@
+'use strict';
+
+function configurarMenuResponsivo() {
+  const menu = document.querySelector('.menu');
+  if (!menu) {
+    return;
+  }
+
+  menu.addEventListener('click', (evento) => {
+    if (!(evento.target instanceof Element)) {
+      return;
+    }
+
+    const botaoPastas = evento.target.closest('[data-menu-action="boards"]');
+    if (botaoPastas) {
+      evento.preventDefault();
+      document.dispatchEvent(new CustomEvent('boards:open'));
+      atualizarOpcaoAtiva(menu, botaoPastas);
+      return;
+    }
+
+    const botaoCriarPin = evento.target.closest(
+      '[data-menu-action="create-pin"]'
+    );
+    if (botaoCriarPin) {
+      evento.preventDefault();
+      document.dispatchEvent(new CustomEvent('pins:create-open'));
+      atualizarOpcaoAtiva(menu, botaoCriarPin);
+      return;
+    }
+
+    const linkInicio = evento.target.closest('a[href="#feed"]');
+    if (linkInicio) {
+      evento.preventDefault();
+      document.dispatchEvent(new CustomEvent('boards:home'));
+      atualizarOpcaoAtiva(menu, menu.querySelector('.menu-item[href="#feed"]'));
+    }
+  });
+
+  document.addEventListener('boards:home', () => {
+    atualizarOpcaoAtiva(menu, menu.querySelector('.menu-item[href="#feed"]'));
+  });
+}
+
+function atualizarOpcaoAtiva(menu, opcaoAtiva) {
+  menu.querySelectorAll('.menu-item').forEach((item) => {
+    const ativo = item === opcaoAtiva;
+    item.classList.toggle('ativo', ativo);
+    if (ativo) {
+      item.setAttribute('aria-current', 'page');
+    } else {
+      item.removeAttribute('aria-current');
+    }
+  });
+}
+
+document.addEventListener('DOMContentLoaded', configurarMenuResponsivo);
