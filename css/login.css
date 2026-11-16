@@ -350,10 +350,10 @@ input:focus-visible {
     opacity: 0.85;
 }
 
-.google-mark {
-    color: #4285f4;
-    font-size: 17px;
-    font-weight: 900;
+.icone-google {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
 }
 
 .google-note {
