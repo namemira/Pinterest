@@ -150,7 +150,9 @@ function configurarCadastro(formulario) {
 function configurarLogin(formulario) {
   const email = formulario.querySelector('#email');
   const senha = formulario.querySelector('#senha');
-  const botaoEntrar = formulario.querySelector('#Entrar');
+  const botaoFechar = formulario.querySelector('#fechar-login');
+  const botaoAlternarSenha = formulario.querySelector('#alternar-senha');
+  const botaoRecuperacao = formulario.querySelector('#recuperar-senha');
 
   if (!email || !senha) {
     return;
@@ -168,6 +170,8 @@ function configurarLogin(formulario) {
   formulario.appendChild(resultado);
 
   let formularioEnviado = false;
+  const mensagemSucesso =
+    'Dados validados no navegador. A autenticação real será implementada posteriormente com PHP.';
 
   function validarCampos() {
     const valorEmail = email.value.trim();
@@ -195,10 +199,7 @@ function configurarLogin(formulario) {
     exibirMensagem(resultado, '');
 
     if (validarCampos()) {
-      exibirMensagem(
-        resultado,
-        'Dados validados no navegador. A autenticação real depende da integração com PHP.'
-      );
+      exibirMensagem(resultado, mensagemSucesso);
     }
   });
 
@@ -209,33 +210,34 @@ function configurarLogin(formulario) {
 
     exibirMensagem(resultado, '');
     if (validarCampos()) {
-      exibirMensagem(
-        resultado,
-        'Dados validados no navegador. A autenticação real depende da integração com PHP.'
-      );
+      exibirMensagem(resultado, mensagemSucesso);
     }
   }
 
   formulario.addEventListener('input', atualizarValidacao);
   formulario.addEventListener('change', atualizarValidacao);
 
-  // Impede o onclick antigo do HTML de navegar e mantém o fluxo apenas no navegador.
-  if (botaoEntrar) {
-    formulario.addEventListener('click', (evento) => {
-      if (!(evento.target instanceof Element)) {
-        return;
-      }
+  botaoAlternarSenha?.addEventListener('click', () => {
+    const senhaVisivel = senha.type === 'password';
+    senha.type = senhaVisivel ? 'text' : 'password';
+    botaoAlternarSenha.setAttribute('aria-pressed', String(senhaVisivel));
+    botaoAlternarSenha.setAttribute(
+      'aria-label',
+      senhaVisivel ? 'Ocultar senha' : 'Mostrar senha'
+    );
+    botaoAlternarSenha.textContent = senhaVisivel ? 'Ocultar' : 'Mostrar';
+  });
 
-      const botaoClicado = evento.target.closest('#Entrar');
-      if (!botaoClicado || !formulario.contains(botaoClicado)) {
-        return;
-      }
+  botaoRecuperacao?.addEventListener('click', () => {
+    exibirMensagem(
+      resultado,
+      'A recuperação de senha ainda não está disponível nesta versão.'
+    );
+  });
 
-      evento.preventDefault();
-      evento.stopImmediatePropagation();
-      formulario.requestSubmit(botaoEntrar);
-    }, true);
-  }
+  botaoFechar?.addEventListener('click', () => {
+    window.location.href = 'Inicial.html';
+  });
 }
 
 document.addEventListener('DOMContentLoaded', () => {

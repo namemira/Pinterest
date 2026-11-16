@@ -1,53 +1,85 @@
-<!--Mesmo fundo index-->
 <!DOCTYPE html>
-<html lang="Pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pinterest-Brasil</title>
+    <meta name="description" content="Entre no Pinterest para descobrir mais ideias e inspirações.">
+    <title>Entrar no Pinterest</title>
     <link rel="stylesheet" href="../css/login.css">
-      <link rel="icon" href="../Imagens/Icone.png">
-      <link rel="preconnect" href="https://fonts.googleapis.com">
-      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-      <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet">
+    <link rel="icon" href="../Imagens/Icone.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet">
+</head>
 <body>
-  <!---Menu-->
-    <ul>
-  <li><img src="../Imagens/Pinterest.png" class="img"></li>
-  <li><a href="default.asp">Explorar</a></li>
-  <div class="pesquisa">
-    <button type="submit"><img src="../Imagens/lupa.png"></button>
-    <input type="search" placeholder="Pesquisar looks, reifeições fácies etc">
-</div>
-  <li><a href="news.asp">Sobre</a></li>
-  <li><a href="contact.asp">Empresas</a></li>
-  <li><a href="about.asp">Notícias</a></li>
-  <li><button id="Login">Entrar</button></li>
-  <li><button id="Conta">Criar Conta</button></li>
-    </ul>
-<!---Repartições do site-->
-    <div><p>Crie a vida que você ama no Pinterest</p></div>
-    <div><p>Dê vida às suas ideias favoritas</p></div>
-    <div><p>Pesquise por tom de pele</p></div>
-    <div><p>Colabore com pastas compartilhadas</p></div>
-    <div><p>Pesquise visualmente com imagens</p></div>
-    <div><p>Que bom ter você no Pinter</p></div>
-    <footer>Pinterest CABEÇALHO</footer>
-<!--Formulário do login-->
-<div id="overlay">
-    <form id="tela-login">
-      <a href="Inicial.html" ID="Fechar">X</a><br><br>
-        <img src="../Imagens/Pinterest.png" id="img-logo">
+    <div class="login-backdrop" role="img" aria-label="Colagem decorativa de imagens de viagens, moda, decoração, arte e ideias">
+        <img class="backdrop-travel-left" src="../Imagens/viagens.jpg" alt="">
+        <img class="backdrop-decor-top" src="../Imagens/decoracao.jpg" alt="">
+        <img class="backdrop-art-left" src="../Imagens/arte.jpg" alt="">
+        <img class="backdrop-fashion-top" src="../Imagens/moda.jpg" alt="">
+        <img class="backdrop-recipe-bottom" src="../Imagens/receitas.jpg" alt="">
+        <img class="backdrop-dog-bottom" src="../Imagens/dog.jpg" alt="">
+        <img class="backdrop-travel-right" src="../Imagens/viagens.jpg" alt="">
+        <img class="backdrop-decor-right" src="../Imagens/decoracao.jpg" alt="">
+    </div>
 
-        <h2>Que bom ter você no Pinterest</h2>
-        <P>Faça login para descobrir mais ideias só para você</P>     
-        <input type="email" id="email" required placeholder="Email" class="Input-login"><br>
-        <input type="password" id="senha" required placeholder="Senha" class="Input-login">  
-        <p><a href="/">Esqueceu a senha?</a></p> 
-        <button type="submit" id="Entrar" onclick="window.location.href='Principal.html'">Entrar</button>
-        <p>Você é novo no Pinterest?<a href="Cadastro.html"> Cadastre-se gratuitamente</a></p>
-    </form>
-</div>
-<script src="../js/validacao.js" defer></script>
+    <main class="login-page">
+        <form class="login-card" id="tela-login" novalidate aria-labelledby="titulo-login">
+            <button class="close-button" id="fechar-login" type="button" aria-label="Fechar e voltar para a página inicial">
+                <span aria-hidden="true">×</span>
+            </button>
+
+            <img class="login-logo" src="../Imagens/Pinterest.png" alt="Pinterest">
+            <h1 id="titulo-login">Bem-vindo de volta</h1>
+            <p class="login-intro">Entre para descobrir mais ideias e inspirações</p>
+
+            <div class="form-field">
+                <label for="email">E-mail</label>
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    autocomplete="email"
+                    placeholder="Digite seu e-mail"
+                    required
+                >
+            </div>
+
+            <div class="form-field">
+                <label for="senha">Senha</label>
+                <div class="password-control">
+                    <input
+                        type="password"
+                        id="senha"
+                        name="senha"
+                        autocomplete="current-password"
+                        placeholder="Digite sua senha"
+                        required
+                    >
+                    <button
+                        class="password-toggle"
+                        id="alternar-senha"
+                        type="button"
+                        aria-label="Mostrar senha"
+                        aria-pressed="false"
+                    >Mostrar</button>
+                </div>
+            </div>
+
+            <button class="forgot-password" id="recuperar-senha" type="button">Esqueceu sua senha?</button>
+            <button class="button button-red login-submit" id="Entrar" type="submit">Entrar</button>
+
+            <div class="login-divider" role="separator" aria-label="ou"><span>OU</span></div>
+            <button class="button google-button" type="button" disabled>
+                <span class="google-mark" aria-hidden="true">G</span>
+                Continuar com Google
+            </button>
+            <p class="google-note">Integração com Google indisponível nesta demonstração.</p>
+
+            <p class="signup-prompt">Ainda não tem uma conta? <a href="Cadastro.html">Cadastre-se</a></p>
+        </form>
+    </main>
+
+    <script src="../js/validacao.js" defer></script>
 </body>
 </html>

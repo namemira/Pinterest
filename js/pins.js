@@ -24,11 +24,65 @@ const pinsExemplo = [
   }
 ];
 
+const CHAVE_PINS_CRIADOS = 'pinterest:pins-criados:v1';
+const CHAVE_PASTAS_CRIADAS = 'pinterest:pastas:v1';
+
+function carregarPinsCriados() {
+  const conteudo = window.localStorage.getItem(CHAVE_PINS_CRIADOS);
+  const pins = conteudo === null ? [] : JSON.parse(conteudo);
+  if (!Array.isArray(pins) || pins.some((pin) => !pinValido(pin))) {
+    throw new TypeError('Os Pins criados têm um formato inválido.');
+  }
+
+  const conteudoPastas = window.localStorage.getItem(CHAVE_PASTAS_CRIADAS);
+  if (conteudoPastas === null) {
+    return pins;
+  }
+
+  const dadosPastas = JSON.parse(conteudoPastas);
+  if (
+    !dadosPastas ||
+    dadosPastas.versao !== 1 ||
+    !Array.isArray(dadosPastas.pastas) ||
+    dadosPastas.pastas.some(
+      (pasta) => !pasta || !Array.isArray(pasta.pins)
+    )
+  ) {
+    throw new TypeError('Os dados das pastas têm um formato inválido.');
+  }
+
+  const pinsOrganizados = dadosPastas.pastas.flatMap((pasta) =>
+    pasta.pins.filter(
+      (pin) => pinValido(pin) && pin.id.startsWith('pin-demo-')
+    )
+  );
+  return [
+    ...pins,
+    ...pinsOrganizados.filter(
+      (pin) => !pins.some((pinSalvo) => pinSalvo.id === pin.id)
+    )
+  ];
+}
+
+function pinValido(pin) {
+  return Boolean(
+    pin &&
+      typeof pin.id === 'string' &&
+      typeof pin.imagem === 'string' &&
+      typeof pin.titulo === 'string' &&
+      typeof pin.descricao === 'string'
+  );
+}
+
+const pinsCriados = carregarPinsCriados();
 const TAMANHO_LOTE_PINS = 2;
 
 function criarCardPin(pin) {
   const card = document.createElement('article');
   card.className = 'post';
+  if (pin.id) {
+    card.dataset.pinId = pin.id;
+  }
 
   const imagem = document.createElement('img');
   imagem.src = pin.imagem;
@@ -67,6 +121,7 @@ function criarCardPin(pin) {
 
 function obterChavePin(pin) {
   return [
+    pin.id || '',
     pin.imagem,
     pin.alt,
     pin.titulo,
@@ -75,9 +130,39 @@ function obterChavePin(pin) {
   ].join('|');
 }
 
+function listarPins() {
+  return [...pinsCriados, ...pinsExemplo];
+}
+
+function adicionarPin(pin) {
+  if (!pin || typeof pin.id !== 'string' || typeof pin.imagem !== 'string') {
+    throw new TypeError('Os dados do Pin são inválidos.');
+  }
+
+  const novosPins = [
+    ...pinsCriados.filter((item) => item.id !== pin.id),
+    pin
+  ];
+  window.localStorage.setItem(CHAVE_PINS_CRIADOS, JSON.stringify(novosPins));
+  pinsCriados.splice(0, pinsCriados.length, ...novosPins);
+}
+
+function removerPin(pinId) {
+  const novosPins = pinsCriados.filter((pin) => pin.id !== pinId);
+  window.localStorage.setItem(CHAVE_PINS_CRIADOS, JSON.stringify(novosPins));
+  pinsCriados.splice(0, pinsCriados.length, ...novosPins);
+}
+
+window.pinterestPins = Object.freeze({
+  listarPins,
+  criarCardPin,
+  adicionarPin,
+  removerPin
+});
+
 function obterLotePins(offset, quantidade) {
   // Mantém a paginação separada da fonte para facilitar a futura troca por uma API PHP.
-  return Promise.resolve(pinsExemplo.slice(offset, offset + quantidade));
+  return Promise.resolve(listarPins().slice(offset, offset + quantidade));
 }
 
 function renderizarPinsExemplo() {
@@ -113,7 +198,8 @@ function renderizarPinsExemplo() {
 
   // Evita chamadas simultâneas e deixa o indicador aparecer antes de inserir o lote.
   async function carregarProximoLote() {
-    if (carregando || indiceProximoPin >= pinsExemplo.length) {
+    const quantidadeTotal = listarPins().length;
+    if (carregando || indiceProximoPin >= quantidadeTotal) {
       return;
     }
 
@@ -130,7 +216,7 @@ function renderizarPinsExemplo() {
       const inicioLote = indiceProximoPin;
       const lote = await obterLotePins(inicioLote, TAMANHO_LOTE_PINS);
       if (lote.length === 0) {
-        indiceProximoPin = pinsExemplo.length;
+        indiceProximoPin = quantidadeTotal;
         indicador.textContent = 'Não há mais Pins de demonstração para carregar.';
         sentinela.hidden = true;
         observer?.disconnect();
@@ -152,7 +238,7 @@ function renderizarPinsExemplo() {
 
       document.dispatchEvent(new CustomEvent('pins:updated'));
 
-      if (indiceProximoPin >= pinsExemplo.length) {
+      if (indiceProximoPin >= listarPins().length) {
         indicador.textContent = 'Não há mais Pins de demonstração para carregar.';
         sentinela.hidden = true;
         observer?.disconnect();
@@ -172,7 +258,7 @@ function renderizarPinsExemplo() {
       indicador.setAttribute('aria-busy', 'false');
       if (
         carregarTodosDoLink &&
-        indiceProximoPin < pinsExemplo.length &&
+        indiceProximoPin < listarPins().length &&
         loteCarregado
       ) {
         window.setTimeout(carregarProximoLote, 0);

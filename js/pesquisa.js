@@ -223,7 +223,7 @@ function configurarPesquisaPins() {
     const containerPesquisa = campoPesquisa
         ? campoPesquisa.closest('.pesquisa')
         : null;
-    const containerPins = document.querySelector('.postagens');
+    const containerPins = document.querySelector('.postagens, #grade-pins');
 
     if (!campoPesquisa || !containerPesquisa || !containerPins) {
         console.warn('Campo de pesquisa ou área de Pins não encontrado.');

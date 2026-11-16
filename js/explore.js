@@ -42,6 +42,9 @@ const tendencias = [
 function carregarCategorias() {
 
     const container = document.querySelector('#lista-categorias');
+    if (!container) {
+        return;
+    }
 
     categorias.forEach((categoria) => {
 
@@ -61,6 +64,9 @@ function carregarCategorias() {
 function carregarTendencias() {
 
     const container = document.querySelector('#lista-tendencias');
+    if (!container) {
+        return;
+    }
 
     tendencias.forEach((tendencia) => {
 
@@ -81,10 +87,16 @@ function carregarTendencias() {
 function carregarPinsExplorar() {
 
     const container = document.querySelector('#grade-pins');
+    const sistemaPins = window.pinterestPins;
+    if (!container || !sistemaPins) {
+        return;
+    }
 
-    // Posteriormente vamos integrar os Pins
-    // cadastrados no restante do projeto.
+    sistemaPins.listarPins().forEach((pin) => {
+        container.appendChild(sistemaPins.criarCardPin(pin));
+    });
 
+    document.dispatchEvent(new CustomEvent('pins:updated'));
 }
 // 6. INICIALIZAÇÃO
 document.addEventListener('DOMContentLoaded', () => {

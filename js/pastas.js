@@ -101,7 +101,7 @@
   }
 
   function configurarPastas() {
-    const containerPins = document.querySelector('.postagens');
+    const containerPins = document.querySelector('.postagens, #grade-pins');
     if (!containerPins) {
       return;
     }
@@ -116,6 +116,7 @@
     let filtroPastas = 'todas';
     let modoDialogo = 'salvar';
     let erroArmazenamento = '';
+    let focoAoFechar = null;
 
     const paginaPastas = document.querySelector('#pagina-pastas');
     const feedPins = containerPins;
@@ -755,9 +756,9 @@
       document.querySelectorAll('.menu-item').forEach((item) => {
         item.classList.toggle(
           'ativo',
-          item.matches('a[href="#feed"]')
+          item.matches('a[href="Principal.html"]')
         );
-        if (item.matches('a[href="#feed"]')) {
+        if (item.matches('a[href="Principal.html"]')) {
           item.setAttribute('aria-current', 'page');
         } else {
           item.removeAttribute('aria-current');
@@ -990,7 +991,10 @@
     dialogo.addEventListener('close', () => {
       pinParaSalvar = null;
       formulario.reset();
-      if (paginaPastas && !paginaPastas.hidden) {
+      if (focoAoFechar instanceof HTMLElement && focoAoFechar.isConnected) {
+        focoAoFechar.focus({ preventScroll: true });
+        focoAoFechar = null;
+      } else if (paginaPastas && !paginaPastas.hidden) {
         document
           .querySelector('.pastas-criar-pagina')
           ?.focus({ preventScroll: true });
@@ -1006,6 +1010,13 @@
       if (evento.detail?.card instanceof Element) {
         abrirDialogo('salvar', evento.detail.card);
       }
+    });
+    document.addEventListener('boards:create-request', (evento) => {
+      focoAoFechar =
+        evento.detail?.returnFocus instanceof HTMLElement
+          ? evento.detail.returnFocus
+          : null;
+      abrirDialogo('criar');
     });
     document.addEventListener('boards:open', abrirPaginaPastas);
     document.addEventListener('boards:home', abrirInicio);
@@ -1192,7 +1203,11 @@
           if (!pasta || pasta.pins.some((item) => item.id === pin.id)) {
             return false;
           }
-          pasta.pins.push({ ...pin, temporario: true });
+          pasta.pins.push({ ...pin });
+          if (!persistir()) {
+            pasta.pins.pop();
+            return false;
+          }
         } else {
           pinsTemporariosNaoOrganizados = [
             ...pinsTemporariosNaoOrganizados.filter((item) => item.id !== pin.id),

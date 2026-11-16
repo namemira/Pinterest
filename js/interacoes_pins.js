@@ -200,7 +200,7 @@
   }
 
   function configurarInteracoesPins() {
-    const containerPins = document.querySelector('.postagens');
+    const containerPins = document.querySelector('.postagens, #grade-pins');
     if (!containerPins) {
       return;
     }

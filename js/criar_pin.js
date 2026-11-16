@@ -8,8 +8,6 @@
     ['png', 'image/png'],
     ['webp', 'image/webp']
   ]);
-  const urlsPublicadas = [];
-
   function configurarCriacaoPin() {
     const paginaCriacao = document.querySelector('#pagina-criar-pin');
     const paginaPastas = document.querySelector('#pagina-pastas');
@@ -181,6 +179,7 @@
     function voltarAoFeed() {
       paginaCriacao.hidden = true;
       document.dispatchEvent(new CustomEvent('boards:home'));
+      document.dispatchEvent(new CustomEvent('pins:create-closed'));
     }
 
     function limparFormulario(revogarUrlPrevia = true) {
@@ -197,6 +196,23 @@
           ? window.crypto.randomUUID()
           : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
       return `pin-demo-${aleatorio}`;
+    }
+
+    function converterArquivoParaDataUrl(arquivo) {
+      return new Promise((resolver, rejeitar) => {
+        const leitor = new FileReader();
+        leitor.addEventListener('load', () => {
+          if (typeof leitor.result === 'string') {
+            resolver(leitor.result);
+          } else {
+            rejeitar(new TypeError('Não foi possível ler a imagem selecionada.'));
+          }
+        });
+        leitor.addEventListener('error', () => {
+          rejeitar(leitor.error || new Error('Não foi possível ler a imagem selecionada.'));
+        });
+        leitor.readAsDataURL(arquivo);
+      });
     }
 
     dropzone.addEventListener('click', (evento) => {
@@ -253,7 +269,7 @@
       atualizarBotaoPublicar();
     });
 
-    formulario.addEventListener('submit', (evento) => {
+    formulario.addEventListener('submit', async (evento) => {
       evento.preventDefault();
       if (!arquivoSelecionado) {
         definirMensagem('Selecione uma imagem para o Pin.', 'erro');
@@ -285,7 +301,12 @@
         }
       }
 
-      if (typeof criarCardPin !== 'function') {
+      const sistemaPins = window.pinterestPins;
+      if (
+        !sistemaPins ||
+        typeof sistemaPins.criarCardPin !== 'function' ||
+        typeof sistemaPins.adicionarPin !== 'function'
+      ) {
         definirMensagem(
           'Não foi possível preparar o Pin. Recarregue a página e tente novamente.',
           'erro'
@@ -295,22 +316,39 @@
 
       const pin = {
         id: obterIdPin(),
-        imagem: urlPrevia,
+        imagem: '',
         alt: campoTitulo.value.trim(),
         titulo: campoTitulo.value.trim(),
         descricao: campoDescricao.value.trim(),
         categoria: '',
         link
       };
-      const card = criarCardPin(pin);
-      card.dataset.pinId = pin.id;
-
       const pastaId = campoPasta.value;
       const sistemaPastas = window.pinterestBoards;
+      try {
+        pin.imagem = await converterArquivoParaDataUrl(arquivoSelecionado);
+        if (!pastaId) {
+          sistemaPins.adicionarPin(pin);
+        }
+      } catch (erro) {
+        console.error('Não foi possível salvar o Pin no navegador.', erro);
+        definirMensagem(
+          'Não foi possível salvar o Pin neste navegador. Verifique o espaço disponível e tente novamente.',
+          'erro'
+        );
+        return;
+      }
+
       if (
-        sistemaPastas &&
-        !sistemaPastas.adicionarPinDemonstrativo(pin, pastaId)
+        (pastaId && !sistemaPastas) ||
+        (sistemaPastas &&
+          !sistemaPastas.adicionarPinDemonstrativo(pin, pastaId))
       ) {
+        try {
+          sistemaPins.removerPin(pin.id);
+        } catch (erro) {
+          console.error('Não foi possível desfazer o salvamento do Pin.', erro);
+        }
         definirMensagem(
           'Não foi possível organizar este Pin na pasta selecionada.',
           'erro'
@@ -318,15 +356,15 @@
         return;
       }
 
-      urlsPublicadas.push(urlPrevia);
+      const card = sistemaPins.criarCardPin(pin);
       feed.prepend(card);
       document.dispatchEvent(new CustomEvent('pins:updated'));
       const resultado = pastaId
-        ? 'Pin publicado nesta sessão e adicionado à pasta selecionada.'
-        : 'Pin publicado nesta sessão. Ele não será mantido após atualizar a página.';
+        ? 'Pin publicado e adicionado à pasta selecionada.'
+        : 'Pin publicado. Ele está salvo neste navegador.';
       definirMensagem(resultado, 'sucesso');
       feedbackFeed.textContent = resultado;
-      limparFormulario(false);
+      limparFormulario();
       voltarAoFeed();
     });
 
@@ -346,7 +384,6 @@
       if (urlPrevia) {
         URL.revokeObjectURL(urlPrevia);
       }
-      urlsPublicadas.forEach((url) => URL.revokeObjectURL(url));
     });
 
     atualizarOpcoesPastas();
