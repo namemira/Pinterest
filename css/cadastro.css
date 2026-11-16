@@ -162,3 +162,75 @@ input[type="date"] {
   cursor: pointer;
   border-radius:  15px ;
 }
+
+#tela-cadastro {
+    height: auto;
+    max-height: 92vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 40px 55px 28px;
+}
+#tela-cadastro #Fechar {
+    position: absolute;
+    left: auto;
+    right: 30px;
+    top: 24px;
+}
+#tela-cadastro #img-logo {
+    position: static;
+    display: block;
+}
+
+/*Separador "OU"*/
+.divisor-ou {
+    text-align: center;
+    font-size: 13px;
+    font-weight: 700;
+    margin: 10px 0;
+}
+
+/*Botão Continuar com o Google*/
+#continuar-google {
+    width: 380px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 14px 20px;
+    background-color: white;
+    color: #111;
+    border: 1px solid #a1a1a1;
+    border-radius: 15px;
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+}
+#continuar-google:hover {
+    background-color: #f5f5f5;
+}
+.icone-google {
+    width: 20px;
+    height: 20px;
+}
+
+/ Link "Já tem uma conta?" /
+.link-conta {
+    margin: 18px 0 8px;
+}
+.link-conta a {
+    color: inherit;
+    font-weight: 700;
+}
+
+/*Aviso dos 13 anos e termos*/
+.aviso-termos {
+    font-size: 11px;
+    line-height: 1.5;
+    color: #686a6e;
+    margin: 0;
+}
+.aviso-termos a {
+    color: inherit;
+    font-weight: 700;
+}
