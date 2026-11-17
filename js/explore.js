@@ -76,7 +76,7 @@ function carregarTendencias() {
         elemento.classList.add('tendencia');
 
         elemento.innerHTML = `
-            <img src="${tendencia.imagem}" alt="">
+            <img src="${tendencia.imagem}" alt="${tendencia.titulo}">
             <h3>${tendencia.titulo}</h3>
         `;
 
