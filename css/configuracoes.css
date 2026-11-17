@@ -1,0 +1,220 @@
+/* Navegação lateral */
+.menu-responsivo-toggle {
+    display: none;
+}
+
+.menu {
+    position: fixed;
+    inset: 0 auto 0 0;
+    z-index: 1200;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    width: 84px;
+    height: 100vh;
+    padding: 10px 0 14px;
+    border-right: 1px solid #dedede;
+    background: #fff;
+}
+
+.menu-logo,
+.menu-item {
+    position: relative;
+    box-sizing: border-box;
+    display: grid;
+    flex: 0 0 48px;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    padding: 0;
+    border: 0;
+    border-radius: 16px;
+    background: transparent;
+    color: #111;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.menu-logo {
+    margin-bottom: 4px;
+}
+
+.menu-logo img {
+    display: block;
+    width: 34px;
+    height: 34px;
+    object-fit: contain;
+}
+
+.menu-item svg {
+    width: 24px;
+    height: 24px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.menu-item.ativo {
+    background: #f0f0f0;
+}
+
+.menu-item.ativo svg {
+    fill: #111;
+}
+
+.menu-item[aria-disabled="true"] {
+    cursor: not-allowed;
+}
+
+.menu-item:hover,
+.menu-item:focus-visible,
+.menu-logo:hover,
+.menu-logo:focus-visible {
+    background: #efefef;
+}
+
+.menu-item:focus-visible,
+.menu-logo:focus-visible {
+    outline: 3px solid #005fcc;
+    outline-offset: 2px;
+}
+
+.menu-tooltip {
+    position: absolute;
+    top: 50%;
+    left: calc(100% + 10px);
+    z-index: 1300;
+    width: max-content;
+    max-width: 220px;
+    padding: 8px 11px;
+    transform: translate(-4px, -50%);
+    border-radius: 8px;
+    background: #222;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.2;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 120ms ease, transform 120ms ease;
+}
+
+.menu-item:hover .menu-tooltip,
+.menu-item:focus-visible .menu-tooltip {
+    transform: translate(0, -50%);
+    opacity: 1;
+}
+
+.menu-configuracoes {
+    margin-top: auto;
+}
+
+/* Cabeçalho e pesquisa */
+.cabecalho-principal {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    min-height: 76px;
+    margin-left: 84px;
+    padding: 12px 24px;
+    background: #fff;
+}
+
+.pesquisa {
+    display: flex;
+    align-items: center;
+    flex: 1 1 auto;
+    position: relative;
+    box-sizing: border-box;
+    min-width: 0;
+    height: 48px;
+    gap: 12px;
+    padding: 0 16px;
+    border-radius: 24px;
+    background: #efefef;
+}
+
+.pesquisa input {
+    flex: 1;
+    min-width: 0;
+    border: none;
+    outline: 0;
+    background: transparent;
+    padding: 10px 0;
+    color: #222;
+    font: inherit;
+    box-sizing: border-box;
+}
+
+.pesquisa button {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+}
+
+.pesquisa button:focus-visible,
+.perfil:focus-visible {
+    outline: 3px solid #005fcc;
+    outline-offset: 3px;
+}
+
+.pesquisa-icone,
+.pesquisa-camera {
+    width: 32px;
+    height: 36px;
+    padding: 4px;
+    color: #111;
+}
+
+.pesquisa-icone svg,
+.pesquisa-camera svg,
+.perfil-seta {
+    width: 24px;
+    height: 24px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.pesquisa-camera[aria-disabled="true"] {
+    cursor: not-allowed;
+}
+
+.perfil {
+    display: flex;
+    align-items: center;
+    flex: 0 0 auto;
+    gap: 8px;
+    min-width: 56px;
+    min-height: 44px;
+    padding: 2px 4px;
+    border: 0;
+    border-radius: 24px;
+    background: transparent;
+    cursor: pointer;
+}
+
+.perfil img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.perfil-seta {
+    width: 18px;
+    height: 18px;
+}
