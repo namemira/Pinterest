@@ -19,7 +19,11 @@ Utilizei a orientação para definir o comportamento esperado dos avisos modais.
 
 --Padronização do botão Criar nas páginas
 Prompt:Corrija o botão Criar para que tenha o mesmo comportamento em todas as páginas. Atualmente, na página Principal ele abre o painel com Pin, Pasta, Colagem e Cartão, mas em outras páginas leva diretamente para CriarPin.html. Quero que o clique abra o mesmo painel lateral em Principal, Explorar, Perfil e Criar Pin. Reaproveite as funções existentes, mantenha as quatro opções funcionando e não altere os outros itens da barra lateral.
-Samira
+[PREENCHER: como a resposta foi aproveitada ou modificada]
+
+Registro de uso de Inteligência Artificial ([PREENCHER: ferramenta utilizada])
+Integrante: Samira Vieira
+Parte do trabalho: Parte 2 – Front-end
 Prompt:
 
 Item | Qtde mínima | Descrição
@@ -248,4 +252,22 @@ css
 
 Esse foi o CSS utilizado.
 
-Me ajude a organizar a criação do explore, em separando HTML, JS e CSS. Foi usado a organização dos arquivos a construção da pagina  Configurações foi usada da mesma forma 
+Me ajude a organizar a criação do explore, em separando HTML, JS e CSS. Foi usado a organização dos arquivos a construção da pagina  Configurações foi usada da mesma forma
+
+Registro de uso de Inteligência Artificial (Claude (Anthropic) – Claude Code)
+Integrante: Nicole Bet
+Parte do trabalho: Parte 2 – Front-end
+
+--Fundo da tela de Cadastro igual ao do Login
+Prompt: o que preciso alterar na tela de cadastro (css e html) para ficar no mesmo fundo que a a tela de login
+Prompt: me mostre exatamente o que preecisa ajustar em ambos
+Usei a resposta para trocar o menu antigo do Cadastro.html pelo mosaico de imagens do Login e copiar o CSS do fundo (.login-backdrop e media queries) para o cadastro.css. Também corrigi um comentário quebrado no CSS que fazia a regra .link-conta ser ignorada.
+
+--Ícone do Google nas telas de Login e Inicial
+Prompt: preciso que mostre onde altera na tela de login, o g do google, e faça igual o de cadastro
+Prompt: essa tela tb tem que mudar o g (enviando print do formulário da página Inicial)
+Troquei a letra "G" pelo mesmo SVG colorido do Cadastro no Login.html e no Inicial.html e criei a classe .icone-google no login.css e no inicial.css, encaminhado o trecho a ser alterado.
+
+--Revisão dos critérios da Parte 2
+Prompt: verifica o que falta para estar de acordo com todos os criterios da parte dois, me encaminha o que precisa alterar, a linha de cada coisa que deve ser editada
+A IA comparou o projeto com o PDF do trabalho e mostrou as correções necessárias: rodapé com aviso de clone em todas as páginas, variáveis CSS no principal.css e no cadastro.css, labels e atributos de validação no Cadastro.html, formulário de perfil validado sem alert() em Configuracao.html/configuracoes.js, links de Configurações no menu, títulos h1, remoção de id duplicado, alt descritivo nas imagens do Explorar, README.md preenchido e remoção de arquivos CSS vazios.
