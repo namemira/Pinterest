@@ -506,3 +506,18 @@ input:focus-visible {
         transition-duration: 0.01ms !important;
     }
 }
+
+/* Rodapé com aviso de projeto acadêmico */
+.rodape-clone {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 3;
+    padding: 8px 16px;
+    background: rgb(0 0 0 / 55%);
+    color: #fff;
+    font-size: 12px;
+    text-align: center;
+}
+.rodape-clone p { margin: 0; }
