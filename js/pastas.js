@@ -1,11 +1,13 @@
 'use strict';
 
 (() => {
+  // Chaves de armazenamento e suporte temporário a Pins ainda não organizados.
   const CHAVE_PASTAS = 'pinterest:pastas:v1';
   const CHAVE_PINS_ANTIGOS = 'pinterest:pins-salvos:v1';
   const NOME_PASTA_ANTIGA = 'Salvos';
   let pinsTemporariosNaoOrganizados = [];
 
+  // Gera identificadores únicos para pastas.
   function criarId(prefixo) {
     const aleatorio =
       window.crypto && typeof window.crypto.randomUUID === 'function'
@@ -14,6 +16,7 @@
     return `${prefixo}-${aleatorio}`;
   }
 
+  // Centraliza leitura e escrita versionada das pastas no localStorage.
   function criarRepositorio() {
     return {
       carregar() {
@@ -59,6 +62,7 @@
     };
   }
 
+  // Cria elementos de interface sem inserir texto dinâmico como HTML.
   function criarElemento(tag, classe, texto) {
     const elemento = document.createElement(tag);
     if (classe) {
@@ -70,6 +74,7 @@
     return elemento;
   }
 
+  // Converte um card do feed para o formato usado dentro de uma pasta.
   function obterDadosPin(card) {
     const imagem = card.querySelector('img');
     const titulo = card.querySelector('h2, h3, [data-pin-titulo]');
@@ -100,6 +105,7 @@
     };
   }
 
+  // Inicializa armazenamento, diálogos e telas de pastas nas páginas autenticadas.
   function configurarPastas() {
     const containerPins = document.querySelector('.postagens, #grade-pins');
     if (!containerPins) {
@@ -132,6 +138,7 @@
     const conteudoPastas = document.querySelector('#conteudo-pastas');
     const statusPerfil = document.querySelector('.perfil-pastas-status');
 
+    // Monta o diálogo usado para criar pastas, salvar Pins e gerenciá-las.
     const dialogo = document.createElement('dialog');
     dialogo.className = 'pastas-dialogo';
     dialogo.setAttribute('aria-labelledby', 'pastas-titulo');
@@ -231,11 +238,13 @@
     dialogo.appendChild(conteudo);
     document.body.appendChild(dialogo);
 
+    // Atualiza feedback visível e acessível do diálogo de pastas.
     function definirStatus(mensagem, erro = false) {
       status.textContent = mensagem;
       status.classList.toggle('pastas-status-erro', erro);
     }
 
+    // Reúne IDs salvos para sincronizar os botões e detalhes dos Pins.
     function listarIdsSalvos() {
       return [
         ...new Set(
@@ -244,6 +253,7 @@
       ];
     }
 
+    // Publica o estado das pastas para os demais módulos do sistema.
     function notificarEstado() {
       document.dispatchEvent(
         new CustomEvent('boards:state-changed', {
@@ -252,6 +262,7 @@
       );
     }
 
+    // Persiste alterações e atualiza telas; conserva erros de armazenamento.
     function persistir() {
       try {
         repositorio.salvar(pastas);
@@ -272,6 +283,7 @@
       return pastas.find((pasta) => pasta.id === id);
     }
 
+    // Alterna as abas Pins/Pastas e seus respectivos painéis acessíveis.
     function definirAbaPerfil(aba) {
       if (!paginaPastas || !abaPins || !abaPastas || !conteudoPastas) {
         return;
@@ -301,6 +313,7 @@
       }
     }
 
+    // Cria a capa visual da pasta com miniaturas dos Pins que ela contém.
     function criarCapaPasta(pasta) {
       const capa = criarElemento('div', 'pasta-capa');
       const pinsComImagem = pasta.pins.filter((pin) => pin.imagem).slice(0, 4);
@@ -344,6 +357,7 @@
       return capa;
     }
 
+    // Exibe o conteúdo individual de uma pasta na página de perfil.
     function desenharPastaAberta(pasta) {
       if (!detalhePaginaPastas) {
         return;
@@ -455,6 +469,7 @@
       detalhePaginaPastas.appendChild(listaPins);
     }
 
+    // Atualiza grade, filtros, estados vazios e Pins ainda não organizados.
     function renderizarPaginaPastas() {
       if (!paginaPastas || !gradePastas || !estadoVazioPastas) {
         return;
@@ -588,6 +603,7 @@
       });
     }
 
+    // Mostra os Pins de uma pasta dentro do diálogo de gerenciamento.
     function desenharDetalhePasta(pasta) {
       detalhePasta.replaceChildren();
       detalhePasta.hidden = false;
@@ -649,6 +665,7 @@
       detalhePasta.appendChild(listaPins);
     }
 
+    // Monta lista de pastas conforme a ação: criar, salvar Pin ou gerenciar.
     function desenharPastas(modo) {
       pastaAbertaId = null;
       detalhePasta.hidden = true;
@@ -706,6 +723,7 @@
       });
     }
 
+    // Abre o diálogo no modo solicitado e posiciona o foco no controle adequado.
     function abrirDialogo(modo, card = null) {
       modoDialogo = modo;
       if (erroArmazenamento) {
@@ -730,6 +748,7 @@
       }
     }
 
+    // Navega para a área de pastas mantendo a estrutura da página atual.
     function abrirPaginaPastas() {
       if (!paginaPastas) {
         return;
@@ -742,6 +761,7 @@
       renderizarPaginaPastas();
     }
 
+    // Retorna ao feed e restaura a navegação visual para Página inicial.
     function abrirInicio() {
       if (paginaPastas) {
         paginaPastas.hidden = true;
@@ -766,6 +786,7 @@
       });
     }
 
+    // Migra Pins salvos no formato antigo para a pasta Salvos, uma única vez.
     function migrarPinsAntigos() {
       const conteudoAntigo = window.localStorage.getItem(CHAVE_PINS_ANTIGOS);
       if (conteudoAntigo === null) {
@@ -822,6 +843,7 @@
       window.localStorage.removeItem(CHAVE_PINS_ANTIGOS);
     }
 
+    // Valida e cria uma pasta; no modo Salvar também associa o Pin selecionado.
     formulario.addEventListener('submit', (evento) => {
       evento.preventDefault();
       if (erroArmazenamento) {
@@ -890,6 +912,7 @@
       );
     });
 
+    // Trata ações do diálogo por delegação: salvar, abrir, remover e excluir.
     dialogo.addEventListener('click', (evento) => {
       if (!(evento.target instanceof Element)) {
         return;
@@ -986,6 +1009,7 @@
       }
     });
 
+    // Fecha o diálogo, devolve o foco e atende eventos compartilhados do sistema.
     botaoFechar.addEventListener('click', () => dialogo.close());
     botaoCancelar.addEventListener('click', () => dialogo.close());
     dialogo.addEventListener('close', () => {
@@ -1021,6 +1045,7 @@
     document.addEventListener('boards:open', abrirPaginaPastas);
     document.addEventListener('boards:home', abrirInicio);
 
+    // Liga abas, filtros, gerenciamento e compartilhamento na página de perfil.
     if (paginaPastas) {
       paginaPastas.addEventListener('click', (evento) => {
         if (!(evento.target instanceof Element)) {
@@ -1189,6 +1214,7 @@
         });
     }
 
+    // Expõe operações de pastas utilizadas por criação, Pins e painel Criar.
     window.pinterestBoards = Object.freeze({
       listarPastas() {
         return pastas.map(({ id, nome }) => ({ id, nome }));
@@ -1221,6 +1247,7 @@
       }
     });
 
+    // Completa dados migrados quando os cards correspondentes aparecem no feed.
     function atualizarPinsConhecidos() {
       let alterado = false;
       const cards = Array.from(containerPins.querySelectorAll('.post'));
@@ -1243,6 +1270,7 @@
       }
     }
 
+    // Atualiza pastas quando o feed recebe novos Pins e carrega o estado inicial.
     document.addEventListener('pins:updated', atualizarPinsConhecidos);
     const observadorPins = new MutationObserver(atualizarPinsConhecidos);
     observadorPins.observe(containerPins, {

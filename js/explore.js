@@ -1,6 +1,7 @@
 
 'use strict';
-// 1. DADOS DAS CATEGORIAS
+
+// Conteúdo estático usado para montar as categorias da página Explorar.
 const categorias = [
     {
         nome: 'Moda',
@@ -23,7 +24,7 @@ const categorias = [
         imagem: '../Imagens/arte.jpg'
     }
 ];
-// 2. DADOS DAS TENDÊNCIAS
+// Sugestões em destaque exibidas abaixo das categorias.
 const tendencias = [
     {
         titulo: 'Decoração minimalista',
@@ -38,7 +39,7 @@ const tendencias = [
         imagem: '../Imagens/receitas.jpg'
     }
 ];
-// 3. CARREGAR CATEGORIAS
+// Cria os cartões de categoria dentro da lista prevista no HTML.
 function carregarCategorias() {
 
     const container = document.querySelector('#lista-categorias');
@@ -60,7 +61,7 @@ function carregarCategorias() {
         container.appendChild(elemento);
     });
 }
-// 4. CARREGAR TENDÊNCIAS
+// Cria os cartões de tendências dentro da lista prevista no HTML.
 function carregarTendencias() {
 
     const container = document.querySelector('#lista-tendencias');
@@ -83,7 +84,7 @@ function carregarTendencias() {
     });
 }
 
-// 5. CARREGAR PINS
+// Reaproveita o catálogo e a renderização de Pins compartilhados pelo feed.
 function carregarPinsExplorar() {
 
     const container = document.querySelector('#grade-pins');
@@ -98,7 +99,7 @@ function carregarPinsExplorar() {
 
     document.dispatchEvent(new CustomEvent('pins:updated'));
 }
-// 6. INICIALIZAÇÃO
+// Preenche a página depois que sua estrutura HTML está pronta.
 document.addEventListener('DOMContentLoaded', () => {
 
     carregarCategorias();

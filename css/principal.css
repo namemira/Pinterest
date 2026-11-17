@@ -41,6 +41,11 @@
     margin-bottom: 4px;
 }
 
+.menu-logo,
+.menu-item {
+    transition: background-color 180ms ease, color 180ms ease;
+}
+
 .menu-logo img {
     display: block;
     width: 34px;
@@ -100,13 +105,77 @@
     line-height: 1.2;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 120ms ease, transform 120ms ease;
+    transition: opacity 200ms ease, transform 200ms ease;
 }
 
 .menu-item:hover .menu-tooltip,
 .menu-item:focus-visible .menu-tooltip {
     transform: translate(0, -50%);
     opacity: 1;
+}
+
+.aviso-disponibilidade {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    right: auto;
+    bottom: auto;
+    margin: 0;
+    box-sizing: border-box;
+    width: min(92vw, 460px);
+    max-height: min(90vh, 760px);
+    padding: 24px;
+    overflow: auto;
+    opacity: 0;
+    transform: translate(-50%, -50%) translateY(12px) scale(0.98);
+    transition: opacity 250ms ease, transform 250ms ease;
+}
+
+.aviso-disponibilidade[open].visivel {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.aviso-disponibilidade-cabecalho {
+    display: grid;
+    grid-template-columns: 36px minmax(0, 1fr) 42px;
+    align-items: start;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.aviso-disponibilidade-icone {
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #fff0f2;
+    color: #e60023;
+    font-size: 19px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.aviso-disponibilidade-cabecalho h2 {
+    align-self: center;
+    margin: 0;
+    color: #111;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.35;
+}
+
+.aviso-disponibilidade p {
+    margin: 0;
+    color: #555;
+    line-height: 1.5;
+}
+
+.aviso-disponibilidade .principal-dialogo-fechar {
+    font: inherit;
+    font-size: 24px;
+    line-height: 1;
 }
 
 .menu-configuracoes {
@@ -224,7 +293,7 @@
 .postagens {
     margin-left: 84px;
     padding: 20px;
-    columns: 5;
+    columns: 5 180px;
     column-gap: 15px;
 }
 
@@ -234,7 +303,30 @@
     margin-bottom: 15px;
     break-inside: avoid;
     border-radius: 15px;
+    background: #fff;
+    color: #111;
     overflow: hidden;
+}
+
+.post-titulo {
+    margin: 12px 12px 5px;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.35;
+}
+
+.post-descricao {
+    margin: 0 12px 10px;
+    color: #555;
+    font-size: 13px;
+    line-height: 1.45;
+}
+
+.post-categoria {
+    margin: 0 12px 12px;
+    color: #777;
+    font-size: 12px;
+    line-height: 1.4;
 }
 
 .post img {
@@ -247,7 +339,7 @@
 /* Interações dos Pins */
 .post {
     position: relative;
-    transition: transform 180ms ease, box-shadow 180ms ease;
+    transition: transform 200ms ease, box-shadow 200ms ease;
 }
 
 .post-image {
@@ -283,13 +375,15 @@
     display: block;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 160ms ease;
+    transform: translateY(4px);
+    transition: opacity 200ms ease, transform 200ms ease;
 }
 
 .post:hover .pin-actions,
 .post:focus-within .pin-actions {
     opacity: 1;
     pointer-events: auto;
+    transform: translateY(0);
 }
 
 .pin-action {
@@ -357,6 +451,10 @@
     filter: brightness(0.9);
 }
 
+.pin-action {
+    transition: filter 180ms ease, background-color 180ms ease;
+}
+
 .pin-action:focus-visible {
     outline: 3px solid #005fcc;
     outline-offset: 3px;
@@ -372,17 +470,11 @@
     .pin-actions {
         opacity: 1;
         pointer-events: auto;
+        transform: none;
     }
 
     .post:hover {
         transform: none;
-    }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .post,
-    .pin-actions {
-        transition: none;
     }
 }
 
@@ -402,6 +494,16 @@
     place-items: center;
     padding: 24px;
     background: rgba(0, 0, 0, 0.62);
+    opacity: 0;
+    transition: opacity 250ms ease, display 250ms allow-discrete;
+}
+
+.detalhes-pin-overlay:not([hidden]) {
+    opacity: 1;
+}
+
+.detalhes-pin-overlay[hidden] {
+    pointer-events: none;
 }
 
 .detalhes-pin-dialogo {
@@ -414,6 +516,25 @@
     border-radius: 20px;
     background: #fff;
     box-shadow: 0 16px 48px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+    transition: opacity 250ms ease, transform 250ms ease;
+}
+
+.detalhes-pin-overlay:not([hidden]) .detalhes-pin-dialogo {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+@starting-style {
+    .detalhes-pin-overlay:not([hidden]) {
+        opacity: 0;
+    }
+
+    .detalhes-pin-overlay:not([hidden]) .detalhes-pin-dialogo {
+        opacity: 0;
+        transform: translateY(8px) scale(0.98);
+    }
 }
 
 .detalhes-pin-imagem {
@@ -750,6 +871,40 @@ body.detalhes-pin-abertos {
     color: #222;
     background: #fff;
     box-shadow: 0 16px 48px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    transform: scale(0.98);
+    transition:
+        opacity 250ms ease,
+        transform 250ms ease,
+        display 250ms allow-discrete,
+        overlay 250ms allow-discrete;
+}
+
+.pastas-dialogo[open] {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.pastas-dialogo:not([open])::backdrop {
+    background-color: transparent;
+}
+
+.pastas-dialogo::backdrop {
+    transition:
+        background-color 250ms ease,
+        display 250ms allow-discrete,
+        overlay 250ms allow-discrete;
+}
+
+@starting-style {
+    .pastas-dialogo[open] {
+        opacity: 0;
+        transform: scale(0.98);
+    }
+
+    .pastas-dialogo[open]::backdrop {
+        background-color: transparent;
+    }
 }
 
 .pastas-dialogo::backdrop {
@@ -782,6 +937,7 @@ body.detalhes-pin-abertos {
     font: inherit;
     font-weight: 600;
     cursor: pointer;
+    transition: background-color 180ms ease;
 }
 
 .pastas-dialogo button:hover {
@@ -961,7 +1117,7 @@ body.detalhes-pin-abertos {
     .menu {
         visibility: hidden;
         transform: translateX(-100%);
-        transition: transform 160ms ease, visibility 160ms ease;
+        transition: transform 220ms ease, visibility 0s linear 220ms;
         width: 64px;
         gap: 8px;
         padding: 8px 0;
@@ -970,6 +1126,7 @@ body.detalhes-pin-abertos {
     .menu.menu-aberto {
         visibility: visible;
         transform: translateX(0);
+        transition: transform 220ms ease, visibility 0s;
     }
 
     .menu-logo,
@@ -1021,7 +1178,7 @@ body.detalhes-pin-abertos {
     .postagens {
         margin-left: 64px;
         padding: 12px;
-        columns: 3;
+        columns: 3 170px;
         column-gap: 10px;
     }
 
@@ -1082,7 +1239,7 @@ body.detalhes-pin-abertos {
     }
 
     .postagens {
-        columns: 2;
+        columns: 2 130px;
         column-gap: 8px;
         padding: 8px;
     }
@@ -1727,7 +1884,7 @@ body {
     border-radius: 18px;
     background: #f7f7f7;
     cursor: pointer;
-    transition: border-color 150ms ease, background 150ms ease;
+    transition: border-color 180ms ease, background 180ms ease;
 }
 
 .criar-pin-soltar:hover,
@@ -2075,7 +2232,7 @@ body {
 }
 
 .perfil {
-    transition: background-color 140ms ease;
+    transition: background-color 200ms ease;
 }
 
 .perfil:hover,
@@ -2085,7 +2242,9 @@ body {
 
 .menu-perfil[hidden],
 .painel-criar[hidden] {
-    display: none !important;
+    display: none;
+    opacity: 0;
+    pointer-events: none;
 }
 
 .menu-perfil {
@@ -2102,6 +2261,25 @@ body {
     border-radius: 20px;
     background: #fff;
     box-shadow: 0 8px 28px rgba(0, 0, 0, 0.18);
+    opacity: 0;
+    transform: translateY(-8px) scale(0.98);
+    transition:
+        opacity 220ms ease,
+        transform 220ms ease,
+        display 220ms allow-discrete;
+}
+
+.menu-perfil:not([hidden]) {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0) scale(1);
+}
+
+@starting-style {
+    .menu-perfil:not([hidden]) {
+        opacity: 0;
+        transform: translateY(-8px) scale(0.98);
+    }
 }
 
 .menu-perfil-conta {
@@ -2152,7 +2330,7 @@ body {
     font-weight: 600;
     text-align: left;
     cursor: pointer;
-    transition: background-color 140ms ease;
+    transition: background-color 180ms ease;
 }
 
 .menu-perfil-item:hover {
@@ -2186,6 +2364,26 @@ body {
     border-radius: 0 18px 18px 0;
     background: #fff;
     box-shadow: 8px 0 24px rgba(0, 0, 0, 0.08);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(-10px);
+    transition:
+        opacity 240ms ease,
+        transform 240ms ease,
+        display 240ms allow-discrete;
+}
+
+.painel-criar:not([hidden]) {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(0);
+}
+
+@starting-style {
+    .painel-criar:not([hidden]) {
+        opacity: 0;
+        transform: translateX(-10px);
+    }
 }
 
 .painel-criar-cabecalho {
@@ -2214,7 +2412,7 @@ body {
     background: transparent;
     color: #111;
     cursor: pointer;
-    transition: background-color 140ms ease;
+    transition: background-color 180ms ease;
 }
 
 .painel-criar-fechar svg,
@@ -2253,7 +2451,7 @@ body {
     font: inherit;
     text-align: left;
     cursor: pointer;
-    transition: background-color 140ms ease, transform 140ms ease;
+    transition: background-color 180ms ease, transform 180ms ease;
 }
 
 .painel-criar-opcao:hover {
@@ -2325,10 +2523,51 @@ body {
     background: #fff;
     color: #111;
     box-shadow: 0 16px 48px rgba(0, 0, 0, 0.28);
+    opacity: 0;
+    transform: scale(0.98);
+    transition:
+        opacity 250ms ease,
+        transform 250ms ease,
+        display 250ms allow-discrete,
+        overlay 250ms allow-discrete;
+}
+
+.principal-dialogo[open] {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.principal-dialogo.aviso-disponibilidade {
+    opacity: 0;
+    transform: translate(-50%, -50%) translateY(12px) scale(0.98);
 }
 
 .principal-dialogo::backdrop {
     background: rgba(0, 0, 0, 0.48);
+    transition:
+        background-color 250ms ease,
+        display 250ms allow-discrete,
+        overlay 250ms allow-discrete;
+}
+
+.principal-dialogo:not([open])::backdrop {
+    background-color: transparent;
+}
+
+@starting-style {
+    .principal-dialogo[open] {
+        opacity: 0;
+        transform: scale(0.98);
+    }
+
+    .principal-dialogo.aviso-disponibilidade[open] {
+        opacity: 0;
+        transform: translate(-50%, -50%) translateY(12px) scale(0.98);
+    }
+
+    .principal-dialogo[open]::backdrop {
+        background-color: transparent;
+    }
 }
 
 .principal-dialogo h2 {
@@ -2351,7 +2590,7 @@ body {
     font: inherit;
     font-weight: 700;
     cursor: pointer;
-    transition: filter 140ms ease, background-color 140ms ease;
+    transition: filter 180ms ease, background-color 180ms ease;
 }
 
 .principal-dialogo-primario {
@@ -2600,5 +2839,53 @@ body {
 
     .principal-dialogo-acoes > button {
         flex: 1 1 120px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .menu,
+    .menu-logo,
+    .menu-item,
+    .menu-tooltip,
+    .aviso-disponibilidade,
+    .post,
+    .pin-actions,
+    .pin-action,
+    .detalhes-pin-overlay,
+    .detalhes-pin-dialogo,
+    .perfil,
+    .menu-perfil,
+    .menu-perfil-item,
+    .painel-criar,
+    .painel-criar-fechar,
+    .painel-criar-opcao,
+    .principal-dialogo,
+    .principal-dialogo::backdrop,
+    .principal-dialogo-fechar,
+    .principal-dialogo-primario,
+    .principal-dialogo-secundario,
+    .composicao-adicionar,
+    .pastas-dialogo,
+    .pastas-dialogo::backdrop,
+    .pastas-dialogo button,
+    .criar-pin-soltar {
+        transition: none;
+    }
+
+    .menu-tooltip,
+    .post:hover,
+    .post:focus-within,
+    .pin-actions,
+    .detalhes-pin-dialogo,
+    .menu-perfil:not([hidden]),
+    .painel-criar:not([hidden]),
+    .painel-criar-opcao:hover,
+    .principal-dialogo[open],
+    .pastas-dialogo[open] {
+        transform: none;
+    }
+
+    .aviso-disponibilidade[open] {
+        transform: translate(-50%, -50%);
     }
 }

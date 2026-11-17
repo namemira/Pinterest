@@ -1,32 +1,62 @@
 'use strict';
 
+// Pins de demonstração usados no feed e na página Explorar.
 const pinsExemplo = [
   {
+    imagem: '../Imagens/decoracao.jpg',
+    alt: 'Sala de estar aconchegante com sofá claro, madeira natural e tapete xadrez',
+    titulo: 'Um refúgio acolhedor em tons naturais',
+    descricao:
+      'Madeira, plantas e tecidos aconchegantes criam uma sala convidativa para descansar.',
+    categoria: 'Decoração'
+  },
+  {
+    imagem: '../Imagens/moda.jpg',
+    alt: 'Vestido branco de noiva com renda, exposto em um manequim',
+    titulo: 'Elegância clássica em um vestido de renda',
+    descricao:
+      'Uma silhueta romântica com detalhes delicados para inspirar looks de festa.',
+    categoria: 'Moda'
+  },
+  {
+    imagem: '../Imagens/receitas.jpg',
+    alt: 'Receita ilustrada de pavê de limão com ingredientes e modo de preparo',
+    titulo: 'Pavê de limão para compartilhar',
+    descricao:
+      'Uma sobremesa cítrica em camadas, com creme, biscoitos e raspas de limão.',
+    categoria: 'Receitas'
+  },
+  {
+    imagem: '../Imagens/viagens.jpg',
+    alt: 'Praia de águas azul-turquesa cercada por areia clara e morros verdes',
+    titulo: 'Um refúgio de águas turquesa',
+    descricao:
+      'Paisagem litorânea para guardar como inspiração para a próxima viagem.',
+    categoria: 'Viagens'
+  },
+  {
+    imagem: '../Imagens/arte.jpg',
+    alt: 'Pintura de paisagem surreal em tons de azul e verde com uma lua crescente amarela',
+    titulo: 'Uma paisagem para sonhar acordado',
+    descricao:
+      'Formas onduladas e cores profundas criam uma referência visual cheia de atmosfera.',
+    categoria: 'Arte'
+  },
+  {
     imagem: '../Imagens/dog.jpg',
-    alt: 'Cachorro em fundo azul',
-    titulo: 'Cachorro em destaque',
-    descricao: 'Imagem de um cachorro para inspiração visual.',
+    alt: 'Filhote de cachorro sentado diante de um fundo azul vibrante',
+    titulo: 'Um filhote curioso para alegrar o dia',
+    descricao:
+      'Retrato de um cachorrinho atento, fotografado sobre um fundo azul.',
     categoria: 'Animais'
-  },
-  {
-    imagem: '../Imagens/Pinterest.png',
-    alt: 'Logotipo do Pinterest',
-    titulo: 'Identidade Pinterest',
-    descricao: 'Logotipo usado como referência visual.',
-    categoria: 'Design'
-  },
-  {
-    imagem: '../Imagens/Icone.png',
-    alt: 'Ícone do Pinterest',
-    titulo: 'Ícone Pinterest',
-    descricao: 'Ícone gráfico disponível no projeto.',
-    categoria: 'Design'
   }
 ];
 
+// Chaves compatíveis com os dados de Pins e pastas já salvos no navegador.
 const CHAVE_PINS_CRIADOS = 'pinterest:pins-criados:v1';
 const CHAVE_PASTAS_CRIADAS = 'pinterest:pastas:v1';
 
+// Carrega Pins criados e inclui Pins demonstrativos que já foram organizados.
 function carregarPinsCriados() {
   const conteudo = window.localStorage.getItem(CHAVE_PINS_CRIADOS);
   const pins = conteudo === null ? [] : JSON.parse(conteudo);
@@ -64,6 +94,7 @@ function carregarPinsCriados() {
   ];
 }
 
+// Valida o formato mínimo esperado antes de usar um Pin salvo.
 function pinValido(pin) {
   return Boolean(
     pin &&
@@ -74,9 +105,11 @@ function pinValido(pin) {
   );
 }
 
+// Mantém Pins criados em memória para renderização e atualizações durante a sessão.
 const pinsCriados = carregarPinsCriados();
 const TAMANHO_LOTE_PINS = 2;
 
+// Constrói um card de Pin a partir dos dados sem interpolar conteúdo como HTML.
 function criarCardPin(pin) {
   const card = document.createElement('article');
   card.className = 'post';
@@ -90,9 +123,11 @@ function criarCardPin(pin) {
   imagem.loading = 'lazy';
 
   const titulo = document.createElement('h2');
+  titulo.className = 'post-titulo';
   titulo.textContent = pin.titulo;
 
   const descricao = document.createElement('p');
+  descricao.className = 'post-descricao';
   descricao.textContent = pin.descricao;
 
   card.appendChild(imagem);
@@ -101,6 +136,7 @@ function criarCardPin(pin) {
 
   if (pin.categoria) {
     const categoria = document.createElement('p');
+    categoria.className = 'post-categoria';
     categoria.textContent = `Categoria: ${pin.categoria}`;
     card.appendChild(categoria);
   }
@@ -119,6 +155,7 @@ function criarCardPin(pin) {
   return card;
 }
 
+// Produz uma chave de conteúdo para evitar renderizar o mesmo Pin duas vezes.
 function obterChavePin(pin) {
   return [
     pin.id || '',
@@ -130,10 +167,12 @@ function obterChavePin(pin) {
   ].join('|');
 }
 
+// Retorna o conjunto de Pins criados pelo usuário e exemplos.
 function listarPins() {
   return [...pinsCriados, ...pinsExemplo];
 }
 
+// Persiste um Pin criado e atualiza a coleção mantida em memória.
 function adicionarPin(pin) {
   if (!pin || typeof pin.id !== 'string' || typeof pin.imagem !== 'string') {
     throw new TypeError('Os dados do Pin são inválidos.');
@@ -147,12 +186,14 @@ function adicionarPin(pin) {
   pinsCriados.splice(0, pinsCriados.length, ...novosPins);
 }
 
+// Remove um Pin criado tanto do armazenamento quanto da coleção em memória.
 function removerPin(pinId) {
   const novosPins = pinsCriados.filter((pin) => pin.id !== pinId);
   window.localStorage.setItem(CHAVE_PINS_CRIADOS, JSON.stringify(novosPins));
   pinsCriados.splice(0, pinsCriados.length, ...novosPins);
 }
 
+// Expõe a API compartilhada usada por busca, pastas, criação e outras páginas.
 window.pinterestPins = Object.freeze({
   listarPins,
   criarCardPin,
@@ -160,11 +201,13 @@ window.pinterestPins = Object.freeze({
   removerPin
 });
 
+// Simula a leitura de um lote, preservando a interface assíncrona para futura API.
 function obterLotePins(offset, quantidade) {
   // Mantém a paginação separada da fonte para facilitar a futura troca por uma API PHP.
   return Promise.resolve(listarPins().slice(offset, offset + quantidade));
 }
 
+// Renderiza o feed progressivamente conforme a sentinela se aproxima da tela.
 function renderizarPinsExemplo() {
   const containerPins = document.querySelector('.postagens');
 
@@ -268,6 +311,7 @@ function renderizarPinsExemplo() {
     }
   }
 
+  // Observa a sentinela para buscar o próximo lote; informa quando isso não é suportado.
   if ('IntersectionObserver' in window) {
     observer = new IntersectionObserver(
       (entradas) => {
@@ -287,4 +331,5 @@ function renderizarPinsExemplo() {
   carregarProximoLote();
 }
 
+// Monta o feed depois que o contêiner da página estiver disponível.
 document.addEventListener('DOMContentLoaded', renderizarPinsExemplo);

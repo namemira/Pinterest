@@ -1,24 +1,22 @@
 'use strict';
 
 (() => {
+  // Armazena colagens e cartões em chaves distintas no localStorage.
   const CHAVES_CRIACOES = {
     colagem: 'pinterest:colagens:v1',
     cartao: 'pinterest:cartoes:v1'
   };
 
+  // Configura o menu de perfil e a interface de composição exclusiva da Principal.
   function configurarMenusPrincipal() {
     const botaoPerfil = document.querySelector('#abrir-perfil[data-menu-perfil]');
     const menuPerfil = document.querySelector('#menu-perfil');
-    const botaoCriar = document.querySelector('#abrir-painel-criar');
-    const painelCriar = document.querySelector('#painel-criar');
     const dialogoInformativo = document.querySelector('#dialogo-informativo');
     const dialogoCriacao = document.querySelector('#dialogo-criacao');
 
     if (
       !botaoPerfil ||
       !menuPerfil ||
-      !botaoCriar ||
-      !painelCriar ||
       !dialogoInformativo ||
       !dialogoCriacao
     ) {
@@ -52,6 +50,7 @@
     let pinIdsSelecionados = [];
     let composicaoFinalizada = false;
 
+    // Fecha o menu do perfil e, quando solicitado, devolve o foco ao acionador.
     function fecharMenuPerfil(devolverFoco = false) {
       menuPerfil.hidden = true;
       botaoPerfil.setAttribute('aria-expanded', 'false');
@@ -61,17 +60,17 @@
       }
     }
 
+    // Abre o menu e atualiza o estado acessível do botão de perfil.
     function abrirMenuPerfil() {
       menuPerfil.hidden = false;
       botaoPerfil.setAttribute('aria-expanded', 'true');
       botaoPerfil.setAttribute('aria-label', 'Fechar menu do perfil');
     }
 
+    // Abre avisos do menu de perfil e encaminha a ação escolhida.
     botaoPerfil.addEventListener('click', () => {
       if (menuPerfil.hidden) {
-        if (!painelCriar.hidden) {
-          definirPainelCriar(false);
-        }
+        document.dispatchEvent(new CustomEvent('painel-criar:fechar'));
         abrirMenuPerfil();
       } else {
         fecharMenuPerfil();
@@ -113,33 +112,7 @@
       botaoPerfil.focus({ preventScroll: true });
     });
 
-    function definirPainelCriar(aberto, devolverFoco = false) {
-      painelCriar.hidden = !aberto;
-      document.body.classList.toggle('criar-painel-aberto', aberto);
-      botaoCriar.setAttribute('aria-expanded', String(aberto));
-      botaoCriar.setAttribute(
-        'aria-label',
-        aberto ? 'Fechar painel Criar' : 'Criar'
-      );
-      if (aberto && !painelCriar.hidden) {
-        painelCriar.querySelector('[data-criacao-opcao]')?.focus();
-      } else if (devolverFoco) {
-        botaoCriar.focus();
-      }
-    }
-
-    botaoCriar.addEventListener('click', () => {
-      if (painelCriar.hidden) {
-        fecharMenuPerfil();
-        definirPainelCriar(true);
-      } else {
-        definirPainelCriar(false);
-      }
-    });
-    document
-      .querySelector('#fechar-painel-criar')
-      ?.addEventListener('click', () => definirPainelCriar(false, true));
-
+    // Obtém os Pins atuais pela API compartilhada e garante IDs para exemplos.
     function obterPinsDisponiveis() {
       const pins = window.pinterestPins?.listarPins();
       if (!Array.isArray(pins)) {
@@ -162,12 +135,14 @@
       return obterPinsDisponiveis().find((pin) => pin.id === id);
     }
 
+    // Atualiza a mensagem e o estilo de estado da interface de composição.
     function definirStatusComposicao(texto, erro = false) {
       statusComposicao.textContent = texto;
       statusComposicao.classList.toggle('composicao-status-erro', erro);
       statusComposicao.classList.toggle('composicao-status-sucesso', !erro && Boolean(texto));
     }
 
+    // Preenche o seletor de Pins e bloqueia ações quando não há itens disponíveis.
     function renderizarPinsDisponiveis() {
       seletorPins.replaceChildren();
       const pins = obterPinsDisponiveis();
@@ -188,6 +163,7 @@
       }
     }
 
+    // Desenha a prévia selecionada; cartões também mostram a mensagem digitada.
     function renderizarPrevia() {
       gradePrevia.replaceChildren();
       if (pinIdsSelecionados.length === 0) {
@@ -253,6 +229,7 @@
       });
     }
 
+    // Prepara a mesma interface para os modos Colagem e Cartão.
     function abrirComposicao(tipo) {
       tipoComposicao = tipo;
       pinIdsSelecionados = [];
@@ -316,6 +293,7 @@
       }
     });
 
+    // Salva uma composição no navegador sem publicá-la nem enviá-la a terceiros.
     function salvarComposicao() {
       if (pinIdsSelecionados.length === 0) {
         definirStatusComposicao(
@@ -382,12 +360,14 @@
       salvarComposicao();
     });
 
+    // Fecha a interface de composição quando o usuário cancela ou conclui.
     function fecharComposicao() {
       if (dialogoCriacao.open) {
         dialogoCriacao.close();
       }
     }
 
+    // Conecta fechamento, clique no fundo e o evento compartilhado do painel Criar.
     dialogoCriacao
       .querySelectorAll('[data-fechar-composicao]')
       .forEach((botao) => botao.addEventListener('click', fecharComposicao));
@@ -396,38 +376,14 @@
         fecharComposicao();
       }
     });
-    dialogoCriacao.addEventListener('close', () => {
-      botaoCriar.focus({ preventScroll: true });
-    });
-
-    painelCriar.addEventListener('click', (evento) => {
-      if (!(evento.target instanceof Element)) {
-        return;
-      }
-      const botao = evento.target.closest('[data-criacao-opcao]');
-      if (!botao) {
-        return;
-      }
-
-      const opcao = botao.dataset.criacaoOpcao;
-      definirPainelCriar(false);
-      if (opcao === 'pin') {
-        document.dispatchEvent(new CustomEvent('pins:create-open'));
-      } else if (opcao === 'pasta') {
-        document.dispatchEvent(
-          new CustomEvent('boards:create-request', {
-            detail: { returnFocus: botaoCriar }
-          })
-        );
-      } else if (opcao === 'colagem' || opcao === 'cartao') {
-        abrirComposicao(opcao);
+    document.addEventListener('composicao:abrir', (evento) => {
+      const tipo = evento.detail?.tipo;
+      if (tipo === 'colagem' || tipo === 'cartao') {
+        abrirComposicao(tipo);
       }
     });
 
-    document.addEventListener('pins:create-closed', () => {
-      botaoCriar.focus({ preventScroll: true });
-    });
-
+    // Fecha o menu de perfil ao clicar fora ou pressionar Escape.
     document.addEventListener('click', (evento) => {
       if (
         !menuPerfil.hidden &&
@@ -446,10 +402,15 @@
       if (!menuPerfil.hidden) {
         fecharMenuPerfil(true);
       }
-      if (!painelCriar.hidden) {
-        definirPainelCriar(false, true);
-      }
     });
+
+    // Permite abrir diretamente uma composição após o encaminhamento entre páginas.
+    const tipoCriacaoInicial = new URLSearchParams(
+      window.location.search
+    ).get('criar');
+    if (tipoCriacaoInicial === 'colagem' || tipoCriacaoInicial === 'cartao') {
+      abrirComposicao(tipoCriacaoInicial);
+    }
   }
 
   document.addEventListener('DOMContentLoaded', configurarMenusPrincipal);

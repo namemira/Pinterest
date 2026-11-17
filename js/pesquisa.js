@@ -1,6 +1,7 @@
 
 'use strict';
 
+// Sugestões fixas oferecidas ao campo de pesquisa das páginas autenticadas.
 const sugestoesBasePesquisa = [
     'Look feminino',
     'Inspiração de decoração',
@@ -20,6 +21,7 @@ const sugestoesBasePesquisa = [
     'Categoria: Design'
 ];
 
+// Padroniza acentos e caixa para comparar termos sem diferenciar grafia.
 function normalizarTexto(texto) {
     return texto
         .normalize('NFD')
@@ -28,6 +30,7 @@ function normalizarTexto(texto) {
         .trim();
 }
 
+// Reúne texto e descrições alternativas para incluir imagens na busca.
 function obterTextoPesquisavel(pin) {
     const textos = [pin.textContent];
 
@@ -38,6 +41,7 @@ function obterTextoPesquisavel(pin) {
     return normalizarTexto(textos.join(' '));
 }
 
+// Constrói uma lista acessível de sugestões navegável por teclado e mouse.
 function configurarSugestoesPesquisa(campoPesquisa, containerPesquisa, containerPins) {
     const listaSugestoes = document.createElement('ul');
     listaSugestoes.id = 'sugestoes-pesquisa';
@@ -73,6 +77,7 @@ function configurarSugestoesPesquisa(campoPesquisa, containerPesquisa, container
         return Array.from(sugestoesUnicas.values()).slice(0, 8);
     }
 
+    // Sincroniza aria-selected, foco virtual e a sugestão destacada.
     function atualizarOpcaoAtiva() {
         const opcoes = listaSugestoes.querySelectorAll('[role="option"]');
 
@@ -92,6 +97,7 @@ function configurarSugestoesPesquisa(campoPesquisa, containerPesquisa, container
         }
     }
 
+    // Preenche o campo com a sugestão e mantém o foco na pesquisa.
     function selecionarSugestao(sugestao) {
         campoPesquisa.value = sugestao;
         campoPesquisa.dispatchEvent(new Event('input', { bubbles: true }));
@@ -101,6 +107,7 @@ function configurarSugestoesPesquisa(campoPesquisa, containerPesquisa, container
         ignorarProximoFoco = false;
     }
 
+    // Atualiza as opções conforme o termo digitado e abre a lista.
     function renderizarSugestoes() {
         const termo = normalizarTexto(campoPesquisa.value);
         sugestoesAtuais = obterSugestoes(termo);
@@ -132,6 +139,7 @@ function configurarSugestoesPesquisa(campoPesquisa, containerPesquisa, container
         atualizarOpcaoAtiva();
     }
 
+    // Fecha a lista e limpa o estado de navegação por teclado.
     function fecharSugestoes() {
         listaSugestoes.hidden = true;
         campoPesquisa.setAttribute('aria-expanded', 'false');
@@ -139,6 +147,7 @@ function configurarSugestoesPesquisa(campoPesquisa, containerPesquisa, container
         indiceAtivo = -1;
     }
 
+    // Move a opção destacada com as setas, incluindo navegação circular.
     function moverSelecao(direcao) {
         if (listaSugestoes.hidden) {
             renderizarSugestoes();
@@ -154,6 +163,7 @@ function configurarSugestoesPesquisa(campoPesquisa, containerPesquisa, container
         atualizarOpcaoAtiva();
     }
 
+    // Liga eventos de edição, seleção, teclado e clique fora da lista.
     campoPesquisa.addEventListener('focus', () => {
         if (!ignorarProximoFoco) {
             renderizarSugestoes();
@@ -215,6 +225,7 @@ function configurarSugestoesPesquisa(campoPesquisa, containerPesquisa, container
     });
 }
 
+// Configura o filtro dos Pins e as sugestões no campo de pesquisa da página.
 function configurarPesquisaPins() {
     const campoPesquisa = document.querySelector(
         '.pesquisa input[type="search"]'
@@ -239,6 +250,7 @@ function configurarPesquisaPins() {
 
     containerPins.insertAdjacentElement('beforebegin', mensagemResultados);
 
+    // Esconde cards que não correspondem ao termo e anuncia quando nada é encontrado.
     function filtrarPins() {
         const termo = normalizarTexto(campoPesquisa.value);
 
@@ -279,6 +291,7 @@ function configurarPesquisaPins() {
     );
 }
 
+// Inicializa a pesquisa somente depois que os controles da página forem carregados.
 document.addEventListener(
     'DOMContentLoaded',
     configurarPesquisaPins

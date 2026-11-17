@@ -1,5 +1,6 @@
 'use strict';
 
+// Cria mensagens de validação associadas ao campo para leitores de tela.
 function criarMensagem(campo, sufixo, papel) {
   const mensagem = document.createElement('p');
   mensagem.id = `${campo.id}-${sufixo}`;
@@ -21,17 +22,20 @@ function criarMensagem(campo, sufixo, papel) {
   return mensagem;
 }
 
+// Exibe ou oculta uma mensagem sem inserir texto como HTML.
 function exibirMensagem(mensagem, texto) {
   mensagem.textContent = texto;
   mensagem.hidden = texto.length === 0;
 }
 
+// Sincroniza o texto do erro com o estado aria-invalid do campo.
 function definirErro(campo, mensagem, texto) {
   exibirMensagem(mensagem, texto ? `Erro: ${texto}` : '');
   campo.setAttribute('aria-invalid', texto ? 'true' : 'false');
   return Boolean(texto);
 }
 
+// Retorna a data local no formato usado pelo campo de nascimento.
 function obterDataLocalISO() {
   const hoje = new Date();
   const ano = hoje.getFullYear();
@@ -40,6 +44,7 @@ function obterDataLocalISO() {
   return `${ano}-${mes}-${dia}`;
 }
 
+// Configura validação do cadastro e feedback após o envio do formulário.
 function configurarCadastro(formulario) {
   const email = formulario.querySelector('#email');
   const senha = formulario.querySelector('#senha');
@@ -103,6 +108,7 @@ function configurarCadastro(formulario) {
     return !possuiErros;
   }
 
+  // Faz a validação própria do formulário para apresentar mensagens acessíveis.
   formulario.noValidate = true;
 
   formulario.addEventListener('submit', (evento) => {
@@ -147,6 +153,7 @@ function configurarCadastro(formulario) {
   });
 }
 
+// Configura validação do login, alternância de senha e ações informativas.
 function configurarLogin(formulario) {
   const email = formulario.querySelector('#email');
   const senha = formulario.querySelector('#senha');
@@ -203,6 +210,7 @@ function configurarLogin(formulario) {
     }
   });
 
+  // Revalida após o envio, sem mostrar resultado antes da primeira tentativa.
   function atualizarValidacao() {
     if (!formularioEnviado) {
       return;
@@ -240,6 +248,7 @@ function configurarLogin(formulario) {
   });
 }
 
+// Inicializa apenas os formulários presentes na página atual.
 document.addEventListener('DOMContentLoaded', () => {
   const formularioCadastro = document.querySelector('#tela-cadastro');
   const formularioLogin = document.querySelector('#tela-login');

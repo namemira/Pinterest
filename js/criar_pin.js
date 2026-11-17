@@ -1,6 +1,7 @@
 'use strict';
 
 (() => {
+  // Limites e tipos usados para aceitar apenas imagens compatíveis com o Pin.
   const TAMANHO_MAXIMO = 10 * 1024 * 1024;
   const TIPOS_PERMITIDOS = new Map([
     ['jpg', 'image/jpeg'],
@@ -8,6 +9,8 @@
     ['png', 'image/png'],
     ['webp', 'image/webp']
   ]);
+
+  // Liga formulário, prévia, feed e pastas na página de criação de Pins.
   function configurarCriacaoPin() {
     const paginaCriacao = document.querySelector('#pagina-criar-pin');
     const paginaPastas = document.querySelector('#pagina-pastas');
@@ -46,6 +49,7 @@
       return;
     }
 
+    // Guarda o arquivo atual e o feedback que será anunciado no feed.
     let arquivoSelecionado = null;
     let urlPrevia = '';
     let feedbackFeed = document.querySelector('.criar-pin-feedback-feed');
@@ -57,12 +61,14 @@
       feed.before(feedbackFeed);
     }
 
+    // Centraliza mensagens de validação e resultado do formulário.
     function definirMensagem(texto, tipo = '') {
       mensagem.textContent = texto;
       mensagem.classList.toggle('criar-pin-mensagem-erro', tipo === 'erro');
       mensagem.classList.toggle('criar-pin-mensagem-sucesso', tipo === 'sucesso');
     }
 
+    // Determina quando os dados mínimos permitem publicar o Pin.
     function formularioValido() {
       return Boolean(
         arquivoSelecionado &&
@@ -72,6 +78,7 @@
       );
     }
 
+    // Mantém todos os botões Publicar no mesmo estado.
     function atualizarBotaoPublicar() {
       const desabilitado = !formularioValido();
       botoesPublicar.forEach((botao) => {
@@ -79,6 +86,7 @@
       });
     }
 
+    // Limpa a imagem selecionada e libera a URL temporária criada pelo navegador.
     function limparPrevia(revogarUrl = true) {
       if (revogarUrl && urlPrevia) {
         URL.revokeObjectURL(urlPrevia);
@@ -92,6 +100,7 @@
       atualizarBotaoPublicar();
     }
 
+    // Confere extensão, tipo MIME e tamanho antes de aceitar a imagem.
     function validarArquivo(arquivo) {
       const extensao = arquivo.name.split('.').pop().toLowerCase();
       const tipoEsperado = TIPOS_PERMITIDOS.get(extensao);
@@ -114,6 +123,7 @@
       return true;
     }
 
+    // Atualiza a prévia e a validade após selecionar ou soltar um arquivo.
     function selecionarArquivo(arquivo) {
       if (!arquivo) {
         return;
@@ -136,6 +146,7 @@
       atualizarBotaoPublicar();
     }
 
+    // Carrega as pastas disponíveis no seletor e preserva a escolha atual.
     function atualizarOpcoesPastas() {
       const pastaSelecionada = campoPasta.value;
       campoPasta.replaceChildren();
@@ -162,6 +173,7 @@
       }
     }
 
+    // Alterna do feed para o formulário e prepara as opções de pastas.
     function abrirTelaCriacao() {
       paginaCriacao.hidden = false;
       if (paginaPastas) {
@@ -176,12 +188,14 @@
       campoTitulo.focus();
     }
 
+    // Retorna ao feed e notifica os controles compartilhados sobre o fechamento.
     function voltarAoFeed() {
       paginaCriacao.hidden = true;
       document.dispatchEvent(new CustomEvent('boards:home'));
       document.dispatchEvent(new CustomEvent('pins:create-closed'));
     }
 
+    // Restaura campos, mensagens, prévia e validade após cancelar ou publicar.
     function limparFormulario(revogarUrlPrevia = true) {
       formulario.reset();
       limparPrevia(revogarUrlPrevia);
@@ -190,6 +204,7 @@
       atualizarBotaoPublicar();
     }
 
+    // Cria um identificador para o Pin que será armazenado no navegador.
     function obterIdPin() {
       const aleatorio =
         window.crypto && typeof window.crypto.randomUUID === 'function'
@@ -198,6 +213,7 @@
       return `pin-demo-${aleatorio}`;
     }
 
+    // Converte a imagem para uma URL de dados que pode ser persistida localmente.
     function converterArquivoParaDataUrl(arquivo) {
       return new Promise((resolver, rejeitar) => {
         const leitor = new FileReader();
@@ -215,6 +231,7 @@
       });
     }
 
+    // Permite escolher arquivo por clique, teclado ou arrastar e soltar.
     dropzone.addEventListener('click', (evento) => {
       if (evento.target instanceof Element && evento.target.closest('button')) {
         return;
@@ -251,6 +268,7 @@
       selecionarArquivo(evento.dataTransfer.files[0]);
     });
 
+    // Liga controles auxiliares para substituir ou remover a imagem da prévia.
     document
       .querySelector('.criar-pin-substituir')
       ?.addEventListener('click', () => campoArquivo.click());
@@ -262,6 +280,7 @@
         definirMensagem('Imagem removida.');
       });
 
+    // Revalida o formulário enquanto os dados são editados.
     formulario.addEventListener('input', () => {
       if (mensagem.textContent) {
         definirMensagem('');
@@ -269,6 +288,7 @@
       atualizarBotaoPublicar();
     });
 
+    // Valida, persiste a imagem e registra o Pin no feed e na pasta escolhida.
     formulario.addEventListener('submit', async (evento) => {
       evento.preventDefault();
       if (!arquivoSelecionado) {
@@ -368,6 +388,7 @@
       voltarAoFeed();
     });
 
+    // Permite cancelar a criação e voltar ao feed sem manter a prévia temporária.
     document
       .querySelector('.criar-pin-cancelar')
       ?.addEventListener('click', () => {
@@ -375,6 +396,7 @@
         voltarAoFeed();
       });
 
+    // Integra a criação aos eventos de Pins, pastas e ao ciclo de vida da página.
     document.addEventListener('pins:create-open', abrirTelaCriacao);
     document.addEventListener('boards:home', () => {
       paginaCriacao.hidden = true;
@@ -386,9 +408,11 @@
       }
     });
 
+    // Inicializa o seletor e a disponibilidade dos botões Publicar.
     atualizarOpcoesPastas();
     atualizarBotaoPublicar();
   }
 
+  // Inicializa o formulário apenas quando a página já foi carregada.
   document.addEventListener('DOMContentLoaded', configurarCriacaoPin);
 })();

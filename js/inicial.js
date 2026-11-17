@@ -1,5 +1,6 @@
 'use strict';
 
+// Padroniza acentos e caixa para comparar termos digitados com as seções.
 function normalizarBuscaInicial(texto) {
   return texto
     .normalize('NFD')
@@ -8,6 +9,7 @@ function normalizarBuscaInicial(texto) {
     .trim();
 }
 
+// Liga a busca da página inicial às seções marcadas com termos pesquisáveis.
 function configurarBuscaInicial() {
   const formulario = document.querySelector('#pesquisa-inicial');
   const campo = document.querySelector('#termo-pesquisa');
@@ -54,9 +56,11 @@ function configurarBuscaInicial() {
     });
   });
 
+  // Limpa avisos antigos enquanto a pessoa corrige ou troca a pesquisa.
   campo.addEventListener('input', () => {
     mensagem.hidden = true;
   });
 }
 
+// Aguarda o formulário existir antes de registrar seus eventos.
 document.addEventListener('DOMContentLoaded', configurarBuscaInicial);

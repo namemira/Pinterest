@@ -1,6 +1,7 @@
 'use strict';
 
 (() => {
+  // Cria elementos com texto seguro para montar a interface dos detalhes.
   function criarElemento(tag, classe, texto) {
     const elemento = document.createElement(tag);
     if (classe) {
@@ -12,6 +13,7 @@
     return elemento;
   }
 
+  // Monta o diálogo acessível e seus controles para exibir um Pin ampliado.
   function criarVisualizacaoDetalhes() {
     const overlay = criarElemento('div', 'detalhes-pin-overlay');
     overlay.hidden = true;
@@ -110,6 +112,7 @@
     };
   }
 
+  // Lê título, descrição, categoria, imagem e link a partir de um card do feed.
   function lerDadosDoCard(card) {
     const imagem = card.querySelector('img');
     if (!imagem) {
@@ -145,6 +148,7 @@
     };
   }
 
+  // Liga os cards à janela de detalhes e sincroniza a navegação do navegador.
   function configurarDetalhesPin() {
     const containerPins = document.querySelector('.postagens, #grade-pins');
     if (!containerPins) {
@@ -155,6 +159,7 @@
     let cardAtual = null;
     let focoAnterior = null;
 
+    // Torna cada card acionável por teclado e oferece um rótulo descritivo.
     function prepararCardParaTeclado(card) {
       if (!(card instanceof Element) || !card.matches('.post')) {
         return;
@@ -179,6 +184,7 @@
       ) || null;
     }
 
+    // Lê o Pin solicitado na URL e atualiza o histórico ao abrir detalhes.
     function obterPinDaUrl() {
       const parametros = new URLSearchParams(window.location.hash.slice(1));
       return parametros.get('pin') || '';
@@ -204,6 +210,7 @@
       }
     }
 
+    // Cria um card compacto relacionado, com controles de abrir, salvar e compartilhar.
     function criarCardRelacionado(card) {
       const dados = lerDadosDoCard(card);
       if (!dados) {
@@ -241,6 +248,7 @@
       return artigo;
     }
 
+    // Prioriza Pins da mesma categoria e mostra até seis sugestões relacionadas.
     function renderizarRelacionados(cardAtualPin) {
       const dadosAtuais = lerDadosDoCard(cardAtualPin);
       const outrosCards = Array.from(containerPins.querySelectorAll('.post'))
@@ -271,6 +279,7 @@
       });
     }
 
+    // Preenche o diálogo com os dados do Pin, estado de salvamento e relacionados.
     function exibirDetalhes(card, adicionarHistorico = false) {
       const dados = lerDadosDoCard(card);
       if (!dados) {
@@ -358,6 +367,7 @@
       }
     }
 
+    // Esconde os detalhes e devolve o foco ao card que abriu a visualização.
     function fecharDetalhes(restaurarFoco = true) {
       if (visualizacao.overlay.hidden) {
         return;
@@ -375,6 +385,7 @@
       cardAtual = null;
     }
 
+    // Retorna ao feed, usando o histórico quando a abertura adicionou uma entrada.
     function voltarAoFeed() {
       if (
         window.history.state?.pinterestPinId &&
@@ -403,6 +414,7 @@
       }
     }
 
+    // Repassa ações de um Pin relacionado ao botão correspondente do card original.
     function acionarAcaoOriginal(botao, acao) {
       const artigo = botao.closest('.detalhes-pin-relacionado');
       const cardOriginal = obterCardPorId(artigo?.dataset.pinId || '');
@@ -413,6 +425,7 @@
       cardOriginal?.querySelector(seletor)?.click();
     }
 
+    // Prepara cards existentes e acompanha Pins adicionados dinamicamente.
     containerPins.querySelectorAll('.post').forEach(prepararCardParaTeclado);
 
     const observadorCards = new MutationObserver((mutacoes) => {
@@ -430,6 +443,7 @@
     });
     observadorCards.observe(containerPins, { childList: true, subtree: true });
 
+    // Abre detalhes ao clicar no card, exceto quando o clique é em outro controle.
     containerPins.addEventListener('click', (evento) => {
       if (!(evento.target instanceof Element)) {
         return;
@@ -456,6 +470,7 @@
       }
     });
 
+    // Conecta fechamento, ações, foco do teclado e sincronização com a URL.
     visualizacao.botaoFechar.addEventListener('click', voltarAoFeed);
     visualizacao.botaoVoltar.addEventListener('click', voltarAoFeed);
     visualizacao.overlay.addEventListener('click', (evento) => {
@@ -543,5 +558,6 @@
     sincronizarComUrl();
   }
 
+  // Só inicializa quando a página atual contém um contêiner de Pins.
   document.addEventListener('DOMContentLoaded', configurarDetalhesPin);
 })();
