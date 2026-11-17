@@ -19,3 +19,233 @@ Utilizei a orientação para definir o comportamento esperado dos avisos modais.
 
 --Padronização do botão Criar nas páginas
 Prompt:Corrija o botão Criar para que tenha o mesmo comportamento em todas as páginas. Atualmente, na página Principal ele abre o painel com Pin, Pasta, Colagem e Cartão, mas em outras páginas leva diretamente para CriarPin.html. Quero que o clique abra o mesmo painel lateral em Principal, Explorar, Perfil e Criar Pin. Reaproveite as funções existentes, mantenha as quatro opções funcionando e não altere os outros itens da barra lateral.
+Samira
+Prompt:
+
+Item | Qtde mínima | Descrição
+Páginas | 5 | Conforme o mapa do site da Parte 1
+Tags semânticas | 4 | Uso de header, nav, main, section, article, footer
+Formulários | 2 | Com label, tipos de input adequados (email, date, number, tel) e atributos de validação (required, min, max, pattern)
+Tabela | 1 | Ex.: tabela de preços, horários ou agenda
+Imagens e mídia | 1 | Todas as imagens com atributo alt descritivo
+
+Navegação possível pelo teclado e foco visível nos elementos interativos;
+Hierarquia correta de títulos (h1 a h6);
+Organização de pastas (ex.: css/, js/, img/) e nomes de arquivos padronizados;
+Código indentado e comentado nos trechos relevantes.
+
+Organize os tópicos para eu poder desenvolver as páginas sem deixar de seguir o que foi solicitado.
+
+Resposta:
+
+Checklist geral para conferir antes da entrega
+Utilize esta lista durante o desenvolvimento.
+Progresso do projeto: 0/18
+
+1. Estrutura
+
+[ ] Desenvolver pelo menos 5 páginas HTML
+[ ] Seguir o mapa do site da Parte 1
+[ ] Utilizar pelo menos 4 tags semânticas
+[ ] Manter a navegação entre as páginas funcionando
+
+2. Conteúdo
+
+[ ] Criar pelo menos 2 formulários
+[ ] Utilizar labels nos campos
+[ ] Utilizar inputs adequados (email, date, number e tel)
+[ ] Adicionar validações (required, min, max e pattern)
+[ ] Criar pelo menos 1 tabela
+[ ] Adicionar pelo menos 1 imagem com alt descritivo
+
+3. Acessibilidade
+
+[ ] Permitir navegação pelo teclado
+[ ] Adicionar foco visível nos elementos interativos
+[ ] Manter hierarquia correta de títulos h1 até h6
+[ ] Garantir identificação dos campos dos formulários
+
+4. Organização
+
+[ ] Criar pastas css/, js/ e img/
+[ ] Padronizar os nomes dos arquivos
+[ ] Manter o código indentado
+[ ] Adicionar comentários nos trechos relevantes
+
+Foi usado este checklist para desenvolver as páginas index.
+
+Como fazer uma barra de pesquisa?
+
+<input type="search"> – campo onde o usuário digita.
+<button> – botão para executar a pesquisa.
+Ícone de lupa – representa visualmente a pesquisa.
+
+Exemplo HTML
+
+html
+<div class="pesquisa">
+    <input type="search" placeholder="Pesquisar">
+    <button type="submit">🔍</button>
+</div>
+
+Exemplo CSS
+
+css
+.pesquisa {
+    display: flex;
+    align-items: center;
+    background-color: #EFEFEF;
+    border-radius: 25px;
+    padding: 5px 15px;
+}
+
+.pesquisa input {
+    border: none;
+    outline: none;
+    background: transparent;
+    padding: 10px;
+    flex: 1;
+}
+
+.pesquisa button {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+}
+
+Usado no código na página index.
+
+Como criar aquele efeito que deixa os elementos do fundo cinza, trazendo destaque pro forms?
+
+Esse efeito é chamado de Overlay (sobreposição) ou fundo escurecido. É muito utilizado em telas de login e cadastro para destacar o formulário enquanto o restante da página fica cinza ou escurecido.
+
+Você consegue fazer isso usando CSS com position: fixed e background.
+
+Utilizado em login.html.
+
+E ajude a organizar a criação desta página em HTML.
+
+Resposta:
+
+1. Entendendo a estrutura da página
+
+A imagem pode ser dividida em 6 partes principais:
+
+Menu lateral de ícones
+Logo do Pinterest.
+Página inicial.
+Explorar.
+Criar publicação.
+Notificações.
+Configurações.
+Painel de atividades
+Título Atividade.
+Notificações.
+Pequenas imagens.
+Mensagens e datas.
+Cabeçalho
+Barra de pesquisa.
+Ícone de câmera.
+Foto do perfil.
+Banner informativo
+Título.
+Texto explicativo.
+Botões de ação.
+Botão para fechar.
+Categorias
+Todos.
+Referências de coloração.
+Dinossauros.
+Poses.
+Outras categorias.
+Mural de imagens
+Imagens de tamanhos diferentes.
+Organização em colunas.
+Bordas arredondadas.
+Espaçamento entre imagens.
+
+Utilizado para criar a página principal.
+
+Como fazer a parte das postagens?
+
+html
+<!-- Postagens -->
+<main class="postagens">
+
+    <div class="post">
+        <img src="Imagens/look1.jpg" alt="Look feminino">
+    </div>
+
+    <div class="post">
+        <img src="Imagens/look2.jpg" alt="Inspiração de decoração">
+    </div>
+
+    <div class="post">
+        <img src="Imagens/look3.jpg" alt="Receita">
+    </div>
+
+    <div class="post">
+        <img src="Imagens/look4.jpg" alt="Inspiração de estilo">
+    </div>
+
+    <div class="post">
+        <img src="Imagens/look5.jpg" alt="Ideia de decoração">
+    </div>
+
+</main>
+
+CSS
+
+css
+/* Postagens */
+.postagens {
+    margin-left: 70px;
+    padding: 20px;
+    columns: 5;
+    column-gap: 15px;
+}
+
+.post {
+    break-inside: avoid;
+    margin-bottom: 15px;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.post img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 15px;
+}
+
+Usado na criação das postagens.
+
+Organize o perfil.
+
+Foi adicionada a tag Header com a class=cabecalho.
+
+css
+/* Tela de perfil */
+.conteudo {
+    margin-left: 50px;
+    padding-top: 75px;
+}
+
+/* Cabeçalho */
+.cabecalho {
+    position: fixed;
+    top: 0;
+    left: 50px;
+    width: calc(100% - 50px);
+    height: 60px;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    z-index: 1000;
+    box-sizing: border-box;
+}
+
+Esse foi o CSS utilizado.
+
+Me ajude a organizar a criação do explore, em separando HTML, JS e CSS. Foi usado a organização dos arquivos a construção da pagina  Configurações foi usada da mesma forma 
