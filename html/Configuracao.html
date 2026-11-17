@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pinterest</title>
-     <link rel="stylesheet" href="../css/principal.css">
+    <title>Pinterest</title>     
+    <link rel="stylesheet" href="../css/principal.css">
+     <link rel="stylesheet" href="../css/configuracoes.css">     
       <link rel="icon" href="../Imagens/Icone.png">
       <link rel="preconnect" href="https://fonts.googleapis.com">
       <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -63,32 +64,113 @@
             
         </header>
 <!--Configurações-->
-      <main class="configuracoes">
+     
+<main class="configuracoes">
 
-    <aside class="menu-configuracoes">
-        <!-- Menu das configurações -->
+    <!-- Menu interno -->
+    <aside class="navegacao-configuracoes">
+
+        <h1>Configurações</h1>
+
+        <button class="opcao-config ativa" type="button" data-secao="editar-perfil">
+            Editar perfil
+        </button>
+        <button class="opcao-config" type="button" data-secao="exibicao">
+            Configurações de exibição
+        </button>
+
     </aside>
 
+<!-- Conteúdo -->
     <section class="conteudo-configuracoes">
+ <!-- Editar perfil -->
+    <div id=" -perfil" class="configuracao-secao ativa">
+        <h2>Editar perfil</h2>
+        <p>Personalize as informações do seu perfil.</p>
+        <div class="foto-perfil-config">
 
-        <div id="editar-perfil">
-            <!-- Edição do perfil -->
+            <img src="../Imagens/dog.jpg" alt="Foto de perfil" id="imagem-perfil">
+            <div>
+                <button type="button" id="alterar-foto">
+                    Alterar foto
+                </button>
+                <input type="file" id="foto-perfil-input" accept="image/*" hidden>
+            </div>
         </div>
+        <table class="tabela-perfil">
 
-        <div id="exibicao">
-            <!-- Configurações de exibição -->
-        </div>
+            <tbody>
+                <tr>
+                    <td>
+                        <label for="nome">Nome</label>
+                    </td>
+                    <td>
+                        <input type="text" id="nome" placeholder="Seu nome">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="usuario">Nome de usuário</label>
+                    </td>
+                    <td>
+                        <input type="text" id="usuario" placeholder="Nome de usuário">
+                    </td>
+                </tr>
 
+                <tr>
+                    <td>
+                        <label for="descricao">Sobre você</label>
+                    </td>
+                    <td>
+                        <textarea id="descricao" placeholder="Conte um pouco sobre você"></textarea>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <label for="site">Site</label>
+                    </td>
+                    <td>
+                        <input type="url" id="site" placeholder="https://">
+                    </td>
+                </tr>
+
+            </tbody>
+
+        </table>
+        <button type="button" class="botao-salvar" id="salvar-perfil">
+            Salvar alterações
+        </button>
+    </div>
+<!-- Configurações de exibição -->
+        <div id="exibicao" class="configuracao-secao">
+
+            <h2>Configurações de exibição</h2>
+            <p>Personalize a aparência da sua experiência.</p>
+
+            <div class="opcao-exibicao">
+                <div>
+                    <h3>Tema</h3>
+                    <p>Escolha a aparência da plataforma.</p>
+                </div>
+
+                <div class="opcoes-tema">
+                    <label>
+                        <input type="radio" name="tema" value="claro" checked>
+                        Claro
+                    </label>
+
+                    <label>
+                        <input type="radio" name="tema" value="escuro">
+                        Escuro
+                    </label>
+                </div>
+            </div>
+            </div>
     </section>
-
-</main>  
+</main>
 <script src="../js/pesquisa.js" defer></script>
 <script src="../js/menu.js" defer></script>
-<script src="../js/pins.js" defer></script>
-<script src="../js/interacoes_pins.js" defer></script>
-<script src="../js/pastas.js" defer></script>
-<script src="../js/detalhes_pin.js" defer></script>
-<script src="../js/criar_pin.js" defer></script>
-
+<script src="../js/configuracoes.js" defer></script>
 </body>
 </html>

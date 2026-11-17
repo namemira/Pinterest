@@ -2889,3 +2889,96 @@ body {
         transform: translate(-50%, -50%);
     }
 }
+/* Fundo escurecido */
+.fundo-painel {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.45);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease;
+    z-index: 2000;
+}
+
+/* Painel lateral */
+.painel-config {
+    position: fixed;
+    top: 0;
+    left: 84px;
+    width: 300px;
+    height: 100vh;
+    box-sizing: border-box;
+    background-color: #ffffff;
+    color: #222;
+    z-index: 2001;
+
+    display: flex;
+    flex-direction: column;
+
+    transform: translateX(-110%);
+    transition: transform 0.35s ease;
+}
+
+/* Painel aberto */
+.painel-config.aberto {
+    transform: translateX(0);
+}
+
+.fundo-painel.aberto {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Cabeçalho */
+.cabecalho-painel {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+}
+
+.cabecalho-painel h2 {
+    font-size: 18px;
+}
+
+.cabecalho-painel button {
+    border: none;
+    background: none;
+    font-size: 26px;
+    cursor: pointer;
+}
+
+/* Opções */
+.opcoes-painel {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    overflow-y: auto;
+}
+
+.opcoes-painel a,
+.rodape-painel a {
+    padding: 12px;
+    text-decoration: none;
+    color: #222;
+    font-size: 14px;
+    border-radius: 8px;
+}
+
+.opcoes-painel a:hover,
+.rodape-painel a:hover {
+    background-color: #eeeeee;
+}
+
+.separador-painel {
+    border-top: 1px solid #ddd;
+    margin: 12px 0;
+}
+
+/* Rodapé */
+.rodape-painel {
+    margin-top: auto;
+    padding: 15px;
+    border-top: 1px solid #ddd;
+    font-weight: bold;
+}
