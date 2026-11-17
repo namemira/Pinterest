@@ -2982,3 +2982,16 @@ body {
     border-top: 1px solid #ddd;
     font-weight: bold;
 }
+
+/* Rodapé com aviso de projeto acadêmico */
+.rodape-clone {
+    margin-left: 84px;
+    padding: 24px;
+    border-top: 1px solid #dedede;
+    color: #555;
+    font-size: 13px;
+    text-align: center;
+}
+@media (max-width: 767px) {
+    .rodape-clone { margin-left: 0; }
+}
