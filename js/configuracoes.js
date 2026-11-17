@@ -43,9 +43,22 @@ function configurarNavegacaoConfiguracoes() {
    FORMULÁRIO DE PERFIL
 ================================= */
 
+// Exibe uma mensagem de sucesso ou erro na própria página (sem alert)
+function mostrarMensagemConfig(texto, erro) {
+
+    const mensagem = document.querySelector('#mensagem-config');
+
+    if (!mensagem) {
+        return;
+    }
+
+    mensagem.textContent = texto;
+    mensagem.classList.toggle('mensagem-config-erro', Boolean(erro));
+}
+
 function configurarFormularioPerfil() {
 
-    const formulario = document.querySelector('.formulario-perfil');
+    const formulario = document.querySelector('#formulario-perfil');
 
     if (!formulario) {
         return;
@@ -55,19 +68,38 @@ function configurarFormularioPerfil() {
 
         evento.preventDefault();
 
-        const nome = document.querySelector('#nome').value;
-        const usuario = document.querySelector('#usuario').value;
-        const descricao = document.querySelector('#descricao').value;
-        const site = document.querySelector('#site').value;
+        const nome = document.querySelector('#nome');
+        const usuario = document.querySelector('#usuario');
+        const site = document.querySelector('#site');
+        let erro = '';
+        let campoComErro = null;
 
-        console.log({
-            nome,
-            usuario,
-            descricao,
-            site
+        // Valida os campos usando os atributos required, pattern e type="url"
+        if (!nome.value.trim()) {
+            erro = 'Informe seu nome.';
+            campoComErro = nome;
+        } else if (usuario.validity.valueMissing) {
+            erro = 'Informe um nome de usuário.';
+            campoComErro = usuario;
+        } else if (usuario.validity.patternMismatch) {
+            erro = 'O nome de usuário deve ter de 3 a 30 caracteres: letras minúsculas, números, ponto ou _.';
+            campoComErro = usuario;
+        } else if (site.value && site.validity.typeMismatch) {
+            erro = 'Informe um site válido, começando com https://.';
+            campoComErro = site;
+        }
+
+        [nome, usuario, site].forEach((campo) => {
+            campo.setAttribute('aria-invalid', String(campo === campoComErro));
         });
 
-        alert('Informações do perfil recebidas!');
+        if (erro) {
+            mostrarMensagemConfig(erro, true);
+            campoComErro.focus();
+            return;
+        }
+
+        mostrarMensagemConfig('Dados validados. O salvamento real será feito com PHP na Parte 3.', false);
 
     });
 
@@ -133,7 +165,7 @@ function configurarAlteracaoFoto() {
         // Verificar formato da imagem
         if (!arquivo.type.startsWith('image/')) {
 
-            alert('Selecione um arquivo de imagem válido.');
+            mostrarMensagemConfig('Selecione um arquivo de imagem válido.', true);
 
             inputFoto.value = '';
 
