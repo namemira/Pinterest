@@ -3055,3 +3055,56 @@ main {
     white-space: nowrap;
     border: 0;
 }
+/* =================================
+   TEMA GLOBAL
+================================= */
+
+/* MODO CLARO */
+body {
+    background-color: #ffffff;
+    color: #222222;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+/* MODO ESCURO */
+body.tema-escuro {
+    background-color: #000000;
+    color: #ffffff;
+}
+
+/* Textos */
+body.tema-escuro h1,
+body.tema-escuro h2,
+body.tema-escuro h3,
+body.tema-escuro p,
+body.tema-escuro label,
+body.tema-escuro span {
+    color: #ffffff;
+}
+
+/* Menu lateral */
+body.tema-escuro .menu {
+    background-color: #000000;
+    border-right: 1px solid #222226;
+}
+
+/* Ícones */
+body.tema-escuro .menu-item svg {
+    stroke: #ffffff;
+}
+
+/* Pesquisa */
+body.tema-escuro .pesquisa {
+    background-color: #000000;
+    border: 1px solid #222226;
+}
+
+body.tema-escuro .pesquisa input {
+    background-color: transparent;
+    color: #ffffff;
+}
+
+/* Efeito hover */
+body.tema-escuro .menu-item:hover {
+    background-color: #2C2C30;
+}
