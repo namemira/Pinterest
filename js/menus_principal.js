@@ -7,28 +7,14 @@
     cartao: 'pinterest:cartoes:v1'
   };
 
-  // Configura o menu de perfil e a interface de composição exclusiva da Principal.
+  // Configura a interface de composição exclusiva da página Principal.
   function configurarMenusPrincipal() {
-    const botaoPerfil = document.querySelector('#abrir-perfil[data-menu-perfil]');
-    const menuPerfil = document.querySelector('#menu-perfil');
-    const dialogoInformativo = document.querySelector('#dialogo-informativo');
     const dialogoCriacao = document.querySelector('#dialogo-criacao');
 
-    if (
-      !botaoPerfil ||
-      !menuPerfil ||
-      !dialogoInformativo ||
-      !dialogoCriacao
-    ) {
+    if (!dialogoCriacao) {
       return;
     }
 
-    const tituloInformativo = document.querySelector(
-      '#dialogo-informativo-titulo'
-    );
-    const textoInformativo = document.querySelector(
-      '#dialogo-informativo-texto'
-    );
     const formularioComposicao = document.querySelector(
       '#formulario-composicao'
     );
@@ -49,68 +35,6 @@
     let tipoComposicao = 'colagem';
     let pinIdsSelecionados = [];
     let composicaoFinalizada = false;
-
-    // Fecha o menu do perfil e, quando solicitado, devolve o foco ao acionador.
-    function fecharMenuPerfil(devolverFoco = false) {
-      menuPerfil.hidden = true;
-      botaoPerfil.setAttribute('aria-expanded', 'false');
-      botaoPerfil.setAttribute('aria-label', 'Abrir menu do perfil');
-      if (devolverFoco) {
-        botaoPerfil.focus();
-      }
-    }
-
-    // Abre o menu e atualiza o estado acessível do botão de perfil.
-    function abrirMenuPerfil() {
-      menuPerfil.hidden = false;
-      botaoPerfil.setAttribute('aria-expanded', 'true');
-      botaoPerfil.setAttribute('aria-label', 'Fechar menu do perfil');
-    }
-
-    // Abre avisos do menu de perfil e encaminha a ação escolhida.
-    botaoPerfil.addEventListener('click', () => {
-      if (menuPerfil.hidden) {
-        document.dispatchEvent(new CustomEvent('painel-criar:fechar'));
-        abrirMenuPerfil();
-      } else {
-        fecharMenuPerfil();
-      }
-    });
-
-    menuPerfil.addEventListener('click', (evento) => {
-      if (!(evento.target instanceof Element)) {
-        return;
-      }
-
-      const acao = evento.target.closest('[data-acao-perfil]')?.dataset.acaoPerfil;
-      if (!acao) {
-        return;
-      }
-
-      fecharMenuPerfil();
-      if (acao === 'sair') {
-        window.location.href = 'Inicial.html';
-        return;
-      }
-
-      if (acao === 'business') {
-        tituloInformativo.textContent = 'Conta business';
-        textoInformativo.textContent =
-          'A conversão para conta business ainda não está disponível. Nenhuma alteração foi feita na sua conta.';
-      } else if (acao === 'adicionar') {
-        tituloInformativo.textContent = 'Adicionar conta';
-        textoInformativo.textContent =
-          'A autenticação de múltiplas contas será implementada posteriormente. Nenhuma conta foi conectada.';
-      } else {
-        return;
-      }
-
-      dialogoInformativo.showModal();
-    });
-
-    dialogoInformativo.addEventListener('close', () => {
-      botaoPerfil.focus({ preventScroll: true });
-    });
 
     // Obtém os Pins atuais pela API compartilhada e garante IDs para exemplos.
     function obterPinsDisponiveis() {
@@ -380,27 +304,6 @@
       const tipo = evento.detail?.tipo;
       if (tipo === 'colagem' || tipo === 'cartao') {
         abrirComposicao(tipo);
-      }
-    });
-
-    // Fecha o menu de perfil ao clicar fora ou pressionar Escape.
-    document.addEventListener('click', (evento) => {
-      if (
-        !menuPerfil.hidden &&
-        evento.target instanceof Node &&
-        !menuPerfil.contains(evento.target) &&
-        !botaoPerfil.contains(evento.target)
-      ) {
-        fecharMenuPerfil();
-      }
-    });
-
-    document.addEventListener('keydown', (evento) => {
-      if (evento.key !== 'Escape') {
-        return;
-      }
-      if (!menuPerfil.hidden) {
-        fecharMenuPerfil(true);
       }
     });
 

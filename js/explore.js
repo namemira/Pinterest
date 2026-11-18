@@ -49,17 +49,89 @@ function carregarCategorias() {
 
     categorias.forEach((categoria) => {
 
-        const elemento = document.createElement('div');
+        const elemento = document.createElement('button');
 
         elemento.classList.add('categoria');
+        elemento.type = 'button';
+        elemento.setAttribute('aria-pressed', 'false');
+        elemento.setAttribute(
+            'aria-label',
+            `Filtrar Pins pela categoria ${categoria.nome}`
+        );
+        elemento.dataset.categoria = categoria.nome;
 
-        elemento.innerHTML = `
-            <img src="${categoria.imagem}" alt="${categoria.nome}">
-            <h3>${categoria.nome}</h3>
-        `;
+        const imagem = document.createElement('img');
+        imagem.src = categoria.imagem;
+        imagem.alt = categoria.nome;
+        const titulo = document.createElement('span');
+        titulo.className = 'categoria-titulo';
+        titulo.textContent = categoria.nome;
+        elemento.append(imagem, titulo);
 
         container.appendChild(elemento);
     });
+}
+
+// Filtra Pins pela categoria sem substituir o termo atual da pesquisa.
+function configurarFiltroCategorias() {
+    const listaCategorias = document.querySelector('#lista-categorias');
+    const containerPins = document.querySelector('#grade-pins');
+    const campoPesquisa = document.querySelector(
+        '.pesquisa input[type="search"]'
+    );
+    if (!listaCategorias || !containerPins) {
+        return;
+    }
+
+    let categoriaAtiva = '';
+    containerPins.dataset.categoriaSelecionada = '';
+
+    const mensagemFiltro = document.createElement('p');
+    mensagemFiltro.className = 'mensagem-categoria';
+    mensagemFiltro.setAttribute('role', 'status');
+    mensagemFiltro.setAttribute('aria-live', 'polite');
+    mensagemFiltro.hidden = true;
+    listaCategorias.insertAdjacentElement('afterend', mensagemFiltro);
+
+    function selecionarCategoria(elemento) {
+        const categoria = elemento.dataset.categoria;
+        categoriaAtiva =
+            normalizarTexto(categoriaAtiva) === normalizarTexto(categoria)
+                ? ''
+                : categoria;
+        containerPins.dataset.categoriaSelecionada = categoriaAtiva;
+
+        listaCategorias.querySelectorAll('.categoria').forEach((item) => {
+            const selecionada = item.dataset.categoria === categoriaAtiva;
+            item.setAttribute('aria-pressed', String(selecionada));
+            item.setAttribute(
+                'aria-label',
+                selecionada
+                    ? `Categoria ${item.dataset.categoria} selecionada. Ative novamente para mostrar todas as categorias.`
+                    : `Filtrar Pins pela categoria ${item.dataset.categoria}`
+            );
+        });
+
+        mensagemFiltro.textContent = categoriaAtiva
+            ? `Exibindo Pins da categoria ${categoriaAtiva}. Selecione novamente para mostrar todos.`
+            : campoPesquisa?.value.trim()
+                ? 'Filtro de categoria removido. A pesquisa atual continua aplicada.'
+                : 'Exibindo Pins de todas as categorias.';
+        mensagemFiltro.hidden = false;
+        document.dispatchEvent(new CustomEvent('pins:category-changed'));
+    }
+
+    listaCategorias.addEventListener('click', (evento) => {
+        if (!(evento.target instanceof Element)) {
+            return;
+        }
+
+        const elemento = evento.target.closest('.categoria[data-categoria]');
+        if (elemento && listaCategorias.contains(elemento)) {
+            selecionarCategoria(elemento);
+        }
+    });
+
 }
 // Cria os cartões de tendências dentro da lista prevista no HTML.
 function carregarTendencias() {
@@ -76,7 +148,7 @@ function carregarTendencias() {
         elemento.classList.add('tendencia');
 
         elemento.innerHTML = `
-            <img src="${tendencia.imagem}" alt="">
+            <img src="${tendencia.imagem}" alt="${tendencia.titulo}">
             <h3>${tendencia.titulo}</h3>
         `;
 
@@ -103,6 +175,8 @@ function carregarPinsExplorar() {
 document.addEventListener('DOMContentLoaded', () => {
 
     carregarCategorias();
+
+    configurarFiltroCategorias();
 
     carregarTendencias();
 

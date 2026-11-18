@@ -44,21 +44,66 @@ function obterDataLocalISO() {
   return `${ano}-${mes}-${dia}`;
 }
 
+// Confere a idade pela data local, sem depender de conversões UTC.
+function calcularIdade(dataISO) {
+  const [anoNascimento, mesNascimento, diaNascimento] = dataISO
+    .split('-')
+    .map(Number);
+  const hoje = new Date();
+  let idade = hoje.getFullYear() - anoNascimento;
+
+  if (
+    hoje.getMonth() + 1 < mesNascimento ||
+    (hoje.getMonth() + 1 === mesNascimento &&
+      hoje.getDate() < diaNascimento)
+  ) {
+    idade -= 1;
+  }
+
+  return idade;
+}
+
+// Confirma que o valor representa uma data existente no calendário.
+function dataNascimentoValida(dataISO) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(dataISO)) {
+    return false;
+  }
+
+  const [ano, mes, dia] = dataISO.split('-').map(Number);
+  const data = new Date(ano, mes - 1, dia);
+  return (
+    data.getFullYear() === ano &&
+    data.getMonth() === mes - 1 &&
+    data.getDate() === dia
+  );
+}
+
 // Configura validação do cadastro e feedback após o envio do formulário.
 function configurarCadastro(formulario) {
+  const nome = formulario.querySelector('#nome');
   const email = formulario.querySelector('#email');
   const senha = formulario.querySelector('#senha');
   const nascimento = formulario.querySelector('#nascimento');
+  const confirmarSenha = formulario.querySelector('#confirmar-senha');
 
-  if (!email || !senha || !nascimento) {
+  if (!nome || !email || !senha || !nascimento) {
     return;
   }
 
   const mensagens = {
+    nome: criarMensagem(nome, 'mensagem-erro', 'alert'),
     email: criarMensagem(email, 'mensagem-erro', 'alert'),
     senha: criarMensagem(senha, 'mensagem-erro', 'alert'),
     nascimento: criarMensagem(nascimento, 'mensagem-erro', 'alert')
   };
+  if (confirmarSenha) {
+    mensagens.confirmarSenha = criarMensagem(
+      confirmarSenha,
+      'mensagem-erro',
+      'alert'
+    );
+  }
+
   const resultado = document.createElement('p');
   resultado.className = 'mensagem-resultado';
   resultado.setAttribute('role', 'status');
@@ -67,12 +112,20 @@ function configurarCadastro(formulario) {
   formulario.appendChild(resultado);
 
   let formularioEnviado = false;
+  const mensagemSucesso =
+    'Validação demonstrativa concluída. Nenhuma conta foi criada.';
 
   function validarCampos() {
     let possuiErros = false;
+    const valorNome = nome.value.trim();
     const valorEmail = email.value.trim();
     const valorSenha = senha.value;
     const valorNascimento = nascimento.value;
+
+    let erroNome = '';
+    if (!valorNome) {
+      erroNome = 'Informe seu nome.';
+    }
 
     let erroEmail = '';
     if (!valorEmail) {
@@ -91,12 +144,20 @@ function configurarCadastro(formulario) {
     let erroNascimento = '';
     if (!valorNascimento) {
       erroNascimento = 'Informe sua data de nascimento.';
-    } else if (nascimento.validity.badInput) {
+    } else if (
+      nascimento.validity.badInput ||
+      !dataNascimentoValida(valorNascimento)
+    ) {
       erroNascimento = 'Informe uma data de nascimento válida.';
     } else if (valorNascimento > obterDataLocalISO()) {
       erroNascimento = 'A data de nascimento não pode ser futura.';
+    } else if (nascimento.min && valorNascimento < nascimento.min) {
+      erroNascimento = `A data deve ser igual ou posterior a ${nascimento.min}.`;
+    } else if (calcularIdade(valorNascimento) < 13) {
+      erroNascimento = 'Você precisa ter pelo menos 13 anos.';
     }
 
+    possuiErros = definirErro(nome, mensagens.nome, erroNome) || possuiErros;
     possuiErros = definirErro(email, mensagens.email, erroEmail) || possuiErros;
     possuiErros = definirErro(senha, mensagens.senha, erroSenha) || possuiErros;
     possuiErros = definirErro(
@@ -105,7 +166,29 @@ function configurarCadastro(formulario) {
       erroNascimento
     ) || possuiErros;
 
+    if (confirmarSenha) {
+      const erroConfirmarSenha =
+        confirmarSenha.value === valorSenha
+          ? ''
+          : 'As senhas informadas não são iguais.';
+      possuiErros =
+        definirErro(
+          confirmarSenha,
+          mensagens.confirmarSenha,
+          erroConfirmarSenha
+        ) || possuiErros;
+    }
+
     return !possuiErros;
+  }
+
+  function atualizarResultado() {
+    exibirMensagem(resultado, '');
+    if (validarCampos()) {
+      exibirMensagem(resultado, mensagemSucesso);
+      return true;
+    }
+    return false;
   }
 
   // Faz a validação própria do formulário para apresentar mensagens acessíveis.
@@ -114,41 +197,20 @@ function configurarCadastro(formulario) {
   formulario.addEventListener('submit', (evento) => {
     evento.preventDefault();
     formularioEnviado = true;
-    exibirMensagem(resultado, '');
-
-    if (validarCampos()) {
-      exibirMensagem(
-        resultado,
-        'Dados validados no navegador. O cadastro real dependerá da integração com PHP.'
-      );
+    if (!atualizarResultado()) {
+      formulario.querySelector('[aria-invalid="true"]')?.focus();
     }
   });
 
   formulario.addEventListener('input', () => {
-    if (!formularioEnviado) {
-      return;
-    }
-
-    exibirMensagem(resultado, '');
-    if (validarCampos()) {
-      exibirMensagem(
-        resultado,
-        'Dados validados no navegador. O cadastro real dependerá da integração com PHP.'
-      );
+    if (formularioEnviado) {
+      atualizarResultado();
     }
   });
 
   formulario.addEventListener('change', () => {
-    if (!formularioEnviado) {
-      return;
-    }
-
-    exibirMensagem(resultado, '');
-    if (validarCampos()) {
-      exibirMensagem(
-        resultado,
-        'Dados validados no navegador. O cadastro real dependerá da integração com PHP.'
-      );
+    if (formularioEnviado) {
+      atualizarResultado();
     }
   });
 }
@@ -178,7 +240,7 @@ function configurarLogin(formulario) {
 
   let formularioEnviado = false;
   const mensagemSucesso =
-    'Dados validados no navegador. A autenticação real será implementada posteriormente com PHP.';
+    'Validação demonstrativa concluída. Nenhuma autenticação foi realizada.';
 
   function validarCampos() {
     const valorEmail = email.value.trim();
@@ -207,6 +269,8 @@ function configurarLogin(formulario) {
 
     if (validarCampos()) {
       exibirMensagem(resultado, mensagemSucesso);
+    } else {
+      formulario.querySelector('[aria-invalid="true"]')?.focus();
     }
   });
 

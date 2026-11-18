@@ -22,12 +22,19 @@ html {
 }
 
 body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
     min-width: 320px;
     margin: 0;
     color: var(--cor-texto);
     background: #fff;
     font-family: Manrope, Arial, sans-serif;
     line-height: 1.55;
+}
+
+main#conteudo-principal {
+    flex: 1 0 auto;
 }
 
 img {
@@ -795,10 +802,10 @@ input:focus-visible {
     opacity: 0.82;
 }
 
-.google-mark {
-    color: #4285f4;
-    font-size: 18px;
-    font-weight: 900;
+.icone-google {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
 }
 
 .google-note {
@@ -856,6 +863,7 @@ input:focus-visible {
 /* Rodape institucional */
 .site-footer {
     display: grid;
+    margin-top: auto;
     grid-template-columns: minmax(190px, 1.3fr) repeat(3, minmax(150px, 1fr));
     gap: 32px;
     padding: 54px max(24px, calc((100vw - var(--largura-conteudo)) / 2));

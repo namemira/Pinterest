@@ -55,58 +55,258 @@ const pinsExemplo = [
 // Chaves compatíveis com os dados de Pins e pastas já salvos no navegador.
 const CHAVE_PINS_CRIADOS = 'pinterest:pins-criados:v1';
 const CHAVE_PASTAS_CRIADAS = 'pinterest:pastas:v1';
+const LIMITE_CONSERVADOR_ARMAZENAMENTO = 1024 * 1024;
 
-// Carrega Pins criados e inclui Pins demonstrativos que já foram organizados.
-function carregarPinsCriados() {
-  const conteudo = window.localStorage.getItem(CHAVE_PINS_CRIADOS);
-  const pins = conteudo === null ? [] : JSON.parse(conteudo);
-  if (!Array.isArray(pins) || pins.some((pin) => !pinValido(pin))) {
-    throw new TypeError('Os Pins criados têm um formato inválido.');
+let armazenamentoLocal = null;
+let pinsCriados = [];
+let armazenamentoPinsCorrompido = false;
+let armazenamentoPastasCorrompido = false;
+let armazenamentoPinsSincronizado = true;
+const errosArmazenamento = new Map();
+
+try {
+  armazenamentoLocal = window.localStorage;
+} catch (erro) {
+  if (chave === CHAVE_PINS_CRIADOS) {
+    armazenamentoPinsSincronizado = false;
+  }
+  errosArmazenamento.set(
+    'acesso',
+    'O armazenamento local está indisponível. Não foi possível carregar ou salvar Pins.'
+  );
+  console.error('Não foi possível acessar o armazenamento local.', erro);
+}
+
+// Registra erros sem substituir nem remover os dados que já estão armazenados.
+function registrarErroArmazenamento(chave, mensagem, erro) {
+  errosArmazenamento.set(chave, mensagem);
+  if (erro) {
+    console.error(mensagem, erro);
+  }
+}
+
+// Lê uma chave JSON distinguindo ausência, erro de acesso e JSON inválido.
+function lerJsonArmazenado(chave) {
+  if (!armazenamentoLocal) {
+    return { valido: false, presente: false, dados: null };
   }
 
-  const conteudoPastas = window.localStorage.getItem(CHAVE_PASTAS_CRIADAS);
-  if (conteudoPastas === null) {
-    return pins;
-  }
+  try {
+    const conteudo = armazenamentoLocal.getItem(chave);
+    if (conteudo === null) {
+      return { valido: true, presente: false, dados: null };
+    }
 
-  const dadosPastas = JSON.parse(conteudoPastas);
+    return {
+      valido: true,
+      presente: true,
+      dados: JSON.parse(conteudo)
+    };
+  } catch (erro) {
+    registrarErroArmazenamento(
+      chave === CHAVE_PINS_CRIADOS ? 'pins' : 'pastas',
+      'Não foi possível ler os dados salvos. O conteúdo original foi preservado.',
+      erro
+    );
+    return { valido: false, presente: true, dados: null };
+  }
+}
+
+// Normaliza registros antigos sem descartar campos adicionais do Pin.
+function normalizarPin(pin) {
   if (
-    !dadosPastas ||
-    dadosPastas.versao !== 1 ||
-    !Array.isArray(dadosPastas.pastas) ||
-    dadosPastas.pastas.some(
-      (pasta) => !pasta || !Array.isArray(pasta.pins)
-    )
+    !pin ||
+    typeof pin !== 'object' ||
+    Array.isArray(pin) ||
+    typeof pin.id !== 'string' ||
+    !pin.id.trim() ||
+    (pin.imagem !== undefined && typeof pin.imagem !== 'string')
   ) {
-    throw new TypeError('Os dados das pastas têm um formato inválido.');
+    return null;
   }
 
-  const pinsOrganizados = dadosPastas.pastas.flatMap((pasta) =>
-    pasta.pins.filter(
-      (pin) => pinValido(pin) && pin.id.startsWith('pin-demo-')
-    )
-  );
-  return [
-    ...pins,
-    ...pinsOrganizados.filter(
-      (pin) => !pins.some((pinSalvo) => pinSalvo.id === pin.id)
-    )
-  ];
+  return {
+    ...pin,
+    id: pin.id,
+    imagem: pin.imagem || '',
+    alt: typeof pin.alt === 'string' ? pin.alt : '',
+    titulo: typeof pin.titulo === 'string' ? pin.titulo : 'Pin salvo',
+    descricao: typeof pin.descricao === 'string' ? pin.descricao : '',
+    categoria: typeof pin.categoria === 'string' ? pin.categoria : '',
+    link: typeof pin.link === 'string' ? pin.link : ''
+  };
 }
 
-// Valida o formato mínimo esperado antes de usar um Pin salvo.
 function pinValido(pin) {
-  return Boolean(
-    pin &&
-      typeof pin.id === 'string' &&
-      typeof pin.imagem === 'string' &&
-      typeof pin.titulo === 'string' &&
-      typeof pin.descricao === 'string'
-  );
+  return normalizarPin(pin) !== null;
 }
 
-// Mantém Pins criados em memória para renderização e atualizações durante a sessão.
-const pinsCriados = carregarPinsCriados();
+// Reúne Pins criados e cópias legadas armazenadas dentro das pastas.
+function carregarPinsCriados() {
+  const leituraPins = lerJsonArmazenado(CHAVE_PINS_CRIADOS);
+  const leituraPastas = lerJsonArmazenado(CHAVE_PASTAS_CRIADAS);
+  const pinsPorId = new Map();
+  let precisaPersistirPins = false;
+  let precisaMigrarPastas = false;
+  let pastasValidas = true;
+
+  if (!leituraPins.valido) {
+    armazenamentoPinsCorrompido = true;
+  } else if (leituraPins.presente) {
+    if (!Array.isArray(leituraPins.dados)) {
+      armazenamentoPinsCorrompido = true;
+      registrarErroArmazenamento(
+        'pins',
+        'Os Pins salvos têm um formato inválido. Os dados originais foram preservados.'
+      );
+    } else {
+      leituraPins.dados.forEach((pin) => {
+        const normalizado = normalizarPin(pin);
+        if (!normalizado) {
+          armazenamentoPinsCorrompido = true;
+          registrarErroArmazenamento(
+            'pins',
+            'Há Pins com formato inválido. Os dados originais foram preservados.'
+          );
+          return;
+        }
+
+        if (!pinsPorId.has(normalizado.id)) {
+          pinsPorId.set(normalizado.id, normalizado);
+        } else {
+          precisaPersistirPins = true;
+        }
+      });
+    }
+  }
+
+  if (leituraPastas.valido && leituraPastas.presente) {
+    const dadosPastas = leituraPastas.dados;
+    if (
+      !dadosPastas ||
+      dadosPastas.versao !== 1 ||
+      !Array.isArray(dadosPastas.pastas) ||
+      dadosPastas.pastas.some(
+        (pasta) =>
+          !pasta ||
+          typeof pasta.id !== 'string' ||
+          typeof pasta.nome !== 'string' ||
+          typeof pasta.descricao !== 'string' ||
+          !Array.isArray(pasta.pins)
+      )
+    ) {
+      pastasValidas = false;
+      armazenamentoPastasCorrompido = true;
+      registrarErroArmazenamento(
+        'pastas',
+        'As pastas salvas têm um formato inválido. Os dados originais foram preservados.'
+      );
+    } else {
+      dadosPastas.pastas.forEach((pasta) => {
+        const idsVistos = new Set();
+        pasta.pins.forEach((pinArmazenado) => {
+          if (typeof pinArmazenado === 'string') {
+            if (idsVistos.has(pinArmazenado)) {
+              precisaMigrarPastas = true;
+            }
+            idsVistos.add(pinArmazenado);
+            return;
+          }
+
+          if (pinArmazenado && pinArmazenado.temporario === true) {
+            return;
+          }
+
+          const pin = normalizarPin(pinArmazenado);
+          if (!pin) {
+            pastasValidas = false;
+            armazenamentoPastasCorrompido = true;
+            registrarErroArmazenamento(
+              'pastas',
+              'Há Pins com formato inválido nas pastas. Os dados originais foram preservados.'
+            );
+            return;
+          }
+
+          if (!pinsPorId.has(pin.id)) {
+            pinsPorId.set(pin.id, pin);
+            precisaPersistirPins = true;
+          }
+          precisaMigrarPastas = true;
+        });
+      });
+    }
+  } else if (!leituraPastas.valido) {
+    armazenamentoPastasCorrompido = true;
+  }
+
+  pinsCriados = Array.from(pinsPorId.values());
+
+  if (
+    precisaPersistirPins &&
+    !armazenamentoPinsCorrompido &&
+    armazenamentoLocal
+  ) {
+    try {
+      armazenamentoLocal.setItem(
+        CHAVE_PINS_CRIADOS,
+        JSON.stringify(pinsCriados)
+      );
+      errosArmazenamento.delete('pins');
+    } catch (erro) {
+      armazenamentoPinsSincronizado = false;
+      registrarErroArmazenamento(
+        'pins',
+        'Não foi possível centralizar os Pins no armazenamento local. Os dados antigos foram mantidos.',
+        erro
+      );
+    }
+  }
+
+  if (
+    precisaMigrarPastas &&
+    pastasValidas &&
+    !armazenamentoPinsCorrompido &&
+    !errosArmazenamento.has('pins') &&
+    armazenamentoLocal
+  ) {
+    const pastasComReferencias = {
+      versao: 1,
+      pastas: leituraPastas.dados.pastas.map((pasta) => ({
+        ...pasta,
+        pins: Array.from(
+          new Set(
+            pasta.pins
+              .filter(
+                (pin) => !(pin && typeof pin === 'object' && pin.temporario === true)
+              )
+              .map((pin) => (typeof pin === 'string' ? pin : pin.id))
+              .filter((id) => typeof id === 'string' && id.length > 0)
+          )
+        )
+      }))
+    };
+
+    try {
+      armazenamentoLocal.setItem(
+        CHAVE_PASTAS_CRIADAS,
+        JSON.stringify(pastasComReferencias)
+      );
+      errosArmazenamento.delete('pastas');
+    } catch (erro) {
+      registrarErroArmazenamento(
+        'migracao',
+        'Não foi possível atualizar as referências das pastas. As cópias antigas foram mantidas.',
+        erro
+      );
+    }
+  }
+
+  return pinsCriados;
+}
+
+// Mantém Pins criados em memória, com os dados carregados antes da inicialização da página.
+carregarPinsCriados();
 const TAMANHO_LOTE_PINS = 2;
 
 // Constrói um card de Pin a partir dos dados sem interpolar conteúdo como HTML.
@@ -169,42 +369,178 @@ function obterChavePin(pin) {
 
 // Retorna o conjunto de Pins criados pelo usuário e exemplos.
 function listarPins() {
-  return [...pinsCriados, ...pinsExemplo];
+  const pinsCriadosVisiveis = pinsCriados.filter(
+    (pin) =>
+      !pinsExemplo.some(
+        (exemplo) =>
+          pin.imagem === exemplo.imagem &&
+          pin.alt === exemplo.alt &&
+          pin.titulo === exemplo.titulo &&
+          pin.descricao === exemplo.descricao &&
+          pin.categoria === exemplo.categoria
+      )
+  );
+  return [...pinsCriadosVisiveis, ...pinsExemplo];
+}
+
+function listarPinsCriados() {
+  return pinsCriados.map((pin) => ({ ...pin }));
+}
+
+function obterPin(pinId) {
+  const pin = pinsCriados.find((item) => item.id === pinId);
+  return pin ? { ...pin } : null;
+}
+
+function contemPin(pinId) {
+  return pinsCriados.some((pin) => pin.id === pinId);
+}
+
+function obterErroArmazenamento() {
+  return Array.from(new Set(errosArmazenamento.values())).join(' ');
+}
+
+function podePersistirPins() {
+  return Boolean(
+    armazenamentoLocal &&
+      !armazenamentoPinsCorrompido &&
+      armazenamentoPinsSincronizado
+  );
+}
+
+// Estima o espaço necessário para uma imagem em Data URL antes de convertê-la.
+function verificarEspacoImagem(tamanhoBytes) {
+  if (!Number.isFinite(tamanhoBytes) || tamanhoBytes < 0) {
+    return {
+      ok: false,
+      mensagem: 'Não foi possível verificar o tamanho da imagem.'
+    };
+  }
+
+  if (!podePersistirPins()) {
+    return {
+      ok: false,
+      mensagem:
+        obterErroArmazenamento() ||
+        'O armazenamento local não está disponível para salvar Pins.'
+    };
+  }
+
+  try {
+    let caracteresArmazenados = 0;
+    for (let indice = 0; indice < armazenamentoLocal.length; indice += 1) {
+      const chave = armazenamentoLocal.key(indice);
+      if (chave !== null) {
+        caracteresArmazenados +=
+          chave.length + (armazenamentoLocal.getItem(chave) || '').length;
+      }
+    }
+
+    const caracteresImagem = Math.ceil(tamanhoBytes / 3) * 4 + 128;
+    if (
+      caracteresArmazenados + caracteresImagem + 1024 >
+      LIMITE_CONSERVADOR_ARMAZENAMENTO
+    ) {
+      return {
+        ok: false,
+        mensagem:
+          'A imagem é grande demais para o espaço local estimado. Escolha um arquivo menor.'
+      };
+    }
+  } catch (erro) {
+    registrarErroArmazenamento(
+      'acesso',
+      'Não foi possível verificar o espaço do armazenamento local.',
+      erro
+    );
+    return {
+      ok: false,
+      mensagem: obterErroArmazenamento()
+    };
+  }
+
+  return { ok: true, mensagem: '' };
+}
+
+function persistirPins(novosPins) {
+  if (!armazenamentoLocal) {
+    throw new Error(
+      obterErroArmazenamento() ||
+        'O armazenamento local não está disponível para salvar Pins.'
+    );
+  }
+  if (armazenamentoPinsCorrompido) {
+    throw new Error(
+      'Os Pins existentes têm dados inválidos. Eles foram preservados e não serão sobrescritos.'
+    );
+  }
+  if (!armazenamentoPinsSincronizado) {
+    throw new Error(
+      'Os Pins existentes não foram sincronizados com segurança. Os dados originais foram preservados.'
+    );
+  }
+
+  try {
+    armazenamentoLocal.setItem(
+      CHAVE_PINS_CRIADOS,
+      JSON.stringify(novosPins)
+    );
+    armazenamentoPinsSincronizado = true;
+    errosArmazenamento.delete('pins');
+  } catch (erro) {
+    registrarErroArmazenamento(
+      'pins',
+      'Não foi possível salvar os Pins. Verifique o espaço disponível no navegador.',
+      erro
+    );
+    throw erro;
+  }
 }
 
 // Persiste um Pin criado e atualiza a coleção mantida em memória.
 function adicionarPin(pin) {
-  if (!pin || typeof pin.id !== 'string' || typeof pin.imagem !== 'string') {
+  const pinNormalizado = normalizarPin(pin);
+  if (!pinNormalizado) {
     throw new TypeError('Os dados do Pin são inválidos.');
   }
 
   const novosPins = [
-    ...pinsCriados.filter((item) => item.id !== pin.id),
-    pin
+    ...pinsCriados.filter((item) => item.id !== pinNormalizado.id),
+    pinNormalizado
   ];
-  window.localStorage.setItem(CHAVE_PINS_CRIADOS, JSON.stringify(novosPins));
+  persistirPins(novosPins);
   pinsCriados.splice(0, pinsCriados.length, ...novosPins);
 }
 
 // Remove um Pin criado tanto do armazenamento quanto da coleção em memória.
 function removerPin(pinId) {
   const novosPins = pinsCriados.filter((pin) => pin.id !== pinId);
-  window.localStorage.setItem(CHAVE_PINS_CRIADOS, JSON.stringify(novosPins));
+  persistirPins(novosPins);
   pinsCriados.splice(0, pinsCriados.length, ...novosPins);
 }
 
 // Expõe a API compartilhada usada por busca, pastas, criação e outras páginas.
 window.pinterestPins = Object.freeze({
   listarPins,
+  listarPinsCriados,
+  obterPin,
+  contemPin,
   criarCardPin,
   adicionarPin,
-  removerPin
+  removerPin,
+  verificarEspacoImagem,
+  obterErroArmazenamento,
+  podePersistirPins
 });
 
 // Simula a leitura de um lote, preservando a interface assíncrona para futura API.
-function obterLotePins(offset, quantidade) {
+function obterLotePins(quantidade, pinsJaRenderizados) {
   // Mantém a paginação separada da fonte para facilitar a futura troca por uma API PHP.
-  return Promise.resolve(listarPins().slice(offset, offset + quantidade));
+  return Promise.resolve(
+    listarPins()
+      .filter((pin) => !pinsJaRenderizados.has(obterChavePin(pin)))
+      .slice(0, quantidade)
+  );
 }
 
 // Renderiza o feed progressivamente conforme a sentinela se aproxima da tela.
@@ -231,7 +567,6 @@ function renderizarPinsExemplo() {
   sentinela.setAttribute('aria-hidden', 'true');
   indicador.insertAdjacentElement('afterend', sentinela);
 
-  let indiceProximoPin = 0;
   let carregando = false;
   let observer = null;
   let carregarTodosDoLink = new URLSearchParams(
@@ -239,10 +574,33 @@ function renderizarPinsExemplo() {
   ).has('pin');
   const chavesRenderizadas = new Set();
 
+  // Considera também cards publicados manualmente durante a sessão.
+  function listarPinsPendentes() {
+    const cardsExistentes = Array.from(
+      containerPins.querySelectorAll('.post')
+    );
+
+    return listarPins().filter((pin) => {
+      const chave = obterChavePin(pin);
+      if (chavesRenderizadas.has(chave)) {
+        return false;
+      }
+
+      if (
+        pin.id &&
+        cardsExistentes.some((card) => card.dataset.pinId === pin.id)
+      ) {
+        chavesRenderizadas.add(chave);
+        return false;
+      }
+
+      return true;
+    });
+  }
+
   // Evita chamadas simultâneas e deixa o indicador aparecer antes de inserir o lote.
   async function carregarProximoLote() {
-    const quantidadeTotal = listarPins().length;
-    if (carregando || indiceProximoPin >= quantidadeTotal) {
+    if (carregando || listarPinsPendentes().length === 0) {
       return;
     }
 
@@ -256,17 +614,17 @@ function renderizarPinsExemplo() {
       if (!carregarTodosDoLink) {
         await new Promise((resolver) => window.requestAnimationFrame(resolver));
       }
-      const inicioLote = indiceProximoPin;
-      const lote = await obterLotePins(inicioLote, TAMANHO_LOTE_PINS);
+      const lote = await obterLotePins(
+        TAMANHO_LOTE_PINS,
+        chavesRenderizadas
+      );
       if (lote.length === 0) {
-        indiceProximoPin = quantidadeTotal;
         indicador.textContent = 'Não há mais Pins de demonstração para carregar.';
         sentinela.hidden = true;
         observer?.disconnect();
         return;
       }
 
-      indiceProximoPin += lote.length;
       loteCarregado = true;
 
       lote.forEach((pin) => {
@@ -276,12 +634,20 @@ function renderizarPinsExemplo() {
         }
 
         chavesRenderizadas.add(chave);
+        if (
+          pin.id &&
+          Array.from(containerPins.querySelectorAll('.post')).some(
+            (card) => card.dataset.pinId === pin.id
+          )
+        ) {
+          return;
+        }
         containerPins.appendChild(criarCardPin(pin));
       });
 
       document.dispatchEvent(new CustomEvent('pins:updated'));
 
-      if (indiceProximoPin >= listarPins().length) {
+      if (listarPinsPendentes().length === 0) {
         indicador.textContent = 'Não há mais Pins de demonstração para carregar.';
         sentinela.hidden = true;
         observer?.disconnect();
@@ -301,7 +667,7 @@ function renderizarPinsExemplo() {
       indicador.setAttribute('aria-busy', 'false');
       if (
         carregarTodosDoLink &&
-        indiceProximoPin < listarPins().length &&
+        listarPinsPendentes().length > 0 &&
         loteCarregado
       ) {
         window.setTimeout(carregarProximoLote, 0);

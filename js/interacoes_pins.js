@@ -167,46 +167,93 @@
     return url.href;
   }
 
+  // Tenta copiar um link e comunica sucesso ou falha sem deixar rejeições abertas.
+  async function copiarLink(url, mensagemStatus) {
+    try {
+      const areaTransferencia = navigator.clipboard;
+      if (!areaTransferencia || typeof areaTransferencia.writeText !== 'function') {
+        mensagemStatus.textContent =
+          'A cópia do link não está disponível neste navegador.';
+        return false;
+      }
+
+      await areaTransferencia.writeText(url);
+      mensagemStatus.textContent = 'Link do Pin copiado.';
+      return true;
+    } catch (erro) {
+      console.error('Não foi possível copiar o link do Pin.', erro);
+      mensagemStatus.textContent =
+        'Não foi possível copiar o link. Verifique as permissões do navegador.';
+      return false;
+    }
+  }
+
+  // Oferece uma alternativa real de cópia após o compartilhamento ou seu cancelamento.
+  function oferecerCopiaLink(url, mensagemStatus, texto) {
+    mensagemStatus.replaceChildren();
+    const textoStatus = document.createElement('span');
+    textoStatus.textContent = texto;
+    mensagemStatus.appendChild(textoStatus);
+
+    let copiaDisponivel = false;
+    try {
+      copiaDisponivel =
+        typeof navigator.clipboard?.writeText === 'function';
+    } catch (erro) {
+      console.error('Não foi possível acessar a área de transferência.', erro);
+    }
+
+    if (!copiaDisponivel) {
+      textoStatus.textContent =
+        `${texto} A cópia do link não está disponível neste navegador.`;
+      return;
+    }
+
+    const botaoCopiar = document.createElement('button');
+    botaoCopiar.type = 'button';
+    botaoCopiar.textContent = 'Copiar link';
+    botaoCopiar.addEventListener('click', () => {
+      copiarLink(url, mensagemStatus);
+    });
+    mensagemStatus.append(' ', botaoCopiar);
+  }
+
   // Compartilha pela API do navegador ou copia o link quando ela não existe.
   async function compartilharPin(card, mensagemStatus) {
-    const titulo = obterTituloPin(card);
-    const descricao = card.querySelector('p');
-    const url = criarUrlCompartilhamento(card);
+    try {
+      const titulo = obterTituloPin(card);
+      const descricao = card.querySelector('p');
+      const url = criarUrlCompartilhamento(card);
 
-    if (typeof navigator.share === 'function') {
+      if (typeof navigator.share !== 'function') {
+        await copiarLink(url, mensagemStatus);
+        return;
+      }
+
       try {
         await navigator.share({
           title: titulo,
           text: descricao ? descricao.textContent.trim() : titulo,
           url
         });
-        mensagemStatus.textContent = 'Pin compartilhado.';
+        oferecerCopiaLink(url, mensagemStatus, 'Pin compartilhado.');
       } catch (erro) {
-        if (erro.name === 'AbortError') {
-          mensagemStatus.textContent = 'Compartilhamento cancelado.';
+        if (erro && erro.name === 'AbortError') {
+          oferecerCopiaLink(url, mensagemStatus, 'Compartilhamento cancelado.');
           return;
         }
 
         console.error('Não foi possível compartilhar o Pin.', erro);
-        mensagemStatus.textContent = 'Não foi possível compartilhar este Pin.';
+        oferecerCopiaLink(
+          url,
+          mensagemStatus,
+          'Não foi possível compartilhar o Pin.'
+        );
       }
-
-      return;
-    }
-
-    if (!navigator.clipboard || typeof navigator.clipboard.writeText !== 'function') {
-      mensagemStatus.textContent =
-        'O compartilhamento e a cópia de links não estão disponíveis neste navegador.';
-      return;
-    }
-
-    try {
-      await navigator.clipboard.writeText(url);
-      mensagemStatus.textContent = 'Link do Pin copiado.';
     } catch (erro) {
-      console.error('Não foi possível copiar o link do Pin.', erro);
+      console.error('Não foi possível preparar o compartilhamento do Pin.', erro);
       mensagemStatus.textContent =
-        'Não foi possível copiar o link. Verifique as permissões do navegador.';
+        'Não foi possível preparar o link deste Pin.';
     }
   }
 
@@ -217,7 +264,12 @@
       return;
     }
 
-    criarMensagemStatus(containerPins);
+    const mensagemStatus = criarMensagemStatus(containerPins);
+    const erroArmazenamento =
+      window.pinterestPins?.obterErroArmazenamento();
+    if (erroArmazenamento) {
+      mensagemStatus.textContent = erroArmazenamento;
+    }
     const idsUtilizados = new Set();
 
     function prepararPins(elementos) {

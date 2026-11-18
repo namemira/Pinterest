@@ -95,10 +95,11 @@
     border-spacing: 0 16px;
 }
 
-.tabela-perfil td:first-child {
+.tabela-perfil th:first-child {
     width: 150px;
     vertical-align: top;
     padding: 14px 15px 0 0;
+    text-align: left;
 }
 
 .tabela-perfil td:last-child {
@@ -109,7 +110,6 @@
     font-size: 14px;
     font-weight: 700;
     color: #333;
-    white-space: nowrap;
 }
 
 .tabela-perfil input,
@@ -148,6 +148,7 @@
 
     width: calc(100% - 84px);
     box-sizing: border-box;
+    min-width: 0;
 }
 
 .navegacao-configuracoes {
@@ -197,19 +198,106 @@
 
 /* Responsividade */
 
+@media (max-width: 1000px) {
+    .configuracoes {
+        gap: 32px;
+        padding: 36px 32px;
+    }
+
+    .navegacao-configuracoes {
+        width: 220px;
+    }
+}
+
+@media (max-width: 767px) {
+    .configuracoes {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 24px;
+        margin-left: 64px;
+        padding: 24px 20px;
+        width: calc(100% - 64px);
+    }
+
+    .navegacao-configuracoes {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+        width: 100%;
+    }
+
+    .navegacao-configuracoes h1 {
+        grid-column: 1 / -1;
+        margin: 0 0 8px;
+        overflow-wrap: anywhere;
+    }
+
+    .opcao-config {
+        width: auto;
+        min-width: 0;
+        padding: 12px;
+        overflow-wrap: anywhere;
+    }
+
+    .conteudo-configuracoes,
+    .configuracao-secao {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .conteudo-configuracoes h2,
+    .conteudo-configuracoes h3,
+    .conteudo-configuracoes p {
+        overflow-wrap: anywhere;
+    }
+
+    .opcoes-tema {
+        flex-wrap: wrap;
+        gap: 12px 20px;
+    }
+}
+
 @media (max-width: 600px) {
 
     .tabela-perfil,
     .tabela-perfil tbody,
     .tabela-perfil tr,
+    .tabela-perfil th,
     .tabela-perfil td {
         display: block;
         width: 100%;
+        box-sizing: border-box;
     }
 
-    .tabela-perfil td:first-child {
+    .tabela-perfil {
+        border-spacing: 0;
+    }
+
+    .tabela-perfil tr + tr {
+        margin-top: 16px;
+    }
+
+    .tabela-perfil th:first-child {
         padding-top: 0;
         padding-bottom: 8px;
+    }
+
+    .tabela-perfil label {
+        overflow-wrap: anywhere;
+    }
+}
+
+@media (max-width: 420px) {
+    .configuracoes {
+        padding: 20px 16px;
+    }
+
+    .navegacao-configuracoes {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .navegacao-configuracoes h1 {
+        grid-column: auto;
     }
 
 }

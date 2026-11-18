@@ -38,6 +38,7 @@
 
     const imagem = document.createElement('img');
     imagem.className = 'detalhes-pin-imagem';
+    imagem.alt = 'Imagem do Pin'; // trocado pelo alt do Pin quando os detalhes abrem
 
     const conteudo = criarElemento('div', 'detalhes-pin-conteudo');
     const titulo = criarElemento('h2', '', '');
