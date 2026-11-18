@@ -2,7 +2,7 @@
 
 (() => {
   // Limites e tipos usados para aceitar apenas imagens compatíveis com o Pin.
-  const TAMANHO_MAXIMO = 10 * 1024 * 1024;
+  const TAMANHO_MAXIMO = 750 * 1024;
   const TIPOS_PERMITIDOS = new Map([
     ['jpg', 'image/jpeg'],
     ['jpeg', 'image/jpeg'],
@@ -116,7 +116,18 @@
       }
 
       if (arquivo.size > TAMANHO_MAXIMO) {
-        definirMensagem('A imagem deve ter no máximo 10 MB.', 'erro');
+        definirMensagem('A imagem deve ter no máximo 750 KB.', 'erro');
+        return false;
+      }
+
+      const verificacaoEspaco =
+        window.pinterestPins?.verificarEspacoImagem(arquivo.size);
+      if (!verificacaoEspaco || !verificacaoEspaco.ok) {
+        definirMensagem(
+          verificacaoEspaco?.mensagem ||
+            'Não foi possível verificar o espaço para salvar a imagem.',
+          'erro'
+        );
         return false;
       }
 
@@ -325,7 +336,9 @@
       if (
         !sistemaPins ||
         typeof sistemaPins.criarCardPin !== 'function' ||
-        typeof sistemaPins.adicionarPin !== 'function'
+        typeof sistemaPins.adicionarPin !== 'function' ||
+        typeof sistemaPins.verificarEspacoImagem !== 'function' ||
+        typeof sistemaPins.obterErroArmazenamento !== 'function'
       ) {
         definirMensagem(
           'Não foi possível preparar o Pin. Recarregue a página e tente novamente.',
@@ -346,42 +359,42 @@
       const pastaId = campoPasta.value;
       const sistemaPastas = window.pinterestBoards;
       try {
-        pin.imagem = await converterArquivoParaDataUrl(arquivoSelecionado);
-        if (!pastaId) {
-          sistemaPins.adicionarPin(pin);
+        const verificacaoEspaco =
+          sistemaPins.verificarEspacoImagem(arquivoSelecionado.size);
+        if (!verificacaoEspaco.ok) {
+          definirMensagem(verificacaoEspaco.mensagem, 'erro');
+          return;
         }
+        pin.imagem = await converterArquivoParaDataUrl(arquivoSelecionado);
+        sistemaPins.adicionarPin(pin);
       } catch (erro) {
         console.error('Não foi possível salvar o Pin no navegador.', erro);
         definirMensagem(
-          'Não foi possível salvar o Pin neste navegador. Verifique o espaço disponível e tente novamente.',
+          sistemaPins.obterErroArmazenamento() ||
+            erro.message ||
+            'Não foi possível salvar o Pin neste navegador. Verifique o espaço disponível e tente novamente.',
           'erro'
         );
         return;
       }
 
+      let organizado = !pastaId;
       if (
-        (pastaId && !sistemaPastas) ||
-        (sistemaPastas &&
-          !sistemaPastas.adicionarPinDemonstrativo(pin, pastaId))
+        sistemaPastas &&
+        typeof sistemaPastas.adicionarPinDemonstrativo === 'function'
       ) {
-        try {
-          sistemaPins.removerPin(pin.id);
-        } catch (erro) {
-          console.error('Não foi possível desfazer o salvamento do Pin.', erro);
-        }
-        definirMensagem(
-          'Não foi possível organizar este Pin na pasta selecionada.',
-          'erro'
-        );
-        return;
+        organizado = sistemaPastas.adicionarPinDemonstrativo(pin, pastaId);
       }
 
       const card = sistemaPins.criarCardPin(pin);
       feed.prepend(card);
       document.dispatchEvent(new CustomEvent('pins:updated'));
-      const resultado = pastaId
-        ? 'Pin publicado e adicionado à pasta selecionada.'
-        : 'Pin publicado. Ele está salvo neste navegador.';
+      const resultado =
+        pastaId && organizado
+          ? 'Pin publicado e adicionado à pasta selecionada.'
+          : pastaId
+            ? 'Pin publicado. Não foi possível organizá-lo; ele continua disponível como não organizado.'
+            : 'Pin publicado. Ele está salvo neste navegador.';
       definirMensagem(resultado, 'sucesso');
       feedbackFeed.textContent = resultado;
       limparFormulario();

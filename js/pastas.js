@@ -1,11 +1,10 @@
 'use strict';
 
 (() => {
-  // Chaves de armazenamento e suporte temporário a Pins ainda não organizados.
+  // Chaves de armazenamento usadas pelas pastas e pela migração legada.
   const CHAVE_PASTAS = 'pinterest:pastas:v1';
   const CHAVE_PINS_ANTIGOS = 'pinterest:pins-salvos:v1';
   const NOME_PASTA_ANTIGA = 'Salvos';
-  let pinsTemporariosNaoOrganizados = [];
 
   // Gera identificadores únicos para pastas.
   function criarId(prefixo) {
@@ -38,23 +37,61 @@
               typeof pasta.descricao !== 'string' ||
               !Array.isArray(pasta.pins) ||
               pasta.pins.some(
-                (pin) => !pin || typeof pin.id !== 'string'
+                (pin) =>
+                  typeof pin !== 'string' &&
+                  (!pin || typeof pin.id !== 'string')
               )
           )
         ) {
           throw new TypeError('Os dados das pastas têm um formato inválido.');
         }
 
-        return dados.pastas;
+        const sistemaPins = window.pinterestPins;
+        return dados.pastas.map((pasta) => ({
+          ...pasta,
+          pins: Array.from(
+            new Map(
+              pasta.pins.map((referencia) => {
+                if (typeof referencia === 'string') {
+                  const pin = sistemaPins?.obterPin(referencia);
+                  if (!pin) {
+                    throw new TypeError(
+                      `O Pin ${referencia} referenciado por uma pasta não está disponível.`
+                    );
+                  }
+                  return [pin.id, pin];
+                }
+
+                const pin =
+                  sistemaPins?.obterPin(referencia.id) || { ...referencia };
+                return [pin.id, pin];
+              })
+            ).values()
+          )
+        }));
       },
       salvar(pastas) {
+        const sistemaPins = window.pinterestPins;
+        if (
+          !sistemaPins ||
+          (pastas.some((pasta) => pasta.pins.length > 0) &&
+            !sistemaPins.podePersistirPins()) ||
+          pastas.some((pasta) =>
+            pasta.pins.some((pin) => !sistemaPins.contemPin(pin.id))
+          )
+        ) {
+          throw new Error(
+            'Não é possível salvar as referências: um ou mais Pins não estão no armazenamento central.'
+          );
+        }
+
         window.localStorage.setItem(
           CHAVE_PASTAS,
           JSON.stringify({
             versao: 1,
             pastas: pastas.map((pasta) => ({
               ...pasta,
-              pins: pasta.pins.filter((pin) => pin.temporario !== true)
+              pins: Array.from(new Set(pasta.pins.map((pin) => pin.id)))
             }))
           })
         );
@@ -204,7 +241,7 @@
     const textoConfirmacao = criarElemento(
       'p',
       '',
-      'Os Pins associados também serão removidos desta pasta.'
+      'Os Pins continuarão disponíveis como não organizados.'
     );
     const botaoCancelarExclusao = criarElemento(
       'button',
@@ -251,6 +288,38 @@
           pastas.flatMap((pasta) => pasta.pins.map((pin) => pin.id))
         )
       ];
+    }
+
+    // Reconstrói Pins não organizados a partir do registro central persistente.
+    function listarPinsNaoOrganizados() {
+      const sistemaPins = window.pinterestPins;
+      if (!sistemaPins) {
+        return [];
+      }
+
+      const idsOrganizados = new Set(listarIdsSalvos());
+      return sistemaPins
+        .listarPinsCriados()
+        .filter((pin) => !idsOrganizados.has(pin.id));
+    }
+
+    // Garante que Pins de demonstração salvos em pastas também tenham registro central.
+    function garantirPinCentralizado(pin) {
+      const sistemaPins = window.pinterestPins;
+      if (!sistemaPins) {
+        return false;
+      }
+
+      try {
+        sistemaPins.adicionarPin(pin);
+        return true;
+      } catch (erro) {
+        console.error('Não foi possível registrar o Pin no armazenamento central.', erro);
+        erroArmazenamento =
+          sistemaPins.obterErroArmazenamento() ||
+          'Não foi possível preservar este Pin no armazenamento local.';
+        return false;
+      }
     }
 
     // Publica o estado das pastas para os demais módulos do sistema.
@@ -406,7 +475,7 @@
           criarElemento(
             'p',
             '',
-            `Excluir "${pasta.nome}" e os Pins associados?`
+            `Excluir "${pasta.nome}"? Os Pins continuarão disponíveis sem pasta.`
           )
         );
         const cancelar = criarElemento('button', '', 'Cancelar');
@@ -502,17 +571,15 @@
       const estadoBotao = estadoVazioPastas.querySelector('button');
       const vazioGeral = pastas.length === 0 && filtroPastas === 'todas';
       const mostrarVazio = pastasVisiveis.length === 0;
-      const quantidadePinsSalvos = pastas.reduce(
-        (total, pasta) => total + pasta.pins.length,
-        0
-      );
+      const pinsNaoOrganizados = listarPinsNaoOrganizados();
+      const quantidadePinsSalvos = listarIdsSalvos().length;
       const mensagemNaoOrganizadas = document.querySelector(
         '.ideias-nao-organizadas-vazio'
       );
       if (mensagemNaoOrganizadas) {
-        const quantidadeNaoOrganizada = pinsTemporariosNaoOrganizados.length;
+        const quantidadeNaoOrganizada = pinsNaoOrganizados.length;
         mensagemNaoOrganizadas.textContent = quantidadeNaoOrganizada
-          ? `${quantidadeNaoOrganizada} ${quantidadeNaoOrganizada === 1 ? 'Pin está' : 'Pins estão'} sem uma pasta. Publicações demonstrativas ficam disponíveis apenas nesta sessão.`
+          ? `${quantidadeNaoOrganizada} ${quantidadeNaoOrganizada === 1 ? 'Pin está' : 'Pins estão'} sem uma pasta.`
           : quantidadePinsSalvos > 0
             ? `Seus ${quantidadePinsSalvos} Pins salvos já estão organizados em pastas.`
             : 'Não há Pins salvos fora de pastas para exibir.';
@@ -523,13 +590,16 @@
       );
       if (gradeNaoOrganizada) {
         gradeNaoOrganizada.replaceChildren();
-        pinsTemporariosNaoOrganizados.forEach((pin) => {
+        pinsNaoOrganizados.forEach((pin) => {
           const item = criarElemento('article', 'ideia-nao-organizada');
-          const imagem = document.createElement('img');
-          imagem.src = new URL(pin.imagem, document.baseURI).href;
-          imagem.alt = pin.alt || pin.titulo;
-          imagem.loading = 'lazy';
-          item.append(imagem, criarElemento('h3', '', pin.titulo));
+          if (pin.imagem) {
+            const imagem = document.createElement('img');
+            imagem.src = new URL(pin.imagem, document.baseURI).href;
+            imagem.alt = pin.alt || pin.titulo;
+            imagem.loading = 'lazy';
+            item.appendChild(imagem);
+          }
+          item.appendChild(criarElemento('h3', '', pin.titulo));
           if (pin.descricao) {
             item.appendChild(criarElemento('p', '', pin.descricao));
           }
@@ -585,7 +655,7 @@
             criarElemento(
               'p',
               '',
-              `Excluir "${pasta.nome}" e os Pins associados?`
+              `Excluir "${pasta.nome}"? Os Pins continuarão disponíveis sem pasta.`
             )
           );
           const cancelar = criarElemento('button', '', 'Cancelar');
@@ -824,18 +894,20 @@
           const card = Array.from(
             containerPins.querySelectorAll('.post')
           ).find((elemento) => elemento.dataset.pinId === id);
-          pastaSalvos.pins.push(
-            card
-              ? obterDadosPin(card)
-              : {
-                  id,
-                  imagem: '',
-                  alt: '',
-                  titulo: 'Pin salvo anteriormente',
-                  descricao: '',
-                  categoria: ''
-                }
-          );
+          const pin = card
+            ? obterDadosPin(card)
+            : {
+                id,
+                imagem: '',
+                alt: '',
+                titulo: 'Pin salvo anteriormente',
+                descricao: '',
+                categoria: ''
+              };
+          if (!garantirPinCentralizado(pin)) {
+            throw new Error('Não foi possível preservar um Pin salvo anteriormente.');
+          }
+          pastaSalvos.pins.push(pin);
         }
       });
 
@@ -878,7 +950,13 @@
       pastas.push(novaPasta);
 
       if (pinParaSalvar) {
-        novaPasta.pins.push(obterDadosPin(pinParaSalvar));
+        const pin = obterDadosPin(pinParaSalvar);
+        if (!garantirPinCentralizado(pin)) {
+          pastas.pop();
+          definirStatus(erroArmazenamento, true);
+          return;
+        }
+        novaPasta.pins.push(pin);
       }
 
       if (!persistir()) {
@@ -933,6 +1011,10 @@
             return;
           }
           const dadosPin = obterDadosPin(pinParaSalvar);
+          if (!garantirPinCentralizado(dadosPin)) {
+            definirStatus(erroArmazenamento, true);
+            return;
+          }
           if (pasta.pins.some((pin) => pin.id === dadosPin.id)) {
             definirStatus(`Este Pin já está salvo em "${pasta.nome}".`, true);
             return;
@@ -979,7 +1061,7 @@
           if (pasta) {
             pastaAExcluirId = pasta.id;
             textoConfirmacao.textContent =
-              `A pasta "${pasta.nome}" e os Pins associados serão removidos.`;
+              `A pasta "${pasta.nome}" será excluída. Os Pins continuarão disponíveis sem pasta.`;
             confirmacao.hidden = false;
             botaoCancelarExclusao.focus();
           }
@@ -1166,23 +1248,30 @@
       });
 
       paginaPastas.addEventListener('keydown', (evento) => {
-        if (
-          evento.key !== 'ArrowLeft' &&
-          evento.key !== 'ArrowRight' &&
-          !(evento.target instanceof Element && evento.target.matches('[role="tab"]'))
-        ) {
+        if (!(evento.target instanceof Element)) {
           return;
         }
 
-        if (!(evento.target instanceof Element) || !evento.target.matches('[role="tab"]')) {
+        const abas = [abaPins, abaPastas].filter(Boolean);
+        const abaFocada = evento.target.closest('[role="tab"]');
+        const indiceAtual = abas.indexOf(abaFocada);
+        if (indiceAtual < 0) {
+          return;
+        }
+
+        let proximoIndice;
+        if (evento.key === 'ArrowRight') {
+          proximoIndice = (indiceAtual + 1) % abas.length;
+        } else if (evento.key === 'ArrowLeft') {
+          proximoIndice = (indiceAtual - 1 + abas.length) % abas.length;
+        } else {
           return;
         }
 
         evento.preventDefault();
-        const proximaAba =
-          evento.target === abaPins ? abaPastas : abaPins;
+        const proximaAba = abas[proximoIndice];
         proximaAba.focus();
-        proximaAba.click();
+        definirAbaPerfil(proximaAba === abaPastas ? 'pastas' : 'pins');
       });
 
       document
@@ -1224,6 +1313,10 @@
           return false;
         }
 
+        if (!garantirPinCentralizado(pin)) {
+          return false;
+        }
+
         if (pastaId) {
           const pasta = localizarPasta(pastaId);
           if (!pasta || pasta.pins.some((item) => item.id === pin.id)) {
@@ -1234,11 +1327,6 @@
             pasta.pins.pop();
             return false;
           }
-        } else {
-          pinsTemporariosNaoOrganizados = [
-            ...pinsTemporariosNaoOrganizados.filter((item) => item.id !== pin.id),
-            { ...pin, temporario: true }
-          ];
         }
 
         notificarEstado();
@@ -1260,7 +1348,11 @@
             (elemento) => elemento.dataset.pinId === pin.id
           );
           if (card) {
-            pasta.pins[indice] = obterDadosPin(card);
+            const pinAtualizado = obterDadosPin(card);
+            if (!garantirPinCentralizado(pinAtualizado)) {
+              return;
+            }
+            pasta.pins[indice] = pinAtualizado;
             alterado = true;
           }
         });

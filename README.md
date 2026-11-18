@@ -1,12 +1,12 @@
-# Clone do Pinterest – Desenvolvimento Web I
+Clone do Pinterest – Desenvolvimento Web I
 
-Projeto acadêmico do Instituto Federal Catarinense – Campus Concórdia (Trabalho III, disciplina Desenvolvimento Web I, prof. Alisson Borges Zanetti).
+Projeto acadêmico desenvolvido para o Trabalho III da disciplina Desenvolvimento Web I, ministrada pelo professor Alisson Borges Zanetti no Instituto Federal Catarinense, Campus Concórdia.
 
-> Clone feito apenas para fins educacionais, **sem vínculo com a Pinterest, Inc.** Todos os usuários, Pins e mensagens exibidos são fictícios.
+Este projeto tem finalidade exclusivamente educacional e não possui vínculo com a Pinterest, Inc. Os usuários, Pins e mensagens apresentados são fictícios.
 
-## Site reproduzido
+## Sobre o site de referência
 
-[Pinterest](https://br.pinterest.com): rede social para descobrir, salvar e organizar ideias em Pins e pastas.
+[Pinterest](https://br.pinterest.com) é uma rede social que permite descobrir, salvar e organizar ideias em Pins e pastas.
 
 ## Integrantes
 
@@ -14,47 +14,47 @@ Projeto acadêmico do Instituto Federal Catarinense – Campus Concórdia (Traba
 - Nicole Bet
 - Samira Vieira
 
-## Descrição
+## Descrição do projeto
 
-Mock funcional (front-end) feito com HTML5, CSS3 e JavaScript puro, sem frameworks.
+Protótipo funcional de interface, desenvolvido com HTML5, CSS3 e JavaScript, sem o uso de frameworks.
 
 ### Páginas
 
-| Página | Arquivo | O que tem |
+| Página | Arquivo | Descrição |
 |---|---|---|
-| Inicial | `html/Inicial.html` | Apresentação do site, busca nas seções e formulário de cadastro |
-| Login | `html/Login.html` | Formulário de login com validação e mostrar/ocultar senha |
+| Inicial | `html/Inicial.html` | Apresentação do site, busca entre seções e formulário de cadastro |
+| Login | `html/Login.html` | Formulário de acesso com validação e opção para exibir ou ocultar a senha |
 | Cadastro | `html/Cadastro.html` | Formulário de cadastro com validação |
-| Principal (feed) | `html/Principal.html` | Feed de Pins, menu do perfil e painel Criar |
+| Página principal | `html/Principal.html` | Feed de Pins, menu do perfil e painel de criação |
 | Explorar | `html/Explore.html` | Categorias, tendências e Pins gerados por JavaScript |
-| Perfil / Pastas | `html/Perfil.html` | Pins salvos e pastas, com filtros |
-| Criar Pin | `html/CriarPin.html` | Formulário para publicar um Pin com imagem |
-| Configurações | `html/Configuracao.html` | Edição de perfil (tabela + formulário) e tema claro/escuro |
+| Perfil e pastas | `html/Perfil.html` | Pins salvos e pastas, com opções de filtragem |
+| Criação de Pin | `html/CriarPin.html` | Formulário para publicar um Pin com imagem |
+| Configurações | `html/Configuracao.html` | Edição do perfil e seleção entre os temas claro e escuro |
 
 ### Funcionalidades em JavaScript
 
-- Validação dos formulários com mensagens na própria página (sem `alert`)
-- Menu lateral responsivo, que abre e fecha no celular
-- Busca com sugestões e filtro de Pins
-- Pins e categorias gerados a partir de arrays de objetos
-- Pastas e Pins salvos no `localStorage`
-- Modais (detalhes do Pin, avisos, criação de colagem e cartão)
-- Alternância entre tema claro e escuro
+- Validação de formulários com mensagens exibidas na própria página
+- Menu lateral responsivo, com controles de abertura e fechamento em dispositivos móveis
+- Busca com sugestões e filtragem de Pins
+- Geração de Pins e categorias a partir de arrays de objetos
+- Armazenamento de pastas e Pins no `localStorage`
+- Janelas modais para detalhes de Pins, avisos e criação de colagens e cartões
+- Alternância entre os temas claro e escuro
 
 ### Organização das pastas
 
 ```
-index.html      → redireciona para html/Inicial.html
-html/           → páginas
-css/            → folhas de estilo
-js/             → scripts
-Imagens/        → imagens usadas no site
-PROMPTS.md      → registro do uso de IA
+index.html      Página de entrada, que direciona para html/Inicial.html
+html/           Páginas do site
+css/            Folhas de estilo
+js/             Scripts
+Imagens/        Imagens utilizadas no site
+PROMPTS.md      Registro do uso de inteligência artificial
 ```
 
 ## Como usar
 
-- **Online (GitHub Pages):** https://namemira.github.io/Pinterest/
-- **No computador:** baixe ou clone o repositório e abra o `index.html` no navegador. Não precisa instalar nada.
+- Acesse a versão on-line pelo [GitHub Pages](https://namemira.github.io/Pinterest/).
+- Para executar localmente, baixe ou clone o repositório e abra o arquivo `index.html` em um navegador. Não é necessário instalar dependências.
 
-Nesta etapa os formulários são validados apenas no navegador. O cadastro, o login e o salvamento de dados no banco serão feitos com PHP e MySQL na Parte 3.
+Nesta etapa, a validação dos formulários é realizada no navegador. A implementação do cadastro, do login e do armazenamento de dados em banco de dados está prevista para a Parte 3, com PHP e MySQL.

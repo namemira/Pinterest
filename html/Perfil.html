@@ -79,7 +79,7 @@
                     <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg>
                 </button>
                 <input type="search" placeholder="Pesquisar looks, refeições fáceis etc." aria-label="Pesquisar Pins">
-                <button class="pesquisa-camera" type="button" aria-label="Pesquisar por imagem" aria-disabled="true">
+                <button class="pesquisa-camera" type="button" aria-label="Pesquisar por imagem" aria-disabled="true" disabled>
                     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h3l1.5-2h7L17 7h3a1 1 0 0 1 1 1v11H3V8a1 1 0 0 1 1-1z"/><circle cx="12" cy="13" r="4"/></svg>
                 </button>
             </div>
@@ -103,8 +103,8 @@
                 <p class="perfil-pastas-status" role="status" aria-live="polite"></p>
 
                 <div class="perfil-abas" role="tablist" aria-label="Conteúdo do perfil">
-                    <button id="aba-perfil-pins" type="button" role="tab" aria-selected="false" aria-controls="conteudo-pins">Pins</button>
-                    <button id="aba-perfil-pastas" type="button" role="tab" aria-selected="true" aria-controls="conteudo-pastas">Pastas</button>
+                    <button id="aba-perfil-pins" type="button" role="tab" aria-selected="false" aria-controls="conteudo-pins" tabindex="-1">Pins</button>
+                    <button id="aba-perfil-pastas" type="button" role="tab" aria-selected="true" aria-controls="conteudo-pastas" tabindex="0">Pastas</button>
                 </div>
 <!-- Conteúdo da aba Pins -->
                 <section id="conteudo-pins" role="tabpanel" aria-labelledby="aba-perfil-pins" hidden>

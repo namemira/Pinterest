@@ -20,6 +20,8 @@ html {
 }
 
 body {
+    display: flex;
+    flex-direction: column;
     min-width: 320px;
     min-height: 100vh;
     margin: 0;
@@ -119,9 +121,9 @@ input:focus-visible {
     position: relative;
     z-index: 1;
     display: grid;
+    flex: 1 0 auto;
     place-items: center;
-    min-height: 100vh;
-    min-height: 100svh;
+    min-height: 0;
     padding: 24px 16px;
 }
 
@@ -509,11 +511,10 @@ input:focus-visible {
 
 /* Rodapé com aviso de projeto acadêmico */
 .rodape-clone {
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    position: relative;
     z-index: 3;
+    flex-shrink: 0;
+    margin-top: auto;
     padding: 8px 16px;
     background: rgb(0 0 0 / 55%);
     color: #fff;

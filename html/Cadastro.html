@@ -34,6 +34,9 @@
             <p>Entre no Pinterest gratuitamente para descobrir mais ideias</p>
 
             <!-- Campos com label, tipo adequado e atributos de validação -->
+            <label for="nome" class="rotulo-cadastro">Nome</label>
+            <input type="text" id="nome" name="nome" autocomplete="name" required maxlength="60" placeholder="Digite seu nome" class="Input-cadastro">
+
             <label for="email" class="rotulo-cadastro">E-mail</label>
             <input type="email" id="email" name="email" autocomplete="email" required placeholder="Digite seu e-mail" class="Input-cadastro">
 
@@ -46,7 +49,7 @@
 
             <button type="submit" id="continuar">Continuar</button>
             <p class="divisor-ou">OU</p>
-            <button type="button" id="continuar-google">
+            <button type="button" id="continuar-google" aria-describedby="google-cadastro-indisponivel" disabled>
                 <svg class="icone-google" viewBox="0 0 48 48" aria-hidden="true">
                     <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.430 13.72 17.74 9.5 24 9.5z"/>
                     <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
@@ -55,12 +58,12 @@
                 </svg>
                 Continuar com o Google
             </button>
+            <p class="dica-cadastro" id="google-cadastro-indisponivel">Integração com Google indisponível nesta demonstração.</p>
             <p class="link-conta">Já tem uma conta? <a href="Login.html">Entrar</a></p>
             <p class="aviso-termos">
-                Para usar o Pinterest, você precisa ter no mínimo 13 anos. Ao continuar,
-                você concorda com os <a href="#">Termos de Serviço</a> do Pinterest e confirma
-                que leu a nossa <a href="#">Política de Privacidade</a>.
-                <a href="#">Aviso sobre coleta de dados</a>.
+                Para usar o Pinterest, você precisa ter no mínimo 13 anos. Esta demonstração
+                não cria contas nem envia ou armazena os dados informados. Os termos e a
+                política de privacidade não estão disponíveis nesta versão.
             </p>
         </form>
     </main>

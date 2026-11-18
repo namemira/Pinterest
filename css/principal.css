@@ -1260,8 +1260,16 @@ body.detalhes-pin-abertos {
 }
 
 body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
     color: var(--cor-texto);
     font-family: var(--fonte-principal);
+}
+
+main {
+    flex: 1 0 auto;
 }
 
 .pagina-pastas[hidden],
@@ -2192,8 +2200,18 @@ body {
 
 .categoria {
     width: 150px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
     text-align: center;
     cursor: pointer;
+}
+
+.categoria:focus-visible {
+    outline: 3px solid var(--cor-foco);
+    outline-offset: 3px;
 }
 
 .categoria img {
@@ -2201,6 +2219,13 @@ body {
     height: 110px;
     object-fit: cover;
     border-radius: 12px;
+}
+
+.categoria-titulo {
+    display: block;
+    margin: 1em 0;
+    font-size: 1.17em;
+    font-weight: bold;
 }
 
 #lista-tendencias {
@@ -2998,6 +3023,7 @@ body {
 
 /* Rodapé com aviso de projeto acadêmico */
 .rodape-clone {
+    margin-top: auto;
     margin-left: 84px;
     padding: 24px;
     border-top: 1px solid var(--cor-borda);

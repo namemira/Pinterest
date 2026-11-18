@@ -234,10 +234,35 @@ function configurarPesquisaPins() {
     const containerPesquisa = campoPesquisa
         ? campoPesquisa.closest('.pesquisa')
         : null;
-    const containerPins = document.querySelector('.postagens, #grade-pins');
 
-    if (!campoPesquisa || !containerPesquisa || !containerPins) {
+    if (!campoPesquisa || !containerPesquisa) {
         console.warn('Campo de pesquisa ou área de Pins não encontrado.');
+        return;
+    }
+
+    const botaoPesquisar =
+        containerPesquisa.querySelector('.pesquisa-icone');
+    const containerPins = document.querySelector('.postagens, #grade-pins');
+    if (!containerPins) {
+        function navegarParaExplorar() {
+            const termo = campoPesquisa.value.trim();
+            if (!termo) {
+                campoPesquisa.focus();
+                return;
+            }
+
+            const url = new URL('Explore.html', window.location.href);
+            url.searchParams.set('busca', termo);
+            window.location.href = url.href;
+        }
+
+        botaoPesquisar?.addEventListener('click', navegarParaExplorar);
+        campoPesquisa.addEventListener('keydown', (evento) => {
+            if (evento.key === 'Enter') {
+                evento.preventDefault();
+                navegarParaExplorar();
+            }
+        });
         return;
     }
 
@@ -253,6 +278,9 @@ function configurarPesquisaPins() {
     // Esconde cards que não correspondem ao termo e anuncia quando nada é encontrado.
     function filtrarPins() {
         const termo = normalizarTexto(campoPesquisa.value);
+        const categoriaSelecionada =
+            containerPins.dataset.categoriaSelecionada || '';
+        const categoriaNormalizada = normalizarTexto(categoriaSelecionada);
 
         const pins = containerPins.querySelectorAll('.post');
 
@@ -260,9 +288,18 @@ function configurarPesquisaPins() {
 
         pins.forEach((pin) => {
             const textoPin = obterTextoPesquisavel(pin);
+            const textoCategoria =
+                pin.querySelector('.post-categoria')?.textContent || '';
+            const categoriaPin = normalizarTexto(
+                textoCategoria.replace(/^categoria\s*:\s*/i, '')
+            );
 
-            const corresponde =
+            const correspondeBusca =
                 termo === '' || textoPin.includes(termo);
+            const correspondeCategoria =
+                !categoriaNormalizada ||
+                categoriaPin === categoriaNormalizada;
+            const corresponde = correspondeBusca && correspondeCategoria;
 
             pin.style.display = corresponde ? '' : 'none';
 
@@ -272,18 +309,42 @@ function configurarPesquisaPins() {
         });
 
         const nenhumResultado =
-            termo !== '' && quantidadeVisivel === 0;
+            (termo !== '' || categoriaSelecionada !== '') &&
+            quantidadeVisivel === 0;
 
-        mensagemResultados.textContent = nenhumResultado
-            ? 'Nenhum Pin encontrado. Tente outro termo.'
-            : '';
+        if (nenhumResultado && termo && categoriaSelecionada) {
+            mensagemResultados.textContent =
+                `Nenhum Pin encontrado para "${campoPesquisa.value.trim()}" na categoria ${categoriaSelecionada}.`;
+        } else if (nenhumResultado && categoriaSelecionada) {
+            mensagemResultados.textContent =
+                `Nenhum Pin encontrado na categoria ${categoriaSelecionada}.`;
+        } else {
+            mensagemResultados.textContent = nenhumResultado
+                ? 'Nenhum Pin encontrado. Tente outro termo.'
+                : '';
+        }
 
         mensagemResultados.hidden = !nenhumResultado;
     }
 
     campoPesquisa.addEventListener('input', filtrarPins);
     campoPesquisa.addEventListener('search', filtrarPins);
+    campoPesquisa.addEventListener('keydown', (evento) => {
+        if (evento.key === 'Enter') {
+            filtrarPins();
+        }
+    });
     document.addEventListener('pins:updated', filtrarPins);
+    document.addEventListener('pins:category-changed', filtrarPins);
+    botaoPesquisar?.addEventListener('click', () => {
+        campoPesquisa.focus();
+        filtrarPins();
+    });
+    const buscaInicial = new URLSearchParams(window.location.search).get('busca');
+    if (buscaInicial) {
+        campoPesquisa.value = buscaInicial;
+        filtrarPins();
+    }
     configurarSugestoesPesquisa(
         campoPesquisa,
         containerPesquisa,
