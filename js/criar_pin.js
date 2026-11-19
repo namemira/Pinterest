@@ -2,7 +2,7 @@
 
 (() => {
   // Limites e tipos usados para aceitar apenas imagens compatíveis com o Pin.
-  const TAMANHO_MAXIMO = 750 * 1024;
+  const TAMANHO_MAXIMO = 10 * 1024 * 1024;
   const TIPOS_PERMITIDOS = new Map([
     ['jpg', 'image/jpeg'],
     ['jpeg', 'image/jpeg'],

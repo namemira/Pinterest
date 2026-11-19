@@ -699,3 +699,9 @@ function renderizarPinsExemplo() {
 
 // Monta o feed depois que o contêiner da página estiver disponível.
 document.addEventListener('DOMContentLoaded', renderizarPinsExemplo);
+console.log('Arquivo selecionado:', arquivo);
+console.log('Sistema de Pins:', window.pinterestPins);
+console.log(
+  'Função de espaço:',
+  typeof window.pinterestPins?.verificarEspacoImagem
+);

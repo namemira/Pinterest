@@ -159,7 +159,8 @@ body.tema-escuro .detalhes-pin-conteudo p,
 body.tema-escuro .detalhes-pin-autor,
 body.tema-escuro .detalhes-pin-descricao,
 body.tema-escuro .detalhes-pin-categoria {
-    color: #222222;
+    color: #ffffff;
+    background-color: #000000;
 }
 body.tema-escuro .detalhes-pin-acoes button {
     color: #ffffff;
@@ -179,4 +180,269 @@ body.tema-escuro .detalhes-pin-acoes button:hoover {
      color: #ffffff;
     background-color: #CC011F;
 }
+/* MODO ESCURO - REMOVER BORDAS */
+body.tema-escuro .detalhes-pin-dialogo,
+body.tema-escuro .detalhes-pin-conteudo,
+body.tema-escuro .detalhes-pin-relacionados,
+body.tema-escuro .detalhes-pin-card {
+    border: none !important;
+    outline: none;
+    box-shadow: none;
+    background-color: rgb(0, 0, 0);
+}
+/* BOTÕES DO MODAL */
+body.tema-escuro .detalhes-pin-acoes button,
+body.tema-escuro .detalhes-pin-card button {
+    background-color: #E60023;
+    color: #ffffff;
+    border: none;
+    border-radius: 25px;
+    transition: background-color 0.3s ease;
+}
+
+/* EFEITO AO PASSAR O MOUSE */
+body.tema-escuro .detalhes-pin-acoes button:hover,
+body.tema-escuro .detalhes-pin-card button:hover {
+    background-color: #ad001b;
+    color: #ffffff;
+}
+body.tema-escuro .detalhes-pin-fechar {
+    background-color: #E60023;
+    color: #ffffff;
+    border: none;
+}
+/* =====================================
+   PIN RELACIONADOS - MODO ESCURO
+===================================== */
+
+/* Remover bordas e contornos */
+body.tema-escuro .detalhes-pin-relacionados,
+body.tema-escuro .detalhes-pin-grade-relacionados,
+body.tema-escuro .detalhes-pin-relacionados img {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+/* Fundo dos cards */
+body.tema-escuro .detalhes-pin-relacionados [class*="card"] {
+    background-color: #881717 !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+/* Botões salvar e compartilhar */
+body.tema-escuro .detalhes-pin-relacionados button {
+    color: #ffffff !important;
+    border:solid 1px #222226  !important;
+    box-shadow: none !important;
+    border-radius: 25px !important;
+}
+
+/* Hover dos botões */
+body.tema-escuro .detalhes-pin-relacionados button:hover {
+    background-color: #222226 !important;
+    color: #ffffff !important;
+}
+body.tema-escuro .detalhes-pin-voltar {
+    background-color:#E60023 !important;
+    color: #ffffff !important;
+}
+body.tema-escuro .detalhes-pin-voltar:hover {
+    background-color:#ad001b !important;
+    color: #ffffff !important;
+}
+/*Perfil*/
+body.tema-escuro .perfil-compartilhar {
+    background-color:#222226 !important;
+    color: #ffffff !important;
+}
+/*Botão Criar*/
+body.tema-escuro .pastas-criar-pagina {
+    background-color:#ad001b!important;
+    color: #ffffff !important;
+}
+body.tema-escuro .pastas-criar-pagina:hover {
+    background-color: #8e2626 !important;
+    color: #ffffff !important;
+}
+
+
+/*bOTÃO CRIAR UMA PAST*/
+body.tema-escuro .pastas-criar-vazia{
+    color: #ffffff !important;
+    background-color:#ad001b!important;
+}
+/*Link do Pin e da Pasta*/
+body.tema-escuro #aba-perfil-pins{
+    color: #ffffff !important;
+}
+body.tema-escuro #aba-perfil-pastas{
+    color: #ffffff !important;
+}
+body.tema-escuro .ideias-nao-organizadas-grade > * {
+    background-color: #292929 !important;
+    color: #ffffff !important;
+    border: none !important;
+    border-radius: 14px;
+    overflow: hidden;
+}
+body.tema-escuro .pastas-conteudo {
+    background-color:  #222226;
+}
+/*Criar pasta dentr do perfil*/
+body.tema-escuro .painel-criar{
+    background-color: black;
+}
+body.tema-escuro .pastas-cancelar{
+    background-color: black !important;
+}
+/*Criar pin antes de ir para a tela de criação no menu*/
+body.tema-escuro .painel-criar-icone,body.tema-escuro .painel-criar-novo {
+    background-color:#ad001b ;
+}
+body.tema-escuro .painel-criar-opcao:hover{
+    background-color: #222226;
+}
+
+
+/* =========================================
+   AVISOS DE NOTIFICAÇÕES E MENSAGENS
+   MODO ESCURO
+========================================= */
+
+body.tema-escuro dialog.aviso-disponibilidade {
+    background-color: #222226 !important;
+    color: #ffffff !important;
+    border: 1px solid #3a3a3a !important;
+    border-radius: 20px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+}
+
+/* Título */
+body.tema-escuro .aviso-disponibilidade h2 {
+    color: #ffffff !important;
+}
+
+/* Texto da mensagem */
+body.tema-escuro .aviso-disponibilidade p {
+    color: #d6d6d6 !important;
+}
+
+/* Ícone informativo */
+body.tema-escuro .aviso-disponibilidade-icone {
+    background-color: #ad001b !important;
+    color: #ffffff !important;
+}
+
+/* Botão fechar */
+body.tema-escuro .aviso-disponibilidade .principal-dialogo-fechar {
+    background-color: #ad001b !important;
+    color: #ffffff !important;
+    border: none !important;
+}
+
+/* Efeito ao passar o mouse */
+body.tema-escuro .aviso-disponibilidade .principal-dialogo-fechar:hover {
+    background-color: #8e0017 !important;
+    color: #ffffff !important;
+}
+
+/* Fundo escuro atrás da mensagem */
+body.tema-escuro dialog.aviso-disponibilidade::backdrop {
+    background-color: rgba(0, 0, 0, 0.75) !important;
+}
+
+/* =========================================
+   AVISO DE CONVERSÃO PARA CONTA BUSINESS
+   MODO ESCURO
+========================================= */
+
+body.tema-escuro #dialogo-informativo {
+    background-color: #222226 !important;
+    color: #ffffff !important;
+    border: 1px solid #3a3a3a !important;
+    border-radius: 20px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+}
+
+/* Título */
+body.tema-escuro #dialogo-informativo h2 {
+    color: #ffffff !important;
+}
+
+/* Texto */
+body.tema-escuro #dialogo-informativo p {
+    color: #d6d6d6 !important;
+}
+
+/* Botão Entendi */
+body.tema-escuro #dialogo-informativo .principal-dialogo-primario {
+    background-color: #ad001b !important;
+    color: #ffffff !important;
+    border: none !important;
+}
+
+/* Efeito hover */
+body.tema-escuro #dialogo-informativo .principal-dialogo-primario:hover {
+    background-color: #8e0017 !important;
+    color: #ffffff !important;
+}
+
+/* Fundo atrás da mensagem */
+body.tema-escuro #dialogo-informativo::backdrop {
+    background-color: rgba(0, 0, 0, 0.75) !important;
+}
+/*Pagina Criar Pin*/
+body.tema-escuro .criar-pin-formulario{
+    background-color:black!important;
+    border:solid white 1px ;
+}
+body.tema-escuro .criar-pin-soltar{
+    background-color:rgb(0, 0, 0)!important;
+}
+body.tema-escuro #criar-pin-descricao,
+body.tema-escuro #criar-pin-titulo,
+body.tema-escuro #criar-pin-link{
+    background-color:rgb(2, 2, 2)!important;
+    border:dashed  #C8C8C8 2px;
+    color:white;
+}
+/*Criação colagem*/
+body.tema-escuro #dialogo-criacao{
+    background-color:rgb(2, 2, 2)!important;
+    border:solid #C8C8C8 1px;
+    color:white;
+}
+/*Botão adionar*/
+body.tema-escuro .composicao-adicionar{
+    border: #C8C8C8 solid  2px;
+    color:white;
+    border-radius: 10px;
+}
+body.tema-escuro .composicao-adicionar:hover{
+    background-color: #222226;
+}
+/*Campo Pre-visualizar*/
+body.tema-escuro .composicao-previa-grade{
+  background-color: #000000;
+}
+/*Botão cancelar*/
+/*Botão cancelar*/
+body.tema-escuro .principal-dialogo-secundario{
+  background-color:#ad001b;
+}
+body.tema-escuro .principal-dialogo-secundario:hover{
+  background-color:#881717;
+}
+
+/*Botão Finalizar*/
+body.tema-escuro .principal-dialogo-primario{
+  background-color:#ad001b;
+}
+body.tema-escuro .principal-dialogo-primario:hover{
+  background-color:#881717;
+}
+
+
 
