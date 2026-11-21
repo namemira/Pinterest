@@ -1,6 +1,6 @@
  <nav class="menu" aria-label="Navegação principal">
             <a class="menu-logo" href="principal.php" aria-label="Pinterest, página inicial">
-                <img src="../Imagens/Icone.png" alt="">
+                <img src="../../Imagens/Icone.png" alt="">
             </a>
             <a class="menu-item ativo" href="principal.php" aria-label="Página inicial" aria-current="page">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.8 12 3l9 7.8v9.1a1.1 1.1 0 0 1-1.1 1.1h-5.3v-6.3H9.4V21H4.1A1.1 1.1 0 0 1 3 19.9z"/></svg>
@@ -12,7 +12,7 @@
             </a>
             <a class="menu-item" href="perfil.php" aria-label="Pastas">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="5" rx="1.5"/><rect x="13" y="10" width="8" height="11" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/></svg>
-                <span class="menu-tooltip">Suas pastas</span>
+                <span class="menu-tooltip">Perfil</span>
             </a>
             <button class="menu-item" id="abrir-painel-criar" type="button" aria-label="Criar" aria-controls="painel-criar" aria-expanded="false">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><path d="M12 7v10M7 12h10"/></svg>

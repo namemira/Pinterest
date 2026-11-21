@@ -5,38 +5,38 @@
 const categorias = [
     {
         nome: 'Moda',
-        imagem: '../Imagens/moda.jpg'
+        imagem: '../../Imagens/moda.jpg'
     },
     {
         nome: 'Decoração',
-        imagem: '../Imagens/decoracao.jpg'
+        imagem: '../../Imagens/decoracao.jpg'
     },
     {
         nome: 'Receitas',
-        imagem: '../Imagens/receitas.jpg'
+        imagem: '../../Imagens/receitas.jpg'
     },
     {
         nome: 'Viagens',
-        imagem: '../Imagens/viagens.jpg'
+        imagem: '../../Imagens/viagens.jpg'
     },
     {
         nome: 'Arte',
-        imagem: '../Imagens/arte.jpg'
+        imagem: '../../Imagens/arte.jpg'
     }
 ];
 // Sugestões em destaque exibidas abaixo das categorias.
 const tendencias = [
     {
         titulo: 'Decoração minimalista',
-        imagem: '../Imagens/decoracao.jpg'
+        imagem: '../../Imagens/decoracao.jpg'
     },
     {
         titulo: 'Looks casuais',
-        imagem: '../Imagens/moda.jpg'
+        imagem: '../../Imagens/moda.jpg'
     },
     {
         titulo: 'Receitas fáceis',
-        imagem: '../Imagens/receitas.jpg'
+        imagem: '../../Imagens/receitas.jpg'
     }
 ];
 // Cria os cartões de categoria dentro da lista prevista no HTML.
@@ -61,7 +61,16 @@ function carregarCategorias() {
         elemento.dataset.categoria = categoria.nome;
 
         const imagem = document.createElement('img');
-        imagem.src = categoria.imagem;
+imagem.src = categoria.imagem;
+imagem.alt = categoria.nome;
+
+imagem.onerror = function () {
+    console.error('Não foi possível carregar:', imagem.src);
+};
+
+imagem.onload = function () {
+    console.log('Imagem carregada:', imagem.src);
+};
         imagem.alt = categoria.nome;
         const titulo = document.createElement('span');
         titulo.className = 'categoria-titulo';

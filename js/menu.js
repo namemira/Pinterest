@@ -152,7 +152,7 @@ function configurarPainelCriar(menu) {
       if (document.querySelector('#formulario-criar-pin')) {
         document.dispatchEvent(new CustomEvent('pins:create-open'));
       } else {
-        window.location.href = 'CriarPin.html';
+        window.location.href = 'criar_pin.php';
       }
     } else if (opcao === 'pasta') {
       document.dispatchEvent(
