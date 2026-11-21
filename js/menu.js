@@ -168,7 +168,7 @@ function configurarPainelCriar(menu) {
           })
         );
       } else {
-        window.location.href = `Principal.html?criar=${encodeURIComponent(
+        window.location.href = `principal.php?criar=${encodeURIComponent(
           opcao
         )}`;
       }
