@@ -5,15 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Encontre inspiração e descubra ideias para criar uma vida que você ama no Pinterest.">
     <title>Pinterest — ideias para uma vida que você ama</title>
-    <link rel="stylesheet" href="../css/inicial.css">
-    <link rel="icon" href="../Imagens/Icone.png">
+    <link rel="stylesheet" href="../../css/inicial.css">
+    <link rel="icon" href="../../Imagens/Icone.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet">
 </head>
 <body>
     <a class="skip-link" href="#conteudo-principal">Pular para o conteúdo</a>
-<?php require_once __DIR__ . '/includes/cabecalho.php'; ?>
+<?php require_once __DIR__ . '../../includes/cabecalho_inicial.php'; ?>
 
     <main id="conteudo-principal">
         <section class="hero" aria-labelledby="titulo-principal">
@@ -29,19 +29,19 @@
 
             <div class="hero-collage" role="group" aria-label="Ideias de moda, decoração, arte e viagens">
                 <figure class="collage-card collage-travel">
-                    <img src="../Imagens/viagens.jpg" alt="Praia de águas azuis cercada por montanhas">
+                    <img src="../../Imagens/viagens.jpg" alt="Praia de águas azuis cercada por montanhas">
                     <figcaption>Um lugar para sonhar</figcaption>
                 </figure>
                 <figure class="collage-card collage-fashion">
-                    <img src="../Imagens/moda.jpg" alt="Vestido de noiva branco em um ambiente elegante">
+                    <img src="../../Imagens/moda.jpg" alt="Vestido de noiva branco em um ambiente elegante">
                     <figcaption>Seu estilo, suas ideias</figcaption>
                 </figure>
                 <figure class="collage-card collage-home">
-                    <img src="../Imagens/decoracao.jpg" alt="Sala aconchegante com decoração em tons naturais">
+                    <img src="../../Imagens/decoracao.jpg" alt="Sala aconchegante com decoração em tons naturais">
                     <figcaption>Um espaço com a sua cara</figcaption>
                 </figure>
                 <figure class="collage-card collage-art">
-                    <img src="../Imagens/arte.jpg" alt="Pintura abstrata em tons de azul e verde">
+                    <img src="../../Imagens/arte.jpg" alt="Pintura abstrata em tons de azul e verde">
                 </figure>
                 <span class="collage-note">Inspiração para todos os dias</span>
             </div>
@@ -52,19 +52,19 @@
                 <p class="eyebrow">Salve o que faz sentido para você</p>
                 <h2>Dê vida às suas ideias favoritas</h2>
                 <p>Reúna referências de receitas, decoração e arte em um só lugar. Suas próximas ideias começam com uma inspiração.</p>
-                <a class="text-link" href="Explore.html">Explore novas ideias <span aria-hidden="true">→</span></a>
+                <a class="text-link" href="principal.php">Explore novas ideias <span aria-hidden="true">→</span></a>
             </div>
             <div class="idea-gallery" aria-label="Inspirações para criar">
                 <figure class="idea-image idea-art">
-                    <img src="../Imagens/arte.jpg" alt="Pintura abstrata para inspirar novas criações">
+                    <img src="../../Imagens/arte.jpg" alt="Pintura abstrata para inspirar novas criações">
                     <figcaption>Arte para descobrir</figcaption>
                 </figure>
                 <figure class="idea-image idea-recipe">
-                    <img src="../Imagens/receitas.jpg" alt="Receita ilustrada de pavê de limão">
+                    <img src="../../Imagens/receitas.jpg" alt="Receita ilustrada de pavê de limão">
                     <figcaption>Uma receita para experimentar</figcaption>
                 </figure>
                 <figure class="idea-image idea-home">
-                    <img src="../Imagens/decoracao.jpg" alt="Sala decorada com cores quentes e plantas">
+                    <img src="../../Imagens/decoracao.jpg" alt="Sala decorada com cores quentes e plantas">
                     <figcaption>Detalhes para sua casa</figcaption>
                 </figure>
             </div>
@@ -101,9 +101,9 @@
                     <span class="board-more" aria-hidden="true">•••</span>
                 </div>
                 <div class="board-preview-grid">
-                    <img src="../Imagens/decoracao.jpg" alt="Ideia de decoração para compartilhar">
-                    <img src="../Imagens/viagens.jpg" alt="Destino de viagem salvo na pasta">
-                    <img src="../Imagens/receitas.jpg" alt="Receita para preparar com outras pessoas">
+                    <img src="../../Imagens/decoracao.jpg" alt="Ideia de decoração para compartilhar">
+                    <img src="../../Imagens/viagens.jpg" alt="Destino de viagem salvo na pasta">
+                    <img src="../../Imagens/receitas.jpg" alt="Receita para preparar com outras pessoas">
                 </div>
                 <div class="board-collaborators" aria-label="Pasta colaborativa">
                     <span class="collaborator-avatar collaborator-one">A</span>
@@ -116,9 +116,9 @@
 
         <section class="story-section story-visual-search" id="pesquisa-visual" data-search-terms="pesquisar visualmente imagens busca fotografia">
             <div class="visual-search-art">
-                <img class="visual-search-photo" src="../Imagens/viagens.jpg" alt="Praia usada como exemplo de inspiração visual">
+                <img class="visual-search-photo" src="../../Imagens/viagens.jpg" alt="Praia usada como exemplo de inspiração visual">
                 <span class="visual-search-lens" aria-hidden="true">
-                    <img src="../Imagens/lupa.png" alt="">
+                    <img src="../../gagens/lupa.png" alt="">
                 </span>
                 <div class="visual-search-label">Encontre ideias parecidas com o que você gosta</div>
             </div>
@@ -126,7 +126,7 @@
                 <p class="eyebrow">Uma imagem pode levar a muitas ideias</p>
                 <h2>Pesquise visualmente com imagens</h2>
                 <p>Parta de uma referência visual e encontre outras inspirações para completar seu próximo projeto.</p>
-                <a class="text-link" href="Explore.html">Continue explorando <span aria-hidden="true">→</span></a>
+                <a class="text-link" href="principal.php">Continue explorando <span aria-hidden="true">→</span></a>
             </div>
         </section>
 
@@ -178,37 +178,8 @@
             </form>
         </section>
     </main>
-
-    <footer class="site-footer">
-        <div class="footer-brand">
-            <a class="brand" href="Inicial.html" aria-label="Pinterest, voltar ao início">
-                <img src="../Imagens/Pinterest.png" alt="Pinterest">
-            </a>
-            <p>Descubra ideias para criar uma vida que você ama.</p>
-        </div>
-        <div class="footer-column">
-            <h2>Descubra</h2>
-            <a href="Explore.html">Explorar ideias</a>
-            <a href="Principal.html">Ver Pins</a>
-            <a href="#pesquisa-inicial">Pesquisar</a>
-        </div>
-        <div class="footer-column">
-            <h2>Sobre</h2>
-            <p id="sobre-pinterest">O Pinterest é um espaço para encontrar e guardar inspiração.</p>
-            <p id="empresas-pinterest">Informações para empresas ainda não disponíveis neste projeto.</p>
-            <p id="noticias-pinterest">Notícias institucionais ainda não disponíveis neste projeto.</p>
-        </div>
-        <div class="footer-column footer-legal">
-            <h2>Termos e privacidade</h2>
-            <p id="termos">Esta demonstração não cria uma conta real nem envia seus dados.</p>
-            <p id="privacidade">Os dados informados são validados apenas no navegador.</p>
-            <a href="Cadastro.html">Criar conta</a>
-            <a href="Login.html">Entrar</a>
-        </div>
-        <p class="footer-note">Clone do Pinterest feito para fins educacionais (Desenvolvimento Web I – IFC Concórdia). Sem vínculo com a Pinterest, Inc. Todos os dados exibidos são fictícios.</p>
-    </footer>
-
-    <script src="../js/validacao.js" defer></script>
-    <script src="../js/inicial.js" defer></script>
+   <?php require_once __DIR__ . '../../includes/rodape_inicial.php'; ?>
+    <script src="../../js/validacao.js" defer></script>
+    <script src="../../js/inicial.js" defer></script>
 </body>
 </html>

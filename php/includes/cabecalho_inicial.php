@@ -1,15 +1,15 @@
     <header class="site-header">
         <a class="brand" href="Inicial.html" aria-label="Pinterest, página inicial">
-            <img src="../Imagens/Pinterest.png" alt="Pinterest">
+            <img src="../../Imagens/Pinterest.png" alt="Pinterest">
         </a>
 
         <nav class="nav-explore" aria-label="Descoberta">
-            <a href="Explore.html">Explorar</a>
+            <a href="principal.php">Explorar</a>
         </nav>
 
         <form class="site-search" id="pesquisa-inicial" role="search" action="Explore.html" method="get">
             <button type="submit" aria-label="Pesquisar ideias">
-                <img src="../Imagens/lupa.png" alt="">
+                <img src="../../Imagens/lupa.png" alt="">
             </button>
             <input id="termo-pesquisa" name="q" type="search" placeholder="Pesquise ideias para sua próxima criação" aria-label="Pesquisar ideias">
             <p class="search-status" id="resultado-pesquisa" role="status" aria-live="polite" hidden></p>
@@ -22,7 +22,7 @@
         </nav>
 
         <div class="header-actions">
-            <a class="button button-red button-small" href="Login.html">Entrar</a>
-            <a class="button button-light button-small" href="Cadastro.html">Criar conta</a>
+            <a class="button button-red button-small" href="login.php">Entrar</a>
+            <a class="button button-light button-small" href="cadastro.php">Criar conta</a>
         </div>
     </header>
