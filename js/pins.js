@@ -3,7 +3,7 @@
 // Pins de demonstração usados no feed e na página Explorar.
 const pinsExemplo = [
   {
-    imagem: '../Imagens/decoracao.jpg',
+    imagem: '../../Imagens/decoracao.jpg',
     alt: 'Sala de estar aconchegante com sofá claro, madeira natural e tapete xadrez',
     titulo: 'Um refúgio acolhedor em tons naturais',
     descricao:
@@ -11,7 +11,7 @@ const pinsExemplo = [
     categoria: 'Decoração'
   },
   {
-    imagem: '../Imagens/moda.jpg',
+    imagem: '../../Imagens/moda.jpg',
     alt: 'Vestido branco de noiva com renda, exposto em um manequim',
     titulo: 'Elegância clássica em um vestido de renda',
     descricao:
@@ -19,7 +19,7 @@ const pinsExemplo = [
     categoria: 'Moda'
   },
   {
-    imagem: '../Imagens/receitas.jpg',
+    imagem: '../../Imagens/receitas.jpg',
     alt: 'Receita ilustrada de pavê de limão com ingredientes e modo de preparo',
     titulo: 'Pavê de limão para compartilhar',
     descricao:
@@ -27,7 +27,7 @@ const pinsExemplo = [
     categoria: 'Receitas'
   },
   {
-    imagem: '../Imagens/viagens.jpg',
+    imagem: '../../Imagens/viagens.jpg',
     alt: 'Praia de águas azul-turquesa cercada por areia clara e morros verdes',
     titulo: 'Um refúgio de águas turquesa',
     descricao:
@@ -35,7 +35,7 @@ const pinsExemplo = [
     categoria: 'Viagens'
   },
   {
-    imagem: '../Imagens/arte.jpg',
+    imagem: '../../Imagens/arte.jpg',
     alt: 'Pintura de paisagem surreal em tons de azul e verde com uma lua crescente amarela',
     titulo: 'Uma paisagem para sonhar acordado',
     descricao:
@@ -43,7 +43,7 @@ const pinsExemplo = [
     categoria: 'Arte'
   },
   {
-    imagem: '../Imagens/dog.jpg',
+    imagem: '../../Imagens/dog.jpg',
     alt: 'Filhote de cachorro sentado diante de um fundo azul vibrante',
     titulo: 'Um filhote curioso para alegrar o dia',
     descricao:
