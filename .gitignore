@@ -1,0 +1,4 @@
+php/config/conexao_local.php
+.env
+.env.*
+*.log
