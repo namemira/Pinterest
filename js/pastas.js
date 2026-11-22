@@ -846,9 +846,9 @@
       document.querySelectorAll('.menu-item').forEach((item) => {
         item.classList.toggle(
           'ativo',
-          item.matches('a[href="Principal.html"]')
+          item.matches('a[href="principal.php"]')
         );
-        if (item.matches('a[href="Principal.html"]')) {
+        if (item.matches('a[href="principal.php"]')) {
           item.setAttribute('aria-current', 'page');
         } else {
           item.removeAttribute('aria-current');

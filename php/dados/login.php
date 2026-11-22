@@ -1,3 +1,47 @@
+<?php
+declare(strict_types=1);
+
+require_once __DIR__ . '/../includes/autenticacao.php';
+require_once __DIR__ . '/../config/conexao.php';
+require_once __DIR__ . '/../funcoes/usuarios.php';
+
+iniciarSessaoSeguro();
+
+$email = '';
+$mensagem = '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $email = is_string($_POST['email'] ?? null) ? trim($_POST['email']) : '';
+    $senha = is_string($_POST['senha'] ?? null) ? $_POST['senha'] : '';
+
+    if (!validarTokenCsrf($_POST['csrf_token'] ?? null)) {
+        $mensagem = 'Sua sessão expirou. Atualize a página e tente novamente.';
+    } elseif ($email === '' || $senha === '') {
+        $mensagem = 'Informe seu e-mail e sua senha.';
+    } else {
+        try {
+            $emailValidado = emailValidado($email);
+            $usuario = consultarUsuarioPorEmail(criarConexao(), $emailValidado);
+            if ($usuario === null || !password_verify($senha, $usuario['senha_hash'])) {
+                $mensagem = 'E-mail ou senha incorretos.';
+            } else {
+                autenticarUsuario($usuario);
+                header('Location: principal.php', true, 303);
+                exit;
+            }
+        } catch (InvalidArgumentException $erro) {
+            $mensagem = 'E-mail ou senha incorretos.';
+        } catch (PDOException $erro) {
+            error_log('Falha ao autenticar usuário: ' . $erro->getMessage());
+            $mensagem = 'Não foi possível realizar o login. Tente novamente.';
+        } catch (RuntimeException $erro) {
+            $mensagem = 'Não foi possível realizar o login. Tente novamente.';
+        }
+    }
+}
+
+$tokenCsrf = gerarTokenCsrf();
+?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -24,15 +68,19 @@
         <img class="backdrop-decor-right" src="../../Imagens/decoracao.jpg" alt="">
     </div>
     <main class="login-page">
-        <form class="login-card" id="tela-login" novalidate aria-labelledby="titulo-login">
-            <a href="inicial.php" id="Fechar" aria-label="Fechar e voltar para a página inicial">X</a>
+        <form class="login-card" id="tela-login" method="post" action="login.php" novalidate aria-labelledby="titulo-login">
+            <a href="Inicial.php" id="Fechar" aria-label="Fechar e voltar para a página inicial">X</a>
             <img class="login-logo" src="../../Imagens/Pinterest.png" alt="Pinterest">
             <h1 id="titulo-login">Bem-vindo de volta</h1>
             <p class="login-intro">Entre para descobrir mais ideias e inspirações</p>
+            <?php if ($mensagem !== ''): ?>
+                <p class="mensagem-resultado" role="alert" aria-live="assertive"><?= htmlspecialchars($mensagem, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?></p>
+            <?php endif; ?>
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($tokenCsrf, ENT_QUOTES, 'UTF-8') ?>">
 
             <div class="form-field">
                 <label for="email">E-mail</label>
-                <input type="email" id="email" name="email"  autocomplete="email" placeholder="Digite seu e-mail"  required>
+                <input type="email" id="email" name="email"  autocomplete="email" placeholder="Digite seu e-mail" value="<?= htmlspecialchars($email, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?>" required>
             </div>
             <div class="form-field">
                 <label for="senha">Senha</label>
@@ -60,7 +108,7 @@
             <p class="signup-prompt">Ainda não tem uma conta? <a href="cadastro.php">Cadastre-se</a></p>
         </form>
 </main>
-<?php require_once __DIR__ . '../../includes/rodape_login_cadastro.php'; ?>
+<?php require_once __DIR__ . '/../includes/rodape_login_cadastro.php'; ?>
     <script src="../../js/validacao.js" defer></script>
 </body>
 </html>

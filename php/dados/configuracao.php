@@ -18,10 +18,10 @@
 <body>
 
 <!-- Menu lateral completo, incluindo o painel Criar -->
-<?php require_once __DIR__ . '../../includes/menu.php'; ?>
+<?php require_once __DIR__ . '/../includes/menu.php'; ?>
 
 <!-- Cabeçalho principal -->
-<?php require_once __DIR__ . '../../includes/cabecalho_principal.php'; ?>
+<?php require_once __DIR__ . '/../includes/cabecalho_principal.php'; ?>
 
 <!-- Configurações -->
 <main class="configuracoes">
@@ -136,6 +136,7 @@
             </div>
     </section>
 </main>
+<?php require_once __DIR__ . '/../includes/rodape_principal.php'; ?>
 <script src="../../js/pesquisa.js" defer></script>
 <script src="../../js/menu.js" defer></script>
 <script src="../../js/configuracoes.js" defer></script>

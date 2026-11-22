@@ -1,3 +1,8 @@
+<?php
+declare(strict_types=1);
+require_once __DIR__ . '/../includes/autenticacao.php';
+iniciarSessaoSeguro();
+?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -13,9 +18,9 @@
 </head>
 <body>
 <!--Menu-->
-<?php require_once __DIR__ . '../../includes/menu.php'; ?>
+<?php require_once __DIR__ . '/../includes/menu.php'; ?>
       <!--Cabecalho-->
-<?php require_once __DIR__ . '../../includes/cabecalho_principal.php'; ?>
+<?php require_once __DIR__ . '/../includes/cabecalho_principal.php'; ?>
 
         <dialog class="principal-dialogo" id="dialogo-informativo" aria-labelledby="dialogo-informativo-titulo">
             <form method="dialog">
@@ -103,7 +108,7 @@
             </form>
         </section>
 <!--Rodapé com aviso de projeto acadêmico-->
- <?php require_once __DIR__ . '../../includes/rodape_principal.php'; ?>
+ <?php require_once __DIR__ . '/../includes/rodape_principal.php'; ?>
 <!--Scripts Javascript-->
 <script src="../../js/pesquisa.js" defer></script>
 <script src="../../js/menu.js" defer></script>

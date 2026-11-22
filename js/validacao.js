@@ -104,16 +104,17 @@ function configurarCadastro(formulario) {
     );
   }
 
-  const resultado = document.createElement('p');
-  resultado.className = 'mensagem-resultado';
-  resultado.setAttribute('role', 'status');
-  resultado.setAttribute('aria-live', 'polite');
-  resultado.hidden = true;
-  formulario.appendChild(resultado);
+  let resultado = formulario.querySelector('.mensagem-resultado');
+  if (!resultado) {
+    resultado = document.createElement('p');
+    resultado.className = 'mensagem-resultado';
+    resultado.setAttribute('role', 'status');
+    resultado.setAttribute('aria-live', 'polite');
+    resultado.hidden = true;
+    formulario.appendChild(resultado);
+  }
 
   let formularioEnviado = false;
-  const mensagemSucesso =
-    'Validação demonstrativa concluída. Nenhuma conta foi criada.';
 
   function validarCampos() {
     let possuiErros = false;
@@ -184,21 +185,23 @@ function configurarCadastro(formulario) {
 
   function atualizarResultado() {
     exibirMensagem(resultado, '');
-    if (validarCampos()) {
-      exibirMensagem(resultado, mensagemSucesso);
-      return true;
-    }
-    return false;
+    return validarCampos();
   }
 
   // Faz a validação própria do formulário para apresentar mensagens acessíveis.
   formulario.noValidate = true;
 
   formulario.addEventListener('submit', (evento) => {
-    evento.preventDefault();
     formularioEnviado = true;
     if (!atualizarResultado()) {
+      evento.preventDefault();
       formulario.querySelector('[aria-invalid="true"]')?.focus();
+    } else if (formulario.method !== 'post' || !formulario.hasAttribute('action')) {
+      evento.preventDefault();
+      exibirMensagem(
+        resultado,
+        'Use o link de cadastro para abrir o formulário seguro de criação de conta.'
+      );
     }
   });
 
@@ -231,16 +234,17 @@ function configurarLogin(formulario) {
     email: criarMensagem(email, 'mensagem-erro', 'alert'),
     senha: criarMensagem(senha, 'mensagem-erro', 'alert')
   };
-  const resultado = document.createElement('p');
-  resultado.className = 'mensagem-resultado';
-  resultado.setAttribute('role', 'status');
-  resultado.setAttribute('aria-live', 'polite');
-  resultado.hidden = true;
-  formulario.appendChild(resultado);
+  let resultado = formulario.querySelector('.mensagem-resultado');
+  if (!resultado) {
+    resultado = document.createElement('p');
+    resultado.className = 'mensagem-resultado';
+    resultado.setAttribute('role', 'status');
+    resultado.setAttribute('aria-live', 'polite');
+    resultado.hidden = true;
+    formulario.appendChild(resultado);
+  }
 
   let formularioEnviado = false;
-  const mensagemSucesso =
-    'Validação demonstrativa concluída. Nenhuma autenticação foi realizada.';
 
   function validarCampos() {
     const valorEmail = email.value.trim();
@@ -263,14 +267,18 @@ function configurarLogin(formulario) {
   formulario.noValidate = true;
 
   formulario.addEventListener('submit', (evento) => {
-    evento.preventDefault();
     formularioEnviado = true;
     exibirMensagem(resultado, '');
 
-    if (validarCampos()) {
-      exibirMensagem(resultado, mensagemSucesso);
-    } else {
+    if (!validarCampos()) {
+      evento.preventDefault();
       formulario.querySelector('[aria-invalid="true"]')?.focus();
+    } else if (formulario.method !== 'post' || !formulario.hasAttribute('action')) {
+      evento.preventDefault();
+      exibirMensagem(
+        resultado,
+        'Use o formulário de login para enviar suas credenciais com segurança.'
+      );
     }
   });
 
@@ -281,9 +289,7 @@ function configurarLogin(formulario) {
     }
 
     exibirMensagem(resultado, '');
-    if (validarCampos()) {
-      exibirMensagem(resultado, mensagemSucesso);
-    }
+    validarCampos();
   }
 
   formulario.addEventListener('input', atualizarValidacao);
@@ -308,7 +314,7 @@ function configurarLogin(formulario) {
   });
 
   botaoFechar?.addEventListener('click', () => {
-    window.location.href = 'Inicial.html';
+    window.location.href = 'Inicial.php';
   });
 }
 

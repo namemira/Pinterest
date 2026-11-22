@@ -67,9 +67,7 @@ const errosArmazenamento = new Map();
 try {
   armazenamentoLocal = window.localStorage;
 } catch (erro) {
-  if (chave === CHAVE_PINS_CRIADOS) {
-    armazenamentoPinsSincronizado = false;
-  }
+  armazenamentoPinsSincronizado = false;
   errosArmazenamento.set(
     'acesso',
     'O armazenamento local está indisponível. Não foi possível carregar ou salvar Pins.'
@@ -699,7 +697,6 @@ function renderizarPinsExemplo() {
 
 // Monta o feed depois que o contêiner da página estiver disponível.
 document.addEventListener('DOMContentLoaded', renderizarPinsExemplo);
-console.log('Arquivo selecionado:', arquivo);
 console.log('Sistema de Pins:', window.pinterestPins);
 console.log(
   'Função de espaço:',

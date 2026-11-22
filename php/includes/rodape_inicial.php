@@ -1,14 +1,14 @@
  <footer class="site-footer">
         <div class="footer-brand">
-            <a class="brand" href="Inicial.html" aria-label="Pinterest, voltar ao início">
+            <a class="brand" href="Inicial.php" aria-label="Pinterest, voltar ao início">
                 <img src="../../Imagens/Pinterest.png" alt="Pinterest">
             </a>
             <p>Descubra ideias para criar uma vida que você ama.</p>
         </div>
         <div class="footer-column">
             <h2>Descubra</h2>
-            <a href="Explore.html">Explorar ideias</a>
-            <a href="Principal.html">Ver Pins</a>
+            <a href="explore.php">Explorar ideias</a>
+            <a href="principal.php">Ver Pins</a>
             <a href="#pesquisa-inicial">Pesquisar</a>
         </div>
         <div class="footer-column">

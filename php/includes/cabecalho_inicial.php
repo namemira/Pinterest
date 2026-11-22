@@ -1,13 +1,13 @@
     <header class="site-header">
-        <a class="brand" href="Inicial.html" aria-label="Pinterest, página inicial">
+        <a class="brand" href="Inicial.php" aria-label="Pinterest, página inicial">
             <img src="../../Imagens/Pinterest.png" alt="Pinterest">
         </a>
 
         <nav class="nav-explore" aria-label="Descoberta">
-            <a href="principal.php">Explorar</a>
+            <a href="explore.php">Explorar</a>
         </nav>
 
-        <form class="site-search" id="pesquisa-inicial" role="search" action="Explore.html" method="get">
+        <form class="site-search" id="pesquisa-inicial" role="search" action="explore.php" method="get">
             <button type="submit" aria-label="Pesquisar ideias">
                 <img src="../../Imagens/lupa.png" alt="">
             </button>

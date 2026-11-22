@@ -13,35 +13,9 @@
 </head>
 <body>
     <!--Menu-->
-    <?php require_once __DIR__ . '../../includes/menu.php'; ?>
-        <aside class="painel-criar" id="painel-criar" aria-labelledby="painel-criar-titulo" hidden>
-            <header class="painel-criar-cabecalho">
-                <h2 id="painel-criar-titulo">Criar</h2>
-                <button class="painel-criar-fechar" id="fechar-painel-criar" type="button" aria-label="Fechar painel Criar">
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>
-                </button>
-            </header>
-            <div class="painel-criar-opcoes">
-                <button class="painel-criar-opcao" type="button" data-criacao-opcao="pin">
-                    <span class="painel-criar-icone" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 3h6m-3 0v7m-6 0h12v3a6 6 0 0 1-12 0zm6 9v6"/></svg></span>
-                    <span><strong>Pin</strong><small>Publique uma imagem com título, descrição e link.</small></span>
-                </button>
-                <button class="painel-criar-opcao" type="button" data-criacao-opcao="pasta">
-                    <span class="painel-criar-icone" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h5l2 2h7a2 2 0 0 1 2 2v10H3z"/></svg></span>
-                    <span><strong>Pasta</strong><small>Organize seus Pins favoritos em uma coleção.</small></span>
-                </button>
-                <button class="painel-criar-opcao" type="button" data-criacao-opcao="colagem">
-                    <span class="painel-criar-icone" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="5" rx="1"/><rect x="13" y="10" width="8" height="11" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/></svg></span>
-                    <span><strong>Colagem</strong><small>Combine Pins disponíveis em uma composição.</small></span>
-                </button>
-                <button class="painel-criar-opcao" type="button" data-criacao-opcao="cartao">
-                    <span class="painel-criar-icone" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/></svg></span>
-                    <span><strong>Cartão <span class="painel-criar-novo">Novo</span></strong><small>Escolha um Pin e escreva uma mensagem.</small></span>
-                </button>
-            </div>
-        </aside>
+    <?php require_once __DIR__ . '/../includes/menu.php'; ?>
 <!--Cabecalho-->
-<?php require_once __DIR__ . '../../includes/cabecalho_principal.php'; ?>
+<?php require_once __DIR__ . '/../includes/cabecalho_principal.php'; ?>
     <!--Criacao do Pin-->
     <main>
         <section class="pagina-criar-pin" id="pagina-criar-pin"  aria-labelledby="titulo-criar-pin">
@@ -99,7 +73,7 @@
     <div class="postagens" id="feed"></div>
 </section>
 <!--Rodapé com aviso de projeto acadêmico-->
-<?php require_once __DIR__ . '../../includes/rodape_principal.php'; ?>
+<?php require_once __DIR__ . '/../includes/rodape_principal.php'; ?>
 <script src="../../js/pesquisa.js" defer></script>
 <script src="../../js/menu.js" defer></script>
 <script src="../../js/pins.js" defer></script>

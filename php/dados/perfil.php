@@ -13,9 +13,9 @@
 </head>
 <body>
 <!--Menu-->
-<?php require_once __DIR__ . '../../includes/menu.php'; ?>
+<?php require_once __DIR__ . '/../includes/menu.php'; ?>
 <!--Cabecalho-->
-<?php require_once __DIR__ . '../../includes/cabecalho_principal.php'; ?>
+<?php require_once __DIR__ . '/../includes/cabecalho_principal.php'; ?>
         <main class="pagina-perfil">
     <section class="pagina-pastas" id="pagina-pastas"  aria-labelledby="perfil-nome">
                 <header class="perfil-pastas">
@@ -82,7 +82,7 @@
             </section>
         </main>
 <!--Rodapé com aviso de projeto acadêmico-->
-<?php require_once __DIR__ . '../../includes/rodape_principal.php'; ?>
+<?php require_once __DIR__ . '/../includes/rodape_principal.php'; ?>
 <script src="../../js/pesquisa.js" defer></script>
 <script src="../../js/menu.js" defer></script>
 <script src="../../js/pins.js" defer></script>

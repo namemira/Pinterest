@@ -251,7 +251,7 @@ function configurarPesquisaPins() {
                 return;
             }
 
-            const url = new URL('Explore.html', window.location.href);
+            const url = new URL('explore.php', window.location.href);
             url.searchParams.set('busca', termo);
             window.location.href = url.href;
         }

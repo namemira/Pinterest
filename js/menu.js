@@ -389,7 +389,7 @@ function configurarMenuPerfil() {
 
     fecharMenu();
     if (acao === 'sair') {
-      window.location.href = 'Inicial.html';
+      window.location.href = 'Inicial.php';
       return;
     }
 
@@ -536,7 +536,7 @@ function configurarMenuResponsivo() {
   });
 
   document.addEventListener('boards:home', () => {
-    const inicio = menu.querySelector('a.menu-item[href="Principal.html"]');
+    const inicio = menu.querySelector('a.menu-item[href="principal.php"]');
     if (inicio) {
       atualizarOpcaoAtiva(menu, inicio);
     }

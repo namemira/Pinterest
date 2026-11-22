@@ -13,7 +13,7 @@
 </head>
 <body>
     <a class="skip-link" href="#conteudo-principal">Pular para o conteúdo</a>
-<?php require_once __DIR__ . '../../includes/cabecalho_inicial.php'; ?>
+<?php require_once __DIR__ . '/../includes/cabecalho_inicial.php'; ?>
 
     <main id="conteudo-principal">
         <section class="hero" aria-labelledby="titulo-principal">
@@ -22,8 +22,8 @@
                 <h1 id="titulo-principal">Crie a vida que você ama no <span>Pinterest</span></h1>
                 <p class="hero-description">Descubra ideias, salve suas inspirações favoritas e transforme planos em projetos do seu jeito.</p>
                 <div class="hero-actions">
-                    <a class="button button-red" href="Cadastro.html">Entre no Pinterest gratuitamente</a>
-                    <a class="button button-outline" href="Login.html">Já tenho uma conta</a>
+                    <a class="button button-red" href="cadastro.php">Entre no Pinterest gratuitamente</a>
+                    <a class="button button-outline" href="login.php">Já tenho uma conta</a>
                 </div>
             </div>
 
@@ -52,7 +52,7 @@
                 <p class="eyebrow">Salve o que faz sentido para você</p>
                 <h2>Dê vida às suas ideias favoritas</h2>
                 <p>Reúna referências de receitas, decoração e arte em um só lugar. Suas próximas ideias começam com uma inspiração.</p>
-                <a class="text-link" href="principal.php">Explore novas ideias <span aria-hidden="true">→</span></a>
+                <a class="text-link" href="explore.php">Explore novas ideias <span aria-hidden="true">→</span></a>
             </div>
             <div class="idea-gallery" aria-label="Inspirações para criar">
                 <figure class="idea-image idea-art">
@@ -83,7 +83,7 @@
                 <p class="eyebrow">Inspiração que representa você</p>
                 <h2>Pesquise por tom de pele</h2>
                 <p>Explore referências de beleza e estilo com mais intenção. Use a busca para encontrar ideias que conversem com você.</p>
-                <a class="text-link" href="Explore.html">Descubra referências <span aria-hidden="true">→</span></a>
+                <a class="text-link" href="explore.php">Descubra referências <span aria-hidden="true">→</span></a>
             </div>
         </section>
 
@@ -92,7 +92,7 @@
                 <p class="eyebrow">Planejem juntos</p>
                 <h2>Colabore com pastas compartilhadas</h2>
                 <p>Organize referências para uma viagem, uma receita ou um novo espaço e convide outras pessoas para construir a ideia com você.</p>
-                <a class="text-link" href="Cadastro.html">Comece a salvar ideias <span aria-hidden="true">→</span></a>
+                <a class="text-link" href="cadastro.php">Comece a salvar ideias <span aria-hidden="true">→</span></a>
             </div>
             <div class="board-preview">
                 <div class="board-preview-heading">
@@ -118,7 +118,7 @@
             <div class="visual-search-art">
                 <img class="visual-search-photo" src="../../Imagens/viagens.jpg" alt="Praia usada como exemplo de inspiração visual">
                 <span class="visual-search-lens" aria-hidden="true">
-                    <img src="../../gagens/lupa.png" alt="">
+                    <img src="../../Imagens/lupa.png" alt="">
                 </span>
                 <div class="visual-search-label">Encontre ideias parecidas com o que você gosta</div>
             </div>
@@ -126,13 +126,13 @@
                 <p class="eyebrow">Uma imagem pode levar a muitas ideias</p>
                 <h2>Pesquise visualmente com imagens</h2>
                 <p>Parta de uma referência visual e encontre outras inspirações para completar seu próximo projeto.</p>
-                <a class="text-link" href="principal.php">Continue explorando <span aria-hidden="true">→</span></a>
+                <a class="text-link" href="explore.php">Continue explorando <span aria-hidden="true">→</span></a>
             </div>
         </section>
 
         <section class="signup-section" id="cadastro" aria-labelledby="titulo-cadastro">
             <div class="signup-intro">
-                <img src="../Imagens/Icone.png" alt="Ícone do Pinterest" class="signup-logo">
+                <img src="../../Imagens/Icone.png" alt="Ícone do Pinterest" class="signup-logo">
                 <p class="eyebrow">Um mundo de ideias espera por você</p>
                 <h2 id="titulo-cadastro">Que bom ter você no Pinterest</h2>
                 <p>Crie sua conta para guardar inspirações e encontrar ideias para tudo o que você ama.</p>
@@ -174,11 +174,11 @@
                 <small class="google-note">Integração com Google indisponível nesta demonstração.</small>
 
                 <p class="terms-copy">Ao continuar, você concorda com os <a href="#termos">Termos de Serviço</a> e confirma que leu a <a href="#privacidade">Política de Privacidade</a>.</p>
-                <p class="existing-account">Já tem uma conta? <a href="Login.html">Entrar</a></p>
+                <p class="existing-account">Já tem uma conta? <a href="login.php">Entrar</a></p>
             </form>
         </section>
     </main>
-   <?php require_once __DIR__ . '../../includes/rodape_inicial.php'; ?>
+   <?php require_once __DIR__ . '/../includes/rodape_inicial.php'; ?>
     <script src="../../js/validacao.js" defer></script>
     <script src="../../js/inicial.js" defer></script>
 </body>
