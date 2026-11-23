@@ -72,7 +72,7 @@ $textoBotao = $modoEdicao ? 'Salvar alterações' : 'Publicar Pin';
                     </select>
                     <?php endif; ?>
 
-                    <p class="criar-pin-mensagem<?= $mensagem !== '' ? ' criar-pin-mensagem-' . e($tipoMensagem) : '' ? >" id="criar-pin-mensagem" role="<?= $tipoMensagem === 'erro' ? 'alert' : 'status' ?>" aria-live="polite"><?= e($mensagem) ?></p>
+                    <p class="criar-pin-mensagem<?= $mensagem !== '' ? ' criar-pin-mensagem-' . e($tipoMensagem) : '' ?>" id="criar-pin-mensagem" role="<?= $tipoMensagem === 'erro' ? 'alert' : 'status' ?>" aria-live="polite"><?= e($mensagem) ?></p>
                     <button class="criar-pin-publicar" type="submit"><?= $textoBotao ?></button>
                     <a class="criar-pin-cancelar" href="<?= $modoEdicao ? 'perfil.php?aba=criados' : 'principal.php' ?>">Cancelar</a>
                 </section>
