@@ -231,11 +231,12 @@ function criarMenuPerfil(container, imagemPerfil) {
 
   const identificacao = document.createElement('div');
   const nome = document.createElement('strong');
-  nome.textContent = 'Seu perfil';
+  const botaoPerfil = container.querySelector('.perfil');
+  nome.textContent = botaoPerfil?.dataset.nome || 'Seu perfil';
   const tipoConta = document.createElement('span');
-  tipoConta.textContent = 'Conta pessoal';
+  tipoConta.textContent = botaoPerfil?.dataset.tipo || 'Conta pessoal';
   const email = document.createElement('span');
-  email.textContent = 'conta.demo@example.com';
+  email.textContent = tipoConta.textContent;
   identificacao.append(nome, tipoConta, email);
   conta.append(foto, identificacao);
 
@@ -260,18 +261,35 @@ function criarMenuPerfil(container, imagemPerfil) {
   adicionarConta.dataset.acaoPerfil = 'adicionar';
   adicionarConta.textContent = 'Adicionar conta do Pinterest';
 
+  if (botaoPerfil?.dataset.adminUrl) {
+    const painel = document.createElement('a');
+    painel.className = 'menu-perfil-item';
+    painel.href = botaoPerfil.dataset.adminUrl;
+    painel.textContent = 'Painel administrativo';
+    menuPerfil.append(painel);
+  }
+
+  const logoutForm = document.createElement('form');
+  logoutForm.method = 'post';
+  logoutForm.action = botaoPerfil?.dataset.logoutUrl || '../admin/logout.php';
+  logoutForm.id = 'formulario-logout-perfil';
+  const csrf = document.createElement('input');
+  csrf.type = 'hidden';
+  csrf.name = 'csrf_token';
+  csrf.value = botaoPerfil?.dataset.csrf || '';
   const sair = document.createElement('button');
   sair.className = 'menu-perfil-item menu-perfil-sair';
-  sair.type = 'button';
+  sair.type = 'submit';
   sair.dataset.acaoPerfil = 'sair';
   sair.textContent = 'Sair';
+  logoutForm.append(csrf, sair);
 
   menuPerfil.append(
     conta,
     converterConta,
     secaoContas,
     adicionarConta,
-    sair
+    logoutForm
   );
   container.appendChild(menuPerfil);
   return menuPerfil;
@@ -389,7 +407,8 @@ function configurarMenuPerfil() {
 
     fecharMenu();
     if (acao === 'sair') {
-      window.location.href = 'Inicial.php';
+      const formulario = document.querySelector('#formulario-logout-perfil');
+      formulario?.submit();
       return;
     }
 

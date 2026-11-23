@@ -26,7 +26,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $mensagem = 'E-mail ou senha incorretos.';
             } else {
                 autenticarUsuario($usuario);
-                header('Location: principal.php', true, 303);
+                if ($usuario['tipo_usuario'] === 'admin') {
+                    header('Location: ../admin/painel.php', true, 303);
+                } else {
+                    header('Location: principal.php', true, 303);
+                }
                 exit;
             }
         } catch (InvalidArgumentException $erro) {

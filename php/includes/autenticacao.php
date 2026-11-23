@@ -57,11 +57,72 @@ function usuarioEstaAutenticado(): bool
     return isset($_SESSION['usuario_id'], $_SESSION['usuario_nome'], $_SESSION['usuario_tipo']);
 }
 
-function exigirUsuarioAutenticado(): int
+function obterIdUsuarioAutenticado(): ?int
 {
     if (!usuarioEstaAutenticado()) {
-        throw new RuntimeException('Autenticação necessária.');
+        return null;
     }
 
-    return (int) $_SESSION['usuario_id'];
+    $id = (int) $_SESSION['usuario_id'];
+    return $id > 0 ? $id : null;
+}
+
+function usuarioEhAdministrador(): bool
+{
+    iniciarSessaoSeguro();
+    return usuarioEstaAutenticado()
+        && isset($_SESSION['usuario_tipo'])
+        && $_SESSION['usuario_tipo'] === 'admin';
+}
+
+function exigirUsuarioAutenticado(): int
+{
+    $id = obterIdUsuarioAutenticado();
+    if ($id === null) {
+        header('Location: /Pinterest/php/dados/login.php', true, 303);
+        exit;
+    }
+
+    return $id;
+}
+
+function exigirAdministrador(): int
+{
+    $id = obterIdUsuarioAutenticado();
+    if ($id === null) {
+        header('Location: /Pinterest/php/dados/login.php', true, 303);
+        exit;
+    }
+
+    if (!usuarioEhAdministrador()) {
+        http_response_code(403);
+        exit('Acesso administrativo negado.');
+    }
+
+    return $id;
+}
+
+function encerrarSessao(): void
+{
+    iniciarSessaoSeguro();
+
+    $_SESSION = [];
+
+    if (ini_get('session.use_cookies')) {
+        $parametros = session_get_cookie_params();
+        setcookie(
+            session_name(),
+            '',
+            [
+                'expires' => time() - 42000,
+                'path' => $parametros['path'],
+                'domain' => $parametros['domain'],
+                'secure' => $parametros['secure'],
+                'httponly' => $parametros['httponly'],
+                'samesite' => 'Lax',
+            ]
+        );
+    }
+
+    session_destroy();
 }

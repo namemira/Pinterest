@@ -9,7 +9,13 @@
                 </button>
             </div>
             <div class="perfil-conta">
-                <button class="perfil" type="button" aria-label="Abrir menu do perfil" id="abrir-perfil" aria-controls="menu-perfil" aria-expanded="false" data-menu-perfil>
+                <button class="perfil" type="button" aria-label="Abrir menu do perfil" id="abrir-perfil" aria-controls="menu-perfil" aria-expanded="false"
+                    data-menu-perfil
+                    data-nome="<?= htmlspecialchars(isset($_SESSION['usuario_nome']) ? (string) $_SESSION['usuario_nome'] : 'Seu perfil', ENT_QUOTES, 'UTF-8') ?>"
+                    data-tipo="<?= htmlspecialchars(usuarioEhAdministrador() ? 'Administrador' : 'Conta pessoal', ENT_QUOTES, 'UTF-8') ?>"
+                    data-admin-url="<?= htmlspecialchars(usuarioEhAdministrador() ? '../admin/painel.php' : '', ENT_QUOTES, 'UTF-8') ?>"
+                    data-logout-url="../admin/logout.php"
+                    data-csrf="<?= htmlspecialchars(gerarTokenCsrf(), ENT_QUOTES, 'UTF-8') ?>">
                     <img src="../../Imagens/dog.jpg" alt="">
                     <svg class="perfil-seta" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
                 </button>

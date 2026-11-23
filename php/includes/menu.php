@@ -1,16 +1,27 @@
+<?php
+require_once __DIR__ . '/autenticacao.php';
+iniciarSessaoSeguro();
+$tokenLogout = gerarTokenCsrf();
+$administradorConectado = usuarioEhAdministrador();
+$paginaAdmin = str_contains(str_replace('\\', '/', (string) ($_SERVER['SCRIPT_FILENAME'] ?? '')), '/php/admin/');
+$baseDados = $paginaAdmin ? '../dados/' : '';
+$baseAdmin = $paginaAdmin ? '' : '../admin/';
+$nomeUsuario = isset($_SESSION['usuario_nome']) ? (string) $_SESSION['usuario_nome'] : 'Conta';
+$tipoUsuario = $administradorConectado ? 'Administrador' : 'Conta pessoal';
+?>
  <nav class="menu" aria-label="Navegação principal">
-            <a class="menu-logo" href="principal.php" aria-label="Pinterest, página inicial">
+            <a class="menu-logo" href="<?= $baseDados ?>principal.php" aria-label="Pinterest, página inicial">
                 <img src="../../Imagens/Icone.png" alt="">
             </a>
-            <a class="menu-item ativo" href="principal.php" aria-label="Página inicial" aria-current="page">
+            <a class="menu-item ativo" href="<?= $baseDados ?>principal.php" aria-label="Página inicial" aria-current="page">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.8 12 3l9 7.8v9.1a1.1 1.1 0 0 1-1.1 1.1h-5.3v-6.3H9.4V21H4.1A1.1 1.1 0 0 1 3 19.9z"/></svg>
                 <span class="menu-tooltip">Página inicial</span>
             </a>
-            <a class="menu-item" href="explore.php" aria-label="Explorar">
+            <a class="menu-item" href="<?= $baseDados ?>explore.php" aria-label="Explorar">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m15.8 8.2-2.2 5.4-5.4 2.2 2.2-5.4z"/></svg>
                 <span class="menu-tooltip">Explorar</span>
             </a>
-            <a class="menu-item" href="perfil.php" aria-label="Pastas">
+            <a class="menu-item" href="<?= $baseDados ?>perfil.php" aria-label="Pastas">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="5" rx="1.5"/><rect x="13" y="10" width="8" height="11" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/></svg>
                 <span class="menu-tooltip">Perfil</span>
             </a>
@@ -26,10 +37,25 @@
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8A8.5 8.5 0 0 1 8.7 4a8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8z"/><path d="M8 12h.01M12 12h.01M16 12h.01"/></svg>
                 <span class="menu-tooltip">Mensagens</span>
             </button>
-            <a class="menu-item menu-configuracoes" href="configuracao.php" aria-label="Configurações">
+            <a class="menu-item menu-configuracoes" href="<?= $baseDados ?>configuracao.php" aria-label="Configurações">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="m19.4 15 .1.1 1.4 1.1-1.4 2.4-1.7-.7a8 8 0 0 1-1.7 1l-.3 1.8h-2.8l-.3-1.8a8 8 0 0 1-1.7-1l-1.7.7-1.4-2.4 1.4-1.1a7 7 0 0 1 0-2l-1.4-1.1 1.4-2.4 1.7.7a8 8 0 0 1 1.7-1l.3-1.8h2.8l.3 1.8a8 8 0 0 1 1.7 1l1.7-.7 1.4 2.4-1.4 1.1a7 7 0 0 1-.1 2z"/></svg>
                 <span class="menu-tooltip">Configurações</span>
             </a>
+            <?php if ($administradorConectado): ?>
+            <a class="menu-item" href="<?= $paginaAdmin ? 'painel.php' : $baseAdmin . 'painel.php' ?>" aria-label="Painel administrativo">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3"/><path d="M5 20v-2a7 7 0 0 1 14 0v2M12 11v9"/></svg>
+                <span class="menu-tooltip">Painel administrativo</span>
+            </a>
+            <?php endif; ?>
+            <?php if (usuarioEstaAutenticado()): ?>
+            <form method="post" action="<?= $paginaAdmin ? 'logout.php' : $baseAdmin . 'logout.php' ?>" style="margin:0;">
+                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($tokenLogout, ENT_QUOTES, 'UTF-8') ?>">
+                <button class="menu-item" type="submit" aria-label="Sair da conta">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 4H4v16h6M14 8l4 4-4 4M18 12H8"/></svg>
+                    <span class="menu-tooltip">Sair</span>
+                </button>
+            </form>
+            <?php endif; ?>
         </nav>
         <aside class="painel-criar" id="painel-criar" aria-labelledby="painel-criar-titulo" hidden>
             <header class="painel-criar-cabecalho">

@@ -58,3 +58,17 @@ PROMPTS.md      Registro do uso de inteligência artificial
 - Para executar localmente, baixe ou clone o repositório e abra o arquivo `index.html` em um navegador. Não é necessário instalar dependências.
 
 Nesta etapa, a validação dos formulários é realizada no navegador. A implementação do cadastro, do login e do armazenamento de dados em banco de dados está prevista para a Parte 3, com PHP e MySQL.
+
+## Painel administrativo
+
+O painel administrativo fica em `php/admin/painel.php` e só pode ser acessado por uma sessão autenticada cujo tipo seja `admin`.
+
+### Criar a primeira conta administradora
+
+No Windows, com o XAMPP configurado e o banco `pinterest` disponível, execute no terminal a partir da raiz do projeto:
+
+```powershell
+php php\admin\criar_admin.php
+```
+
+O procedimento solicita nome, e-mail e senha interativamente. Não existem usuário ou senha padrão. Ele usa `password_hash()`, PDO e consultas preparadas. Se já existir um administrador, o procedimento encerra sem criar outra conta. Ele também é bloqueado quando acessado pela internet.

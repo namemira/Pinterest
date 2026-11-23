@@ -9,19 +9,27 @@ if (PHP_SAPI !== 'cli') {
 require_once __DIR__ . '/../config/conexao.php';
 require_once __DIR__ . '/../funcoes/validacao.php';
 
-echo "Criação local da primeira conta administradora\n";
-$nome = trim((string) readline('Nome: '));
-$email = trim((string) readline('E-mail: '));
-$senha = (string) readline('Senha (mínimo 8 caracteres): ');
-
 try {
+    $pdo = criarConexao();
+    $administradorExistente = $pdo->prepare(
+        'SELECT id FROM usuarios WHERE tipo_usuario = :tipo_usuario LIMIT 1'
+    );
+    $administradorExistente->execute(['tipo_usuario' => 'admin']);
+    if ($administradorExistente->fetch() !== false) {
+        throw new RuntimeException('Já existe uma conta administradora. Novas contas não podem ser criadas por este procedimento.');
+    }
+
+    echo "Criação local da primeira conta administradora\n";
+    $nome = trim((string) readline('Nome: '));
+    $email = trim((string) readline('E-mail: '));
+    $senha = (string) readline('Senha (mínimo 8 caracteres): ');
+
     $nome = textoValidado($nome, 60);
     $email = emailValidado($email);
     if (mb_strlen($senha, 'UTF-8') < 8) {
         throw new InvalidArgumentException('A senha deve ter pelo menos 8 caracteres.');
     }
 
-    $pdo = criarConexao();
     $consulta = $pdo->prepare(
         'INSERT INTO usuarios (nome, email, senha_hash, tipo_usuario)
          VALUES (:nome, :email, :senha_hash, :tipo_usuario)'
