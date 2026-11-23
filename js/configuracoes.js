@@ -66,8 +66,6 @@ function configurarFormularioPerfil() {
 
     formulario.addEventListener('submit', (evento) => {
 
-        evento.preventDefault();
-
         const nome = document.querySelector('#nome');
         const usuario = document.querySelector('#usuario');
         const site = document.querySelector('#site');
@@ -78,10 +76,7 @@ function configurarFormularioPerfil() {
         if (!nome.value.trim()) {
             erro = 'Informe seu nome.';
             campoComErro = nome;
-        } else if (usuario.validity.valueMissing) {
-            erro = 'Informe um nome de usuário.';
-            campoComErro = usuario;
-        } else if (usuario.validity.patternMismatch) {
+        } else if (usuario.value && usuario.validity.patternMismatch) {
             erro = 'O nome de usuário deve ter de 3 a 30 caracteres: letras minúsculas, números, ponto ou _.';
             campoComErro = usuario;
         } else if (site.value && site.validity.typeMismatch) {
@@ -93,13 +88,16 @@ function configurarFormularioPerfil() {
             campo.setAttribute('aria-invalid', String(campo === campoComErro));
         });
 
+        // Só bloqueia o envio quando há erro; sem erros, o formulário
+        // segue para o PHP, que valida novamente e salva no banco.
         if (erro) {
+            evento.preventDefault();
             mostrarMensagemConfig(erro, true);
             campoComErro.focus();
             return;
         }
 
-        mostrarMensagemConfig('Dados validados. O salvamento real será feito com PHP na Parte 3.', false);
+        mostrarMensagemConfig('Salvando...', false);
 
     });
 
@@ -162,10 +160,11 @@ function configurarAlteracaoFoto() {
             return;
         }
 
-        // Verificar formato da imagem
-        if (!arquivo.type.startsWith('image/')) {
+        // Verificar formato e tamanho (o PHP confere novamente no servidor)
+        const tiposAceitos = ['image/jpeg', 'image/png', 'image/webp'];
+        if (!tiposAceitos.includes(arquivo.type) || arquivo.size > 10 * 1024 * 1024) {
 
-            mostrarMensagemConfig('Selecione um arquivo de imagem válido.', true);
+            mostrarMensagemConfig('Selecione uma imagem JPG, PNG ou WEBP de até 10 MB.', true);
 
             inputFoto.value = '';
 
