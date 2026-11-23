@@ -19,10 +19,15 @@
             <a href="#sobre-pinterest">Sobre</a>
             <a href="#empresas-pinterest">Empresas</a>
             <a href="#noticias-pinterest">Notícias</a>
+            <a href="contato.php">Contato</a>
         </nav>
 
         <div class="header-actions">
+            <?php if (usuarioEstaAutenticado()): ?>
+            <a class="button button-red button-small" href="principal.php">Ir para o feed</a>
+            <?php else: ?>
             <a class="button button-red button-small" href="login.php">Entrar</a>
             <a class="button button-light button-small" href="cadastro.php">Criar conta</a>
+            <?php endif; ?>
         </div>
     </header>

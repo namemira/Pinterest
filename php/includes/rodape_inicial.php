@@ -19,8 +19,9 @@
         </div>
         <div class="footer-column footer-legal">
             <h2>Termos e privacidade</h2>
-            <p id="termos">Esta demonstração não cria uma conta real nem envia seus dados.</p>
-            <p id="privacidade">Os dados informados são validados apenas no navegador.</p>
+            <p id="termos">Esta demonstração armazena apenas o necessário para o funcionamento das contas e dos Pins.</p>
+            <p id="privacidade">As senhas são guardadas de forma protegida (hash) e os dados são validados no servidor.</p>
+            <a href="contato.php">Fale conosco</a>
             <a href="cadastro.php">Criar conta</a>
             <a href="login.php">Entrar</a>
         </div>

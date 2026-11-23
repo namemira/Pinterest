@@ -8,16 +8,26 @@
                     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h3l1.5-2h7L17 7h3a1 1 0 0 1 1 1v11H3V8a1 1 0 0 1 1-1z"/><circle cx="12" cy="13" r="4"/></svg>
                 </button>
             </div>
+            <?php if (usuarioEstaAutenticado()): ?>
             <div class="perfil-conta">
-                <button class="perfil" type="button" aria-label="Abrir menu do perfil" id="abrir-perfil" aria-controls="menu-perfil" aria-expanded="false"
-                    data-menu-perfil
-                    data-nome="<?= htmlspecialchars(isset($_SESSION['usuario_nome']) ? (string) $_SESSION['usuario_nome'] : 'Seu perfil', ENT_QUOTES, 'UTF-8') ?>"
-                    data-tipo="<?= htmlspecialchars(usuarioEhAdministrador() ? 'Administrador' : 'Conta pessoal', ENT_QUOTES, 'UTF-8') ?>"
-                    data-admin-url="<?= htmlspecialchars(usuarioEhAdministrador() ? '../admin/painel.php' : '', ENT_QUOTES, 'UTF-8') ?>"
-                    data-logout-url="../admin/logout.php"
-                    data-csrf="<?= htmlspecialchars(gerarTokenCsrf(), ENT_QUOTES, 'UTF-8') ?>">
-                    <img src="../../Imagens/dog.jpg" alt="">
+                <!-- Nome e e-mail usados pelo menu do perfil (menu.js) -->
+                <button class="perfil" type="button" aria-label="Abrir menu do perfil" id="abrir-perfil" aria-controls="menu-perfil" aria-expanded="false" data-menu-perfil
+                        data-nome="<?= e($_SESSION['usuario_nome']) ?>"
+                        data-email="<?= e($_SESSION['usuario_email'] ?? '') ?>"
+                        data-tipo="<?= usuarioEhAdmin() ? 'Administrador' : 'Conta pessoal' ?>">
+                    <img src="<?= e(urlArquivo($_SESSION['usuario_foto'] ?? '')) ?>" alt="">
                     <svg class="perfil-seta" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
                 </button>
             </div>
+            <!-- Logout por POST com token CSRF, acionado pelo botão Sair do menu do perfil -->
+            <form id="formulario-logout" class="formulario-logout" method="post" action="../acoes/logout.php">
+                <?= campoCsrf() ?>
+                <button type="submit" class="botao-logout">Sair</button>
+            </form>
+            <?php else: ?>
+            <div class="cabecalho-visitante">
+                <a class="botao-visitante botao-visitante-entrar" href="login.php">Entrar</a>
+                <a class="botao-visitante" href="cadastro.php">Criar conta</a>
+            </div>
+            <?php endif; ?>
         </header>
