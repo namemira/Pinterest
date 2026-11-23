@@ -1,0 +1,179 @@
+/* Painel administrativo (php/admin/painel.php) */
+* {
+    box-sizing: border-box;
+}
+
+body.pagina-admin {
+    margin: 0;
+    background: #f6f6f6;
+    color: #111;
+    font-family: 'Manrope', Arial, sans-serif;
+}
+
+.admin-cabecalho {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px 28px;
+    padding: 12px 24px;
+    background: #fff;
+    box-shadow: 0 1px 0 #e5e5e5;
+}
+
+.admin-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #e60023;
+    font-weight: 800;
+    text-decoration: none;
+}
+
+.admin-logo img {
+    width: 28px;
+    height: 28px;
+}
+
+.admin-cabecalho nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.admin-cabecalho nav a,
+.admin-conta a {
+    padding: 8px 12px;
+    border-radius: 999px;
+    color: #111;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.admin-cabecalho nav a:hover,
+.admin-conta a:hover {
+    background: #efefef;
+}
+
+.admin-conta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: auto;
+}
+
+.admin-conta form {
+    margin: 0;
+}
+
+.admin-conta button {
+    padding: 8px 14px;
+    border: 0;
+    border-radius: 999px;
+    background: #e60023;
+    color: #fff;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.admin-conteudo {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px;
+}
+
+.admin-conteudo section {
+    margin-bottom: 36px;
+    scroll-margin-top: 80px;
+}
+
+.admin-resumo {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 16px;
+}
+
+.admin-resumo div {
+    padding: 20px;
+    border-radius: 16px;
+    background: #fff;
+}
+
+.admin-resumo strong {
+    display: block;
+    font-size: 32px;
+}
+
+.admin-resumo span {
+    color: #555;
+}
+
+.admin-tabela-rolagem {
+    overflow-x: auto;
+    border-radius: 16px;
+    background: #fff;
+}
+
+.admin-tabela {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.admin-tabela th,
+.admin-tabela td {
+    padding: 12px 14px;
+    border-bottom: 1px solid #eee;
+    text-align: left;
+    vertical-align: top;
+}
+
+.admin-tabela th {
+    background: #fafafa;
+    font-weight: 800;
+}
+
+.admin-texto-longo {
+    min-width: 260px;
+    max-width: 480px;
+    overflow-wrap: anywhere;
+}
+
+.admin-miniatura {
+    width: 56px;
+    height: 56px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.admin-tabela form {
+    margin: 0;
+}
+
+.admin-etiqueta {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.admin-etiqueta-admin {
+    background: #fde7ea;
+    color: #a3001a;
+}
+
+.admin-etiqueta-usuario {
+    background: #eee;
+    color: #333;
+}
+
+.admin-cabecalho a:focus-visible,
+.admin-cabecalho button:focus-visible,
+.admin-tabela :focus-visible {
+    outline: 3px solid #005fcc;
+    outline-offset: 2px;
+}

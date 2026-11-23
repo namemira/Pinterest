@@ -1,0 +1,426 @@
+/* =====================================================================
+   Estilos dos elementos criados na integração com PHP
+   (avisos, ações do dono do Pin, pastas, formulários e visitante)
+   ===================================================================== */
+
+.visualmente-oculto {
+    position: absolute !important;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Avisos exibidos depois das ações (sucesso ou erro) */
+.aviso-php {
+    margin: 12px 0;
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+.aviso-php-sucesso {
+    background: #e6f4ea;
+    color: #1e5631;
+    border: 1px solid #b7dfc2;
+}
+
+.aviso-php-erro {
+    background: #fdecea;
+    color: #8a1c13;
+    border: 1px solid #f5c2bd;
+}
+
+.area-avisos {
+    margin-left: 84px;
+    padding: 0 20px;
+}
+
+.area-avisos:empty {
+    display: none;
+}
+
+/* Estado vazio do feed e do perfil */
+.estado-vazio {
+    margin: 32px auto;
+    max-width: 480px;
+    text-align: center;
+}
+
+#conteudo-pins > .estado-vazio {
+    margin-left: calc(84px + 20px);
+}
+
+.estado-vazio-texto {
+    color: #555;
+}
+
+/* Botões reutilizados */
+.botao-primario,
+.formulario-php button[type="submit"] {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 0 18px;
+    border: 0;
+    border-radius: 999px;
+    background: var(--cor-pinterest, #e60023);
+    color: #fff;
+    font: inherit;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.botao-texto {
+    padding: 4px 8px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: #111;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.botao-perigo {
+    color: #b3261e;
+}
+
+.botao-primario:focus-visible,
+.botao-texto:focus-visible,
+.formulario-php :focus-visible,
+.post form :focus-visible {
+    outline: 3px solid #005fcc;
+    outline-offset: 2px;
+}
+
+/* Informações extras e ações no card do Pin */
+.post-autor {
+    margin: -6px 12px 10px;
+    color: #777;
+    font-size: 12px;
+}
+
+.post > a[href^="http"] {
+    display: inline-block;
+    margin: 0 12px 10px;
+}
+
+.post-dono-acoes {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px;
+    margin: 0 8px 10px;
+}
+
+.post-dono-acoes form {
+    margin: 0;
+}
+
+.post-pasta-form {
+    display: flex;
+    gap: 6px;
+    margin: 0 12px 12px;
+}
+
+.post-pasta-form select {
+    flex: 1;
+    min-width: 0;
+    padding: 6px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font: inherit;
+    font-size: 13px;
+}
+
+.post-pasta-form button {
+    padding: 6px 10px;
+    border: 0;
+    border-radius: 999px;
+    background: #efefef;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+/* Formulário dentro do pin-actions não muda o posicionamento do botão */
+.pin-actions form {
+    margin: 0;
+}
+
+/* Explorar: categoria selecionada e quantidade */
+a.categoria {
+    text-decoration: none;
+}
+
+.categoria-ativa img {
+    outline: 3px solid var(--cor-pinterest, #e60023);
+    outline-offset: 2px;
+}
+
+.categoria-total {
+    display: block;
+    margin-top: -0.6em;
+    color: #777;
+    font-size: 13px;
+}
+
+.tendencia {
+    color: inherit;
+    text-decoration: none;
+}
+
+/* Cabeçalho para visitantes (Explorar sem login) */
+.cabecalho-visitante {
+    display: flex;
+    gap: 8px;
+    flex: 0 0 auto;
+}
+
+.botao-visitante {
+    padding: 10px 16px;
+    border-radius: 999px;
+    background: #efefef;
+    color: #111;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.botao-visitante-entrar {
+    background: var(--cor-pinterest, #e60023);
+    color: #fff;
+}
+
+/* O formulário de logout fica oculto; é enviado pelo item Sair do menu */
+.formulario-logout {
+    display: none;
+}
+
+/* Perfil: abas por link e pastas */
+.pagina-perfil .post .post-titulo {
+    margin: 12px 12px 5px;
+    font-size: 15px;
+    line-height: 1.35;
+}
+
+.pagina-perfil .postagens {
+    margin-left: 0;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.perfil-abas-links a {
+    position: relative;
+    padding: 10px 14px;
+    border-radius: 12px;
+    color: #111;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.perfil-abas-links a[aria-current="page"]::after {
+    content: "";
+    position: absolute;
+    right: 14px;
+    bottom: 0;
+    left: 14px;
+    height: 3px;
+    border-radius: 3px;
+    background: #111;
+}
+
+.perfil-abas-links a:focus-visible {
+    outline: 3px solid #005fcc;
+}
+
+a.perfil-compartilhar {
+    display: inline-flex;
+    align-items: center;
+    color: #111;
+    text-decoration: none;
+}
+
+.formulario-php {
+    display: grid;
+    gap: 8px;
+    max-width: 520px;
+    margin: 16px 0 24px;
+}
+
+.formulario-php h2 {
+    margin: 0 0 4px;
+    font-size: 20px;
+}
+
+.formulario-php input,
+.formulario-php textarea {
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    font: inherit;
+}
+
+.formulario-php button[type="submit"] {
+    justify-self: start;
+}
+
+.opcional {
+    color: #777;
+    font-weight: 400;
+}
+
+a.pasta-abrir-cartao {
+    color: inherit;
+    text-decoration: none;
+}
+
+.detalhe-pasta-php {
+    margin-top: 28px;
+    padding-top: 20px;
+    border-top: 1px solid #e5e5e5;
+}
+
+.detalhes-editar-pasta {
+    margin: 12px 0 20px;
+}
+
+.detalhes-editar-pasta summary {
+    cursor: pointer;
+    font-weight: 700;
+}
+
+/* Criar / editar Pin */
+.criar-pin-mensagem-erro {
+    color: #b3261e;
+    font-weight: 600;
+}
+
+a.criar-pin-cancelar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+}
+
+.criar-pin-soltar.arrastando {
+    outline: 3px dashed var(--cor-pinterest, #e60023);
+}
+
+.excluir-pin-edicao {
+    width: min(100% - 148px, 1120px);
+    margin: -40px auto 48px calc(84px + (100% - 84px - min(100% - 148px, 1120px)) / 2);
+}
+
+/* Contato */
+.formulario-contato textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px;
+    border: 1px solid #cdcdcd;
+    border-radius: 16px;
+    font: inherit;
+    resize: vertical;
+}
+
+.campo-armadilha {
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}
+
+/* Diálogo de confirmação de exclusão (acoes_php.js) */
+.dialogo-confirmacao {
+    max-width: 380px;
+    padding: 24px;
+    border: 0;
+    border-radius: 20px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+    font-family: inherit;
+}
+
+.dialogo-confirmacao::backdrop {
+    background: rgba(0, 0, 0, 0.45);
+}
+
+.dialogo-confirmacao p {
+    margin: 0 0 20px;
+    color: #111;
+    line-height: 1.45;
+}
+
+.dialogo-confirmacao-acoes {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.botao-secundario,
+.botao-perigo-cheio {
+    min-height: 40px;
+    padding: 0 16px;
+    border: 0;
+    border-radius: 999px;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.botao-secundario {
+    background: #efefef;
+    color: #111;
+}
+
+.botao-perigo-cheio {
+    background: #b3261e;
+    color: #fff;
+}
+
+/* Tema escuro: mantém legível o texto dentro dos cards brancos */
+body.tema-escuro .post p,
+body.tema-escuro .post h2,
+body.tema-escuro .post .botao-texto {
+    color: #111;
+}
+
+body.tema-escuro .post .botao-perigo {
+    color: #b3261e;
+}
+
+body.tema-escuro .perfil-abas-links a,
+body.tema-escuro a.categoria,
+body.tema-escuro .tendencia {
+    color: #fff;
+}
+
+body.tema-escuro .perfil-abas-links a[aria-current="page"]::after {
+    background: #fff;
+}
+
+body.tema-escuro .dialogo-confirmacao p {
+    color: #111;
+}
+
+@media (max-width: 520px) {
+    .area-avisos {
+        margin-left: 64px;
+        padding: 0 12px;
+    }
+
+    .excluir-pin-edicao {
+        width: auto;
+        margin: 0 16px 32px 80px;
+    }
+}
