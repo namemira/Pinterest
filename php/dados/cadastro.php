@@ -1,14 +1,15 @@
 <?php
 declare(strict_types=1);
 
-require_once __DIR__ . '/../includes/autenticacao.php';
-require_once __DIR__ . '/../config/conexao.php';
-require_once __DIR__ . '/../funcoes/usuarios.php';
+require_once __DIR__ . '/../includes/inicializacao.php';
 
-iniciarSessaoSeguro();
+if (usuarioEstaAutenticado()) {
+    redirecionar('principal.php');
+}
 
 $nome = '';
 $email = '';
+$nascimentoInformado = '';
 $mensagem = '';
 $tipoMensagem = 'erro';
 
@@ -20,11 +21,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $mensagem = 'Sua sessão expirou. Atualize a página e tente novamente.';
     } else {
         try {
-            $nome = textoValidado($nome, 60);
+            $nome = textoValidado($nome, 60, 'nome');
             $email = emailValidado($email);
             $senha = is_string($_POST['senha'] ?? null) ? $_POST['senha'] : '';
             $confirmacaoSenha = is_string($_POST['confirmar_senha'] ?? null) ? $_POST['confirmar_senha'] : '';
             $nascimento = is_string($_POST['nascimento'] ?? null) ? trim($_POST['nascimento']) : '';
+            $nascimentoInformado = $nascimento;
 
             if (mb_strlen($senha, 'UTF-8') < 8) {
                 throw new InvalidArgumentException('A senha deve ter pelo menos 8 caracteres.');
@@ -54,10 +56,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             criarUsuario($pdo, $nome, $email, $senha);
-            $mensagem = 'Cadastro realizado com sucesso. Agora você já pode entrar.';
-            $tipoMensagem = 'sucesso';
-            $nome = '';
-            $email = '';
+            definirAviso('sucesso', 'Cadastro realizado com sucesso. Agora você já pode entrar.');
+            redirecionar('login.php');
         } catch (InvalidArgumentException $erro) {
             $mensagem = $erro->getMessage();
         } catch (PDOException $erro) {
@@ -128,7 +128,7 @@ $papelMensagem = $tipoMensagem === 'sucesso' ? 'status' : 'alert';
             <input type="password" id="confirmar-senha" name="confirmar_senha" autocomplete="new-password" required placeholder="Digite sua senha novamente" class="Input-cadastro">
 
             <label for="nascimento" class="rotulo-cadastro">Data de nascimento</label>
-            <input type="date" id="nascimento" name="nascimento" autocomplete="bday" required min="1900-01-01" class="Input-cadastro">
+            <input type="date" id="nascimento" name="nascimento" autocomplete="bday" required min="1900-01-01" class="Input-cadastro" value="<?= htmlspecialchars($nascimentoInformado, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?>">
 
             <button type="submit" id="continuar">Continuar</button>
             <p class="divisor-ou">OU</p>

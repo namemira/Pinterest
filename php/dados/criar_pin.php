@@ -1,15 +1,104 @@
+<?php
+declare(strict_types=1);
+
+require_once __DIR__ . '/../includes/inicializacao.php';
+
+// RN01: somente usuários autenticados podem publicar.
+$usuarioId = exigirLoginNaPagina();
+
+$modoEdicao = false;
+$imagemAtual = null;
+$mensagem = '';
+$tipoMensagem = 'erro';
+$dados = [
+    'titulo' => '',
+    'descricao' => '',
+    'categoria_id' => '',
+    'texto_alternativo' => '',
+    'link' => '',
+    'pasta' => '',
+];
+
+try {
+    $pdo = criarConexao();
+    $categorias = listarCategorias($pdo);
+    $pastas = listarPastas($pdo, $usuarioId);
+} catch (Throwable $erro) {
+    error_log('Falha ao abrir Criar Pin: ' . $erro->getMessage());
+    $categorias = $pastas = [];
+    $mensagem = 'Não foi possível carregar o formulário agora.';
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($pdo)) {
+    foreach (array_keys($dados) as $campo) {
+        $dados[$campo] = trim(valorPost($campo));
+    }
+
+    // Formulário maior que o post_max_size do php.ini chega vazio.
+    if ($_POST === [] && (int) ($_SERVER['CONTENT_LENGTH'] ?? 0) > 0) {
+        $mensagem = 'A imagem ultrapassa o tamanho máximo permitido pelo servidor.';
+    } elseif (!validarTokenCsrf($_POST['csrf_token'] ?? null)) {
+        $mensagem = 'Sua sessão expirou. Atualize a página e tente novamente.';
+    } else {
+        $caminhoImagem = null;
+        try {
+            // Validações antes de gravar a imagem no servidor.
+            textoValidado($dados['titulo'], 100, 'título');
+            textoOpcional($dados['descricao'], 500, 'descrição');
+            textoOpcional($dados['texto_alternativo'], 255, 'texto alternativo');
+            urlOpcionalValidada($dados['link']);
+            if ($dados['categoria_id'] === '') {
+                throw new InvalidArgumentException('Selecione uma categoria.');
+            }
+            $categoriaId = inteiroPositivo($dados['categoria_id'], 'categoria');
+            $pastaId = $dados['pasta'] !== '' ? inteiroPositivo($dados['pasta'], 'pasta') : null;
+            if ($pastaId !== null && consultarPasta($pdo, $usuarioId, $pastaId) === null) {
+                throw new InvalidArgumentException('Pasta não encontrada.');
+            }
+
+            $caminhoImagem = salvarImagemEnviada('imagem', 'pins');
+
+            $pinId = cadastrarPin(
+                $pdo,
+                $usuarioId,
+                $categoriaId,
+                $dados['titulo'],
+                $dados['descricao'],
+                $dados['link'],
+                $caminhoImagem,
+                $dados['texto_alternativo']
+            );
+
+            if ($pastaId !== null) {
+                adicionarPinNaPasta($pdo, $usuarioId, $pastaId, $pinId);
+            }
+
+            definirAviso('sucesso', 'Pin publicado com sucesso.');
+            redirecionar('perfil.php?aba=criados#pin-' . $pinId);
+        } catch (InvalidArgumentException $erro) {
+            removerImagemEnviada($caminhoImagem ?? null);
+            $mensagem = $erro->getMessage();
+        } catch (Throwable $erro) {
+            removerImagemEnviada($caminhoImagem ?? null);
+            error_log('Falha ao publicar Pin: ' . $erro->getMessage());
+            $mensagem = 'Não foi possível publicar o Pin. Tente novamente.';
+        }
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pinterest</title>
+    <title>Criar Pin | Pinterest</title>
     <link rel="stylesheet" href="../../css/principal.css">
       <link rel="icon" href="../../Imagens/Icone.png">
       <link rel="preconnect" href="https://fonts.googleapis.com">
       <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
       <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet">
-      <link rel="stylesheet" href="../../css/tema.css">  
+      <link rel="stylesheet" href="../../css/tema.css">
+      <link rel="stylesheet" href="../../css/php.css">
 </head>
 <body>
     <!--Menu-->
@@ -18,69 +107,13 @@
 <?php require_once __DIR__ . '/../includes/cabecalho_principal.php'; ?>
     <!--Criacao do Pin-->
     <main>
-        <section class="pagina-criar-pin" id="pagina-criar-pin"  aria-labelledby="titulo-criar-pin">
-            <header class="criar-pin-cabecalho">
-                <div>
-                    <h1 id="titulo-criar-pin">Criar Pin</h1>
-                    <p>Adicione uma imagem e alguns detalhes para compartilhar sua ideia.</p>
-                </div>
-                <button class="criar-pin-publicar-topo" type="submit" form="formulario-criar-pin" disabled>Publicar</button>
-            </header>
-
-            <form class="criar-pin-formulario" id="formulario-criar-pin" novalidate>
-                <section class="criar-pin-imagem" aria-label="Imagem do Pin">
-                    <div class="criar-pin-soltar" id="criar-pin-soltar" role="button" tabindex="0" aria-describedby="criar-pin-orientacao">
-                        <div class="criar-pin-orientacao" id="criar-pin-orientacao">
-                            <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 8v22m-9-9 9 9 9-9"/><path d="M10 31v8a2 2 0 0 0 2 2h24a2 2 0 0 0 2-2v-8"/></svg>
-                            <strong>Escolha uma imagem</strong>
-                            <span>ou arraste e solte aqui</span>
-                            <small>JPG, PNG ou WEBP · até 10 MB</small>
-                        </div>
-                        <input class="criar-pin-arquivo" id="criar-pin-arquivo" type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" hidden>
-                        <div class="criar-pin-previa" id="criar-pin-previa" hidden>
-                            <img id="criar-pin-imagem" alt="Prévia da imagem do Pin">
-                        </div>
-                    </div>
-                    <div class="criar-pin-imagem-acoes" id="criar-pin-imagem-acoes" hidden>
-                        <button class="criar-pin-substituir" type="button">Substituir imagem</button>
-                        <button class="criar-pin-remover" type="button">Remover imagem</button>
-                    </div>
-                </section>
-
-                <section class="criar-pin-informacoes" aria-label="Informações do Pin">
-                    <label for="criar-pin-titulo">Título <span aria-hidden="true">*</span></label>
-                    <input id="criar-pin-titulo" name="titulo" type="text" maxlength="100" placeholder="Adicione um título" required>
-
-                    <label for="criar-pin-descricao">Descrição</label>
-                    <textarea id="criar-pin-descricao" name="descricao" rows="5" maxlength="500" placeholder="Conte às pessoas sobre sua ideia"></textarea>
-
-                    <label for="criar-pin-link">Link de destino <span class="criar-pin-opcional">(opcional)</span></label>
-                    <input id="criar-pin-link" name="link" type="url" inputmode="url" placeholder="https://exemplo.com">
-
-                    <label for="criar-pin-pasta">Pasta <span class="criar-pin-opcional">(opcional)</span></label>
-                    <select id="criar-pin-pasta" name="pasta">
-                        <option value="">Não organizar em uma pasta</option>
-                    </select>
-
-                    <p class="criar-pin-mensagem" id="criar-pin-mensagem" role="status" aria-live="polite"></p>
-                    <button class="criar-pin-publicar" type="submit" disabled>Publicar Pin</button>
-                    <button class="criar-pin-cancelar" type="button">Cancelar</button>
-                </section>
-            </form>
-        </section>
+<?php require __DIR__ . '/../includes/formulario_pin.php'; ?>
     </main>
-<section id="conteudo-pins" hidden aria-label="Pins do feed">
-    <div class="postagens" id="feed"></div>
-</section>
 <!--Rodapé com aviso de projeto acadêmico-->
 <?php require_once __DIR__ . '/../includes/rodape_principal.php'; ?>
 <script src="../../js/pesquisa.js" defer></script>
 <script src="../../js/menu.js" defer></script>
-<script src="../../js/pins.js" defer></script>
-<script src="../../js/interacoes_pins.js" defer></script>
-<script src="../../js/pastas.js" defer></script>
-<script src="../../js/detalhes_pin.js" defer></script>
-<script src="../../js/criar_pin.js" defer></script>
+<script src="../../js/acoes_php.js" defer></script>
 <script src="../../js/tema.js" defer></script>
 </body>
 </html>

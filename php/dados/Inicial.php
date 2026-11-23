@@ -1,3 +1,10 @@
+<?php
+declare(strict_types=1);
+
+require_once __DIR__ . '/../includes/inicializacao.php';
+// Token usado pelo formulário de cadastro desta página (enviado para cadastro.php).
+$tokenCsrf = gerarTokenCsrf();
+?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -138,7 +145,8 @@
                 <p>Crie sua conta para guardar inspirações e encontrar ideias para tudo o que você ama.</p>
             </div>
 
-            <form class="signup-card" id="tela-cadastro" novalidate>
+            <form class="signup-card" id="tela-cadastro" method="post" action="cadastro.php" novalidate>
+                <input type="hidden" name="csrf_token" value="<?= e($tokenCsrf) ?>">
                 <h3>Cadastre-se</h3>
                 <p class="signup-card-intro">Preencha seus dados para continuar.</p>
 
@@ -154,6 +162,10 @@
                     <label for="senha">Senha</label>
                     <input type="password" id="senha" name="senha" autocomplete="new-password" minlength="8" placeholder="Crie uma senha" required>
                     <small>Use pelo menos 8 caracteres.</small>
+                </div>
+                <div class="form-field">
+                    <label for="confirmar-senha">Confirme a senha</label>
+                    <input type="password" id="confirmar-senha" name="confirmar_senha" autocomplete="new-password" minlength="8" placeholder="Repita a senha" required>
                 </div>
                 <div class="form-field">
                     <label for="nascimento">Data de nascimento</label>

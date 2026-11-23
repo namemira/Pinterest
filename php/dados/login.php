@@ -1,14 +1,16 @@
 <?php
 declare(strict_types=1);
 
-require_once __DIR__ . '/../includes/autenticacao.php';
-require_once __DIR__ . '/../config/conexao.php';
-require_once __DIR__ . '/../funcoes/usuarios.php';
+require_once __DIR__ . '/../includes/inicializacao.php';
 
-iniciarSessaoSeguro();
+// Quem já está logado vai direto para o feed.
+if (usuarioEstaAutenticado()) {
+    redirecionar('principal.php');
+}
 
 $email = '';
 $mensagem = '';
+$aviso = obterAviso();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = is_string($_POST['email'] ?? null) ? trim($_POST['email']) : '';
@@ -55,6 +57,7 @@ $tokenCsrf = gerarTokenCsrf();
     <title>Entrar no Pinterest</title>
         <link rel="stylesheet" href="../../css/cadastro.css">
     <link rel="stylesheet" href="../../css/login.css">
+    <link rel="stylesheet" href="../../css/php.css">
     <link rel="icon" href="../../Imagens/Icone.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -79,6 +82,8 @@ $tokenCsrf = gerarTokenCsrf();
             <p class="login-intro">Entre para descobrir mais ideias e inspirações</p>
             <?php if ($mensagem !== ''): ?>
                 <p class="mensagem-resultado" role="alert" aria-live="assertive"><?= htmlspecialchars($mensagem, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?></p>
+            <?php else: ?>
+                <?= exibirAviso($aviso) ?>
             <?php endif; ?>
             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($tokenCsrf, ENT_QUOTES, 'UTF-8') ?>">
 
