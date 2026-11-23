@@ -145,32 +145,23 @@ function configurarPainelCriar(menu) {
     }
   }
 
-  // Reutiliza eventos do sistema ou encaminha para a página que contém a interface.
+  // Encaminha cada opção do painel para a página em PHP correspondente.
   function executarOpcaoCriacao(opcao) {
     definirPainel(false);
     if (opcao === 'pin') {
-      if (document.querySelector('#formulario-criar-pin')) {
-        document.dispatchEvent(new CustomEvent('pins:create-open'));
+      const titulo = document.querySelector('#criar-pin-titulo');
+      if (titulo && document.querySelector('#formulario-criar-pin')) {
+        titulo.focus();
       } else {
         window.location.href = 'criar_pin.php';
       }
     } else if (opcao === 'pasta') {
-      document.dispatchEvent(
-        new CustomEvent('boards:create-request', {
-          detail: { returnFocus: obterDestinoFoco() }
-        })
-      );
-    } else if (opcao === 'colagem' || opcao === 'cartao') {
-      if (document.querySelector('#dialogo-criacao')) {
-        document.dispatchEvent(
-          new CustomEvent('composicao:abrir', {
-            detail: { tipo: opcao }
-          })
-        );
+      const campoPasta = document.querySelector('#pasta-nome');
+      if (campoPasta) {
+        campoPasta.scrollIntoView({ block: 'center' });
+        campoPasta.focus({ preventScroll: true });
       } else {
-        window.location.href = `principal.php?criar=${encodeURIComponent(
-          opcao
-        )}`;
+        window.location.href = 'perfil.php?aba=pastas#nova-pasta';
       }
     }
   }
@@ -214,7 +205,7 @@ function configurarPainelCriar(menu) {
 }
 
 // Cria a estrutura compartilhada do menu de perfil.
-function criarMenuPerfil(container, imagemPerfil) {
+function criarMenuPerfil(container, imagemPerfil, dadosConta = {}) {
   const menuPerfil = document.createElement('section');
   menuPerfil.className = 'menu-perfil';
   menuPerfil.id = 'menu-perfil';
@@ -231,12 +222,12 @@ function criarMenuPerfil(container, imagemPerfil) {
 
   const identificacao = document.createElement('div');
   const nome = document.createElement('strong');
-  const botaoPerfil = container.querySelector('.perfil');
-  nome.textContent = botaoPerfil?.dataset.nome || 'Seu perfil';
+  // Nome, tipo e e-mail vêm dos atributos data-* gerados pelo PHP no cabeçalho.
+  nome.textContent = dadosConta.nome || 'Seu perfil';
   const tipoConta = document.createElement('span');
-  tipoConta.textContent = botaoPerfil?.dataset.tipo || 'Conta pessoal';
+  tipoConta.textContent = dadosConta.tipo || 'Conta pessoal';
   const email = document.createElement('span');
-  email.textContent = tipoConta.textContent;
+  email.textContent = dadosConta.email || '';
   identificacao.append(nome, tipoConta, email);
   conta.append(foto, identificacao);
 
@@ -261,35 +252,19 @@ function criarMenuPerfil(container, imagemPerfil) {
   adicionarConta.dataset.acaoPerfil = 'adicionar';
   adicionarConta.textContent = 'Adicionar conta do Pinterest';
 
-  if (botaoPerfil?.dataset.adminUrl) {
-    const painel = document.createElement('a');
-    painel.className = 'menu-perfil-item';
-    painel.href = botaoPerfil.dataset.adminUrl;
-    painel.textContent = 'Painel administrativo';
-    menuPerfil.append(painel);
-  }
-
-  const logoutForm = document.createElement('form');
-  logoutForm.method = 'post';
-  logoutForm.action = botaoPerfil?.dataset.logoutUrl || '../admin/logout.php';
-  logoutForm.id = 'formulario-logout-perfil';
-  const csrf = document.createElement('input');
-  csrf.type = 'hidden';
-  csrf.name = 'csrf_token';
-  csrf.value = botaoPerfil?.dataset.csrf || '';
+  // O botão Sair envia o formulário #formulario-logout do cabeçalho (POST + CSRF).
   const sair = document.createElement('button');
   sair.className = 'menu-perfil-item menu-perfil-sair';
-  sair.type = 'submit';
+  sair.type = 'button';
   sair.dataset.acaoPerfil = 'sair';
   sair.textContent = 'Sair';
-  logoutForm.append(csrf, sair);
 
   menuPerfil.append(
     conta,
     converterConta,
     secaoContas,
     adicionarConta,
-    logoutForm
+    sair
   );
   container.appendChild(menuPerfil);
   return menuPerfil;
@@ -358,7 +333,12 @@ function configurarMenuPerfil() {
   if (!menuPerfil) {
     menuPerfil = criarMenuPerfil(
       container,
-      botaoPerfil.querySelector('img')
+      botaoPerfil.querySelector('img'),
+      {
+        nome: botaoPerfil.dataset.nome,
+        email: botaoPerfil.dataset.email,
+        tipo: botaoPerfil.dataset.tipo
+      }
     );
   }
   if (!menuPerfil.id) {
@@ -407,8 +387,11 @@ function configurarMenuPerfil() {
 
     fecharMenu();
     if (acao === 'sair') {
-      const formulario = document.querySelector('#formulario-logout-perfil');
-      formulario?.submit();
+      // Envia o formulário de logout (POST com token CSRF) gerado pelo PHP.
+      const formularioLogout = document.querySelector('#formulario-logout');
+      if (formularioLogout) {
+        formularioLogout.submit();
+      }
       return;
     }
 
