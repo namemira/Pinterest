@@ -1,6 +1,14 @@
 <?php
 declare(strict_types=1);
 
+/**
+ * Cria a conta de administrador. Execute pelo terminal, na raiz do projeto:
+ *
+ *     php php/admin/criar_admin.php
+ *
+ * No XAMPP (Windows): C:\xampp\php\php.exe php\admin\criar_admin.php
+ * Se o e-mail já estiver cadastrado, a conta existente vira administradora.
+ */
 if (PHP_SAPI !== 'cli') {
     http_response_code(403);
     exit('Este procedimento deve ser executado apenas pelo terminal.');
@@ -9,23 +17,43 @@ if (PHP_SAPI !== 'cli') {
 require_once __DIR__ . '/../config/conexao.php';
 require_once __DIR__ . '/../funcoes/validacao.php';
 
-try {
-    $pdo = criarConexao();
-    $administradorExistente = $pdo->prepare(
-        'SELECT id FROM usuarios WHERE tipo_usuario = :tipo_usuario LIMIT 1'
-    );
-    $administradorExistente->execute(['tipo_usuario' => 'admin']);
-    if ($administradorExistente->fetch() !== false) {
-        throw new RuntimeException('Já existe uma conta administradora. Novas contas não podem ser criadas por este procedimento.');
+// readline nem sempre está disponível (ex.: algumas instalações no Windows).
+function perguntar(string $texto): string
+{
+    if (function_exists('readline')) {
+        return trim((string) readline($texto));
     }
 
-    echo "Criação local da primeira conta administradora\n";
-    $nome = trim((string) readline('Nome: '));
-    $email = trim((string) readline('E-mail: '));
-    $senha = (string) readline('Senha (mínimo 8 caracteres): ');
+    echo $texto;
+    return trim((string) fgets(STDIN));
+}
 
-    $nome = textoValidado($nome, 60);
+echo "Criação da conta administradora\n";
+$nome = perguntar('Nome: ');
+$email = perguntar('E-mail: ');
+$senha = perguntar('Senha (mínimo 8 caracteres): ');
+
+try {
+    $nome = textoValidado($nome, 60, 'nome');
     $email = emailValidado($email);
+
+    $pdo = criarConexao();
+    $consulta = $pdo->prepare('SELECT id FROM usuarios WHERE email = :email LIMIT 1');
+    $consulta->execute(['email' => $email]);
+    $idExistente = $consulta->fetchColumn();
+
+    if ($idExistente !== false) {
+        $resposta = strtolower(perguntar('Este e-mail já está cadastrado. Tornar essa conta administradora? (s/n): '));
+        if ($resposta !== 's') {
+            echo "Nenhuma alteração foi feita.\n";
+            exit(0);
+        }
+        $pdo->prepare("UPDATE usuarios SET tipo_usuario = 'admin' WHERE id = :id")
+            ->execute(['id' => $idExistente]);
+        echo "A conta agora é administradora.\n";
+        exit(0);
+    }
+
     if (mb_strlen($senha, 'UTF-8') < 8) {
         throw new InvalidArgumentException('A senha deve ter pelo menos 8 caracteres.');
     }
@@ -41,7 +69,7 @@ try {
         'tipo_usuario' => 'admin',
     ]);
 
-    echo "Administrador criado com sucesso.\n";
+    echo "Administrador criado com sucesso. Entre pelo login normal e acesse o Painel no menu.\n";
 } catch (Throwable $erro) {
     if ($erro instanceof InvalidArgumentException) {
         fwrite(STDERR, 'Dados inválidos: ' . $erro->getMessage() . PHP_EOL);
