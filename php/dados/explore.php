@@ -3,129 +3,196 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../includes/inicializacao.php';
 
-// Explorar é público: visitantes veem os Pins; salvar exige login.
-$usuarioId = usuarioLogadoId();
-$aviso = obterAviso();
-
-// A busca chega como ?q= (página Inicial) ou ?busca= (pesquisa do cabeçalho).
-$busca = mb_substr(valorGet('q') !== '' ? valorGet('q') : valorGet('busca'), 0, 100, 'UTF-8');
-$categoriaId = null;
-$categoriaAtual = null;
+$busca = mb_substr(
+    valorGet('q') !== '' ? valorGet('q') : valorGet('busca'),
+    0,
+    100,
+    'UTF-8'
+);
+$termoBuscaCabecalho = $busca;
+$categorias = [];
+$pins = [];
+$gruposCategoria = [];
+$erroCarregamento = '';
+$categoriaSelecionadaId = null;
+$categoriaSelecionada = '';
+$paginaExplorar = true;
 
 try {
     $pdo = criarConexao();
     $categorias = listarCategorias($pdo);
 
-    if (valorGet('categoria') !== '') {
-        try {
-            $categoriaId = inteiroPositivo(valorGet('categoria'), 'categoria');
-        } catch (InvalidArgumentException $erro) {
-            $categoriaId = null;
-        }
+    $categoriaRecebida = filter_var(
+        valorGet('categoria_id'),
+        FILTER_VALIDATE_INT,
+        ['options' => ['min_range' => 1]]
+    );
+    if ($categoriaRecebida !== false) {
         foreach ($categorias as $categoria) {
-            if ((int) $categoria['id'] === $categoriaId) {
-                $categoriaAtual = $categoria;
+            if ((int) $categoria['id'] === $categoriaRecebida) {
+                $categoriaSelecionadaId = $categoriaRecebida;
+                $categoriaSelecionada = (string) $categoria['nome'];
+                break;
             }
-        }
-        if ($categoriaAtual === null) {
-            $categoriaId = null;
         }
     }
 
-    $emAlta = listarPinsEmAlta($pdo, 3, $usuarioId);
-    $pins = listarPins($pdo, $categoriaId, $busca, $usuarioId);
+    $pins = listarPins($pdo, null, $busca, usuarioLogadoId());
+
+    foreach ($pins as $pin) {
+        $categoriaId = (int) $pin['categoria_id'];
+        if ($categoriaSelecionadaId !== null && $categoriaId !== $categoriaSelecionadaId) {
+            continue;
+        }
+
+        if (!isset($gruposCategoria[$categoriaId])) {
+            $gruposCategoria[$categoriaId] = [
+                'nome' => (string) $pin['categoria'],
+                'total' => 0,
+                'imagens' => [],
+            ];
+        }
+
+        $gruposCategoria[$categoriaId]['total']++;
+        if (count($gruposCategoria[$categoriaId]['imagens']) < 2) {
+            $gruposCategoria[$categoriaId]['imagens'][] = [
+                'caminho' => (string) $pin['caminho_imagem'],
+                'alt' => (string) ($pin['texto_alternativo'] ?: $pin['titulo']),
+            ];
+        }
+    }
+
+    uasort(
+        $gruposCategoria,
+        static fn (array $a, array $b): int => ($b['total'] <=> $a['total'])
+            ?: strcasecmp($a['nome'], $b['nome'])
+    );
 } catch (Throwable $erro) {
     error_log('Falha ao carregar Explorar: ' . $erro->getMessage());
-    $categorias = $emAlta = $pins = [];
-    $aviso = ['tipo' => 'erro', 'texto' => 'Não foi possível carregar as ideias agora.'];
+    $categorias = [];
+    $pins = [];
+    $gruposCategoria = [];
+    $erroCarregamento = 'Não foi possível carregar as ideias agora. Tente novamente mais tarde.';
 }
 
-$tituloGrade = 'Inspirações para você';
-if ($categoriaAtual !== null) {
-    $tituloGrade = 'Categoria: ' . $categoriaAtual['nome'];
-}
-if ($busca !== '') {
-    $tituloGrade = 'Resultados para "' . $busca . '"';
-}
+$aviso = obterAviso();
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Explore Pins e categorias para inspirar seus próximos projetos.">
     <title>Explorar | Pinterest</title>
-      <link rel="stylesheet" href="../../css/principal.css">
-      <link rel="stylesheet" href="../../css/tema.css">
-      <link rel="stylesheet" href="../../css/php.css">
-      <link rel="icon" href="../../Imagens/Icone.png">
-      <link rel="preconnect" href="https://fonts.googleapis.com">
-      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-      <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../css/inicial.css">
+    <link rel="stylesheet" href="../../css/principal.css">
+    <link rel="stylesheet" href="../../css/explore.css">
+    <link rel="stylesheet" href="../../css/tema.css">
+    <link rel="icon" href="../../Imagens/Icone.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet">
 </head>
-<body>
-<!--Menu-->
-<?php require_once __DIR__ . '/../includes/menu.php'; ?>
-<!--Cabecalho-->
-<?php require_once __DIR__ . '/../includes/cabecalho_principal.php'; ?>
-    <main class="conteudo-explorar">
+<body class="pagina-explorar">
+    <a class="skip-link" href="#conteudo-principal">Pular para o conteúdo</a>
+    <?php require_once __DIR__ . '/../includes/cabecalho_inicial.php'; ?>
 
-    <section class="titulo-explorar">
-        <h1>Explore novas ideias</h1>
-        <p>Descubra inspirações para você.</p>
-        <?= exibirAviso($aviso) ?>
-    </section>
-
-    <!-- Categorias vindas da tabela categorias -->
-    <section class="categorias">
-        <h2>Categorias</h2>
+    <nav class="explore-categories" aria-label="Categorias de descoberta">
         <div id="lista-categorias">
+            <button class="categoria" type="button" data-categoria="" data-categoria-id="" data-categoria-label="Tudo" aria-pressed="<?= $categoriaSelecionadaId === null ? 'true' : 'false' ?>" aria-label="Mostrar Pins de todas as categorias">
+                <span class="categoria-titulo">Tudo</span>
+            </button>
             <?php foreach ($categorias as $categoria): ?>
-            <a class="categoria<?= $categoriaId === (int) $categoria['id'] ? ' categoria-ativa' : '' ?>"
-               href="explore.php?categoria=<?= (int) $categoria['id'] ?>"
-               <?= $categoriaId === (int) $categoria['id'] ? 'aria-current="true"' : '' ?>>
-                <img src="<?= e(urlArquivo($categoria['imagem_referencia'], 'Imagens/Icone.png')) ?>" alt="">
-                <span class="categoria-titulo"><?= e($categoria['nome']) ?></span>
-                <span class="categoria-total"><?= contarPins((int) $categoria['total_pins']) ?></span>
-            </a>
+            <?php $categoriaEstaSelecionada = $categoriaSelecionadaId === (int) $categoria['id']; ?>
+            <button class="categoria" type="button" data-categoria="<?= e((string) $categoria['nome']) ?>" data-categoria-id="<?= (int) $categoria['id'] ?>" data-categoria-label="<?= e((string) $categoria['nome']) ?>" aria-pressed="<?= $categoriaEstaSelecionada ? 'true' : 'false' ?>" aria-label="<?= $categoriaEstaSelecionada ? 'Categoria ' . e((string) $categoria['nome']) . ' selecionada' : 'Filtrar Pins pela categoria ' . e((string) $categoria['nome']) ?>">
+                <span class="categoria-titulo"><?= e((string) $categoria['nome']) ?></span>
+            </button>
             <?php endforeach; ?>
         </div>
-        <?php if ($categoriaId !== null || $busca !== ''): ?>
-        <p><a class="botao-texto" href="explore.php">Limpar filtros</a></p>
-        <?php endif; ?>
-    </section>
+    </nav>
 
-    <!-- Em alta: Pins mais salvos pelos usuários -->
-    <?php if ($emAlta && $categoriaId === null && $busca === ''): ?>
-    <section class="tendencias">
-        <h2>Em alta</h2>
-        <div id="lista-tendencias">
-            <?php foreach ($emAlta as $pinAlta): ?>
-            <a class="tendencia" href="#pin-<?= (int) $pinAlta['id'] ?>">
-                <img src="<?= e(urlArquivo($pinAlta['caminho_imagem'])) ?>" alt="">
-                <h3><?= e($pinAlta['titulo']) ?></h3>
-            </a>
-            <?php endforeach; ?>
-        </div>
-    </section>
-    <?php endif; ?>
+    <main class="conteudo-explorar" id="conteudo-principal">
+        <?= exibirAviso($aviso) ?>
+        <section class="explore-hero" aria-labelledby="titulo-explorar">
+            <div class="explore-hero-copy">
+                <span class="explore-label">Explorar</span>
+                <h1 id="titulo-explorar">Encontre sua próxima ideia</h1>
+                <p>Comece de qualquer lugar e descubra ideias que levam você a novos lugares.</p>
+            </div>
+            <div class="explore-hero-mosaic" role="group" aria-label="Inspirações de arte, moda, decoração, receitas e viagens">
+                <img class="mosaic-dog" src="../../Imagens/dog.jpg" alt="Filhote de cachorro diante de um fundo azul">
+                <img class="mosaic-art" src="../../Imagens/arte.jpg" alt="Pintura de paisagem surreal em tons de azul e verde">
+                <img class="mosaic-fashion" src="../../Imagens/moda.jpg" alt="Vestido branco de noiva com renda">
+                <img class="mosaic-home" src="../../Imagens/decoracao.jpg" alt="Sala aconchegante com decoração em tons naturais">
+                <img class="mosaic-travel" src="../../Imagens/viagens.jpg" alt="Praia de águas azul-turquesa cercada por areia clara e morros verdes">
+            </div>
+        </section>
 
-    <section class="pins-explorar">
-        <h2><?= e($tituloGrade) ?></h2>
-        <?php if (!$pins): ?>
-        <p class="estado-vazio-texto">Nenhum Pin encontrado.</p>
+        <?php if ($gruposCategoria): ?>
+        <section class="pastas-destaque" aria-labelledby="titulo-pastas-destaque">
+            <h2 id="titulo-pastas-destaque">Ideias por categoria</h2>
+            <div id="lista-pastas-destaque">
+                <?php foreach (array_slice($gruposCategoria, 0, 5, true) as $grupo): ?>
+                <article class="pasta-destaque">
+                    <div class="pasta-destaque-imagens">
+                        <?php foreach ($grupo['imagens'] as $imagem): ?>
+                        <img src="<?= e(urlArquivo($imagem['caminho'])) ?>" alt="<?= e($imagem['alt']) ?>" loading="lazy">
+                        <?php endforeach; ?>
+                    </div>
+                    <h3><?= e($grupo['nome']) ?></h3>
+                    <p><?= e(contarPins((int) $grupo['total'])) ?></p>
+                </article>
+                <?php endforeach; ?>
+            </div>
+        </section>
+
+        <section class="tendencias" aria-labelledby="titulo-tendencias">
+            <h2 id="titulo-tendencias">Mais Pins por categoria</h2>
+            <div id="lista-tendencias">
+                <?php foreach (array_slice($gruposCategoria, 0, 3, true) as $grupo): ?>
+                <?php $imagemDestaque = $grupo['imagens'][0] ?? null; ?>
+                <?php if ($imagemDestaque !== null): ?>
+                <article class="tendencia">
+                    <img src="<?= e(urlArquivo($imagemDestaque['caminho'])) ?>" alt="<?= e($imagemDestaque['alt']) ?>" loading="lazy">
+                    <h3><?= e($grupo['nome']) ?> · <?= e(contarPins((int) $grupo['total'])) ?></h3>
+                </article>
+                <?php endif; ?>
+                <?php endforeach; ?>
+            </div>
+        </section>
         <?php endif; ?>
-        <div id="grade-pins">
-            <?php foreach ($pins as $pin): ?>
-                <?php require __DIR__ . '/../includes/card_pin.php'; ?>
-            <?php endforeach; ?>
-        </div>
-    </section>
-</main>
-<!--Rodapé com aviso de projeto acadêmico-->
-<?php require_once __DIR__ . '/../includes/rodape_principal.php'; ?>
-<script src="../../js/pesquisa.js" defer></script>
-<script src="../../js/menu.js" defer></script>
-<script src="../../js/acoes_php.js" defer></script>
-<script src="../../js/tema.js" defer></script>
+
+        <section class="pins-explorar" aria-labelledby="titulo-pins">
+            <h2 id="titulo-pins">Inspirações para você</h2>
+            <?php if ($erroCarregamento !== ''): ?>
+            <div class="estado-vazio" role="alert">
+                <h2>Explorar indisponível</h2>
+                <p><?= e($erroCarregamento) ?></p>
+            </div>
+            <?php elseif (!$pins && $busca === ''): ?>
+            <div class="estado-vazio" role="status">
+                <h2>Ainda não há Pins para explorar</h2>
+                <p>As publicações aparecerão aqui quando forem compartilhadas.</p>
+            </div>
+            <?php elseif (!$pins): ?>
+            <noscript>
+                <div class="estado-vazio" role="status">
+                    <h2>Nenhum Pin encontrado</h2>
+                    <p>Tente outra pesquisa para encontrar ideias.</p>
+                </div>
+            </noscript>
+            <?php endif; ?>
+            <div id="grade-pins" data-categoria-selecionada="<?= e($categoriaSelecionada) ?>" aria-live="polite">
+                <?php foreach ($pins as $pin): ?>
+                    <?php require __DIR__ . '/../includes/card_pin.php'; ?>
+                <?php endforeach; ?>
+            </div>
+        </section>
+    </main>
+
+    <?php require_once __DIR__ . '/../includes/rodape_inicial.php'; ?>
+
+    <script src="../../js/pesquisa.js" defer></script>
+    <script src="../../js/explore.js" defer></script>
 </body>
 </html>

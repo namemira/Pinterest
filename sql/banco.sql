@@ -8,11 +8,17 @@ CREATE TABLE usuarios (
     id INT UNSIGNED NOT NULL AUTO_INCREMENT,
     nome VARCHAR(60) NOT NULL,
     email VARCHAR(180) NOT NULL,
+    data_nascimento DATE NULL,
     senha_hash VARCHAR(255) NOT NULL,
     tipo_usuario ENUM('usuario', 'admin') NOT NULL DEFAULT 'usuario',
+    nome_usuario VARCHAR(30) NULL,
+    sobre VARCHAR(500) NULL,
+    site VARCHAR(2048) NULL,
+    foto VARCHAR(255) NULL,
     data_criacao DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
-    UNIQUE KEY uq_usuarios_email (email)
+    UNIQUE KEY uq_usuarios_email (email),
+    UNIQUE KEY uq_usuarios_nome_usuario (nome_usuario)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE categorias (

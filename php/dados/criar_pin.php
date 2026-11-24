@@ -58,19 +58,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($pdo)) {
 
             $caminhoImagem = salvarImagemEnviada('imagem', 'pins');
 
-            $pinId = cadastrarPin(
-                $pdo,
-                $usuarioId,
-                $categoriaId,
-                $dados['titulo'],
-                $dados['descricao'],
-                $dados['link'],
-                $caminhoImagem,
-                $dados['texto_alternativo']
-            );
+            $pdo->beginTransaction();
+            try {
+                $pinId = cadastrarPin(
+                    $pdo,
+                    $usuarioId,
+                    $categoriaId,
+                    $dados['titulo'],
+                    $dados['descricao'],
+                    $dados['link'],
+                    $caminhoImagem,
+                    $dados['texto_alternativo']
+                );
 
-            if ($pastaId !== null) {
-                adicionarPinNaPasta($pdo, $usuarioId, $pastaId, $pinId);
+                if ($pastaId !== null) {
+                    adicionarPinNaPasta($pdo, $usuarioId, $pastaId, $pinId);
+                }
+
+                $pdo->commit();
+            } catch (Throwable $erro) {
+                if ($pdo->inTransaction()) {
+                    $pdo->rollBack();
+                }
+                throw $erro;
             }
 
             definirAviso('sucesso', 'Pin publicado com sucesso.');

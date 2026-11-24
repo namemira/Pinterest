@@ -11,7 +11,10 @@
             <button type="submit" aria-label="Pesquisar ideias">
                 <img src="../../Imagens/lupa.png" alt="">
             </button>
-            <input id="termo-pesquisa" name="q" type="search" placeholder="Pesquise ideias para sua próxima criação" aria-label="Pesquisar ideias">
+            <input id="termo-pesquisa" name="q" type="search" placeholder="Pesquise ideias para sua próxima criação" aria-label="Pesquisar ideias" value="<?= e((string) ($termoBuscaCabecalho ?? '')) ?>">
+            <?php if (!empty($paginaExplorar)): ?>
+            <input id="explore-category-filter" type="hidden" name="categoria_id" value="<?= e((string) ($categoriaSelecionadaId ?? '')) ?>">
+            <?php endif; ?>
             <p class="search-status" id="resultado-pesquisa" role="status" aria-live="polite" hidden></p>
         </form>
 

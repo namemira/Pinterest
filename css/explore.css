@@ -1,0 +1,498 @@
+.conteudo-explorar {
+    width: min(100%, 1500px);
+    margin: 0 auto;
+    padding: clamp(24px, 4vw, 48px);
+}
+
+.titulo-explorar {
+    margin-bottom: 32px;
+}
+
+.titulo-explorar h1 {
+    margin: 0 0 8px;
+    font-size: clamp(30px, 4vw, 44px);
+    line-height: 1.15;
+}
+
+.titulo-explorar > p:last-child {
+    margin: 0;
+    color: var(--cor-texto-secundario, #555);
+}
+
+.categorias,
+.tendencias,
+.pins-explorar {
+    margin: 0 0 36px;
+}
+
+.categorias h2,
+.tendencias h2,
+.pins-explorar h2 {
+    margin: 0 0 16px;
+}
+
+#lista-categorias {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 14px;
+    margin: 0;
+    padding: 4px 4px 12px;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+}
+
+#lista-categorias .categoria {
+    flex: 0 0 132px;
+    width: 132px;
+    padding: 6px;
+    border-radius: 14px;
+    transition: background-color 160ms ease, box-shadow 160ms ease;
+}
+
+#lista-categorias .categoria:hover,
+#lista-categorias .categoria[aria-pressed="true"] {
+    background: #f3f3f3;
+}
+
+#lista-categorias .categoria[aria-pressed="true"] {
+    box-shadow: inset 0 0 0 2px var(--cor-pinterest, #e60023);
+}
+
+#lista-categorias .categoria img {
+    width: 100%;
+    height: 92px;
+    border-radius: 10px;
+    object-fit: cover;
+}
+
+#lista-categorias .categoria-titulo {
+    margin: 9px 0 2px;
+    font-size: 13px;
+    line-height: 1.3;
+}
+
+#lista-tendencias {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin: 0;
+}
+
+#lista-tendencias .tendencia {
+    flex: 1 1 210px;
+    max-width: 290px;
+    overflow: hidden;
+    border-radius: 14px;
+    background: #f5f5f5;
+}
+
+#lista-tendencias .tendencia img {
+    height: 150px;
+    border-radius: 0;
+}
+
+#lista-tendencias .tendencia h3 {
+    margin: 10px 12px 12px;
+    font-size: 15px;
+}
+
+#grade-pins {
+    columns: 5 190px;
+    column-gap: 16px;
+}
+
+#grade-pins .post {
+    margin: 0 0 18px;
+}
+
+@media (max-width: 700px) {
+    .conteudo-explorar {
+        padding: 24px 16px;
+    }
+
+    #grade-pins {
+        columns: 3 150px;
+    }
+}
+
+@media (max-width: 480px) {
+    #grade-pins {
+        columns: 2 130px;
+        column-gap: 10px;
+    }
+
+    #lista-categorias .categoria {
+        flex-basis: 118px;
+        width: 118px;
+    }
+
+    #lista-categorias .categoria img {
+        height: 82px;
+    }
+}
+
+.pagina-explorar .site-header {
+    grid-template-areas: "brand explore search actions";
+    grid-template-columns: auto auto minmax(190px, 1fr) auto;
+    gap: clamp(10px, 1vw, 18px);
+    min-height: 56px;
+    padding: 6px 24px;
+}
+
+.pagina-explorar .brand img {
+    width: 110px;
+    height: 34px;
+}
+
+.pagina-explorar .site-search {
+    height: 42px;
+}
+
+.pagina-explorar .nav-info {
+    display: none;
+}
+
+.pagina-explorar .nav-explore a {
+    padding: 10px 14px;
+    border-radius: 12px;
+    background: #efefef;
+}
+
+.pagina-explorar .header-actions .button-red {
+    background: #efefef;
+    color: #111;
+}
+
+.pagina-explorar .header-actions .button-light {
+    background: var(--cor-pinterest, #e60023);
+    color: #fff;
+}
+
+.explore-categories {
+    border-bottom: 1px solid #efefef;
+    background: #fff;
+}
+
+#lista-categorias {
+    display: flex;
+    width: calc(100% - 32px);
+    max-width: 1080px;
+    gap: clamp(14px, 2vw, 28px);
+    margin: 0 auto;
+    padding: 0 4px;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    scrollbar-width: none;
+}
+
+#lista-categorias::-webkit-scrollbar {
+    display: none;
+}
+
+#lista-categorias .categoria {
+    position: relative;
+    flex: 0 0 auto;
+    width: auto;
+    padding: 14px 3px 12px;
+    border-radius: 0;
+    background: transparent;
+    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+#lista-categorias .categoria:hover,
+#lista-categorias .categoria[aria-pressed="true"] {
+    background: transparent;
+}
+
+#lista-categorias .categoria-titulo {
+    margin: 0;
+    font-size: inherit;
+    line-height: 1.2;
+}
+
+#lista-categorias .categoria[aria-pressed="true"]::after {
+    position: absolute;
+    right: 3px;
+    bottom: 7px;
+    left: 3px;
+    height: 2px;
+    border-radius: 2px;
+    background: #111;
+    content: "";
+}
+
+.conteudo-explorar {
+    width: calc(100% - 32px);
+    max-width: 1055px;
+    margin: 0 auto;
+    padding: 16px 0 48px;
+}
+
+.explore-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+    align-items: center;
+    gap: 30px;
+    min-height: 300px;
+    margin: 8px 0 18px;
+}
+
+.explore-hero-copy {
+    max-width: 440px;
+}
+
+.explore-label {
+    display: inline-block;
+    margin-bottom: 14px;
+    padding: 3px 9px;
+    border-radius: 8px;
+    background: #efefef;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.explore-hero h1 {
+    margin: 0 0 10px;
+    font-size: clamp(32px, 2.5vw, 36px);
+    font-weight: 800;
+    letter-spacing: -0.045em;
+    line-height: 1.1;
+}
+
+.explore-hero-copy p {
+    max-width: 440px;
+    margin: 0;
+    font-size: 14px;
+}
+
+.explore-hero-mosaic {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-rows: repeat(3, minmax(0, 1fr));
+    gap: 7px;
+    height: 300px;
+    padding: 8px;
+    overflow: hidden;
+    border-radius: 24px;
+    background: #f5f5f5;
+}
+
+.explore-hero-mosaic img {
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    border-radius: 12px;
+    object-fit: cover;
+}
+
+.mosaic-dog {
+    grid-column: 1;
+    grid-row: 1 / 4;
+}
+
+.mosaic-art {
+    grid-column: 2;
+    grid-row: 1;
+}
+
+.mosaic-fashion {
+    grid-column: 2 / 4;
+    grid-row: 2 / 4;
+}
+
+.mosaic-home {
+    grid-column: 3;
+    grid-row: 1;
+}
+
+.mosaic-travel {
+    grid-column: 4;
+    grid-row: 1 / 4;
+}
+
+.pastas-destaque,
+.tendencias,
+.pins-explorar {
+    margin: 0 0 34px;
+}
+
+.pastas-destaque h2,
+.tendencias h2,
+.pins-explorar h2 {
+    margin: 0 0 14px;
+    font-size: 22px;
+    letter-spacing: -0.025em;
+}
+
+#lista-pastas-destaque {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.pasta-destaque {
+    min-width: 0;
+}
+
+.pasta-destaque-imagens {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    grid-template-rows: repeat(2, 62px);
+    gap: 3px;
+    overflow: hidden;
+    border-radius: 12px;
+    background: #f2f2f2;
+}
+
+.pasta-destaque-imagens img {
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    object-fit: cover;
+}
+
+.pasta-destaque-imagens img:first-child {
+    grid-row: 1 / 3;
+}
+
+.pasta-destaque-imagens img:only-child {
+    grid-column: 1 / -1;
+    grid-row: 1 / -1;
+}
+
+.pasta-destaque h3 {
+    margin: 8px 4px 2px;
+    font-size: 13px;
+    line-height: 1.3;
+}
+
+.pasta-destaque p {
+    margin: 0 4px;
+    color: #666;
+    font-size: 11px;
+}
+
+#lista-tendencias {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+    margin: 0;
+}
+
+#lista-tendencias .tendencia {
+    width: auto;
+    max-width: none;
+    overflow: hidden;
+    border-radius: 12px;
+    background: #f5f5f5;
+}
+
+#lista-tendencias .tendencia img {
+    height: 130px;
+    border-radius: 0;
+}
+
+#lista-tendencias .tendencia h3 {
+    margin: 8px 10px 10px;
+    font-size: 13px;
+}
+
+#grade-pins {
+    columns: 5 180px;
+    column-gap: 14px;
+}
+
+#grade-pins .post {
+    margin: 0 0 16px;
+}
+
+@media (max-width: 760px) {
+    .pagina-explorar .site-header {
+        grid-template-areas:
+            "brand explore actions"
+            "search search search";
+        grid-template-columns: auto auto minmax(0, 1fr);
+    }
+
+    .explore-hero {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        padding: 24px 0;
+    }
+
+    .explore-hero-copy {
+        max-width: 600px;
+    }
+
+    .explore-hero-mosaic {
+        width: min(100%, 600px);
+        height: clamp(230px, 56vw, 300px);
+        margin: 0 auto;
+    }
+
+    #lista-pastas-destaque {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .pasta-destaque-imagens {
+        grid-template-rows: repeat(2, 54px);
+    }
+}
+
+@media (max-width: 520px) {
+    .pagina-explorar .site-header {
+        padding: 10px 12px 12px;
+    }
+
+    .pagina-explorar .brand img {
+        width: 104px;
+    }
+
+    .pagina-explorar .nav-explore a {
+        padding: 8px;
+        font-size: 12px;
+    }
+
+    .conteudo-explorar {
+        width: calc(100% - 24px);
+        padding-top: 0;
+    }
+
+    .explore-hero {
+        min-height: 0;
+        margin-top: 4px;
+    }
+
+    .explore-hero h1 {
+        font-size: clamp(30px, 8vw, 38px);
+    }
+
+    .explore-hero-mosaic {
+        height: 230px;
+        border-radius: 18px;
+    }
+
+    #lista-pastas-destaque {
+        grid-auto-columns: minmax(160px, 1fr);
+        grid-auto-flow: column;
+        grid-template-columns: none;
+        gap: 12px;
+        overflow-x: auto;
+        padding-bottom: 8px;
+    }
+
+    .pasta-destaque-imagens {
+        grid-template-rows: repeat(2, 52px);
+    }
+
+    #lista-tendencias {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    #grade-pins {
+        columns: 2 130px;
+        column-gap: 10px;
+    }
+}

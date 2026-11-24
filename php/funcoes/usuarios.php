@@ -5,22 +5,30 @@ require_once __DIR__ . '/validacao.php';
 require_once __DIR__ . '/upload.php';
 require_once __DIR__ . '/../includes/autenticacao.php';
 
-function criarUsuario(PDO $pdo, string $nome, string $email, string $senha): int
+function criarUsuario(PDO $pdo, string $nome, string $email, string $senha, string $nascimento): int
 {
     $nome = textoValidado($nome, 60, 'nome');
     $email = emailValidado($email);
+    $nascimento = dataNascimentoValidada($nascimento);
 
     if (mb_strlen($senha, 'UTF-8') < 8) {
         throw new InvalidArgumentException('A senha deve ter pelo menos 8 caracteres.');
     }
 
+    $consultaExistente = $pdo->prepare('SELECT 1 FROM usuarios WHERE email = :email LIMIT 1');
+    $consultaExistente->execute(['email' => $email]);
+    if ($consultaExistente->fetchColumn()) {
+        throw new InvalidArgumentException('Este e-mail já está cadastrado.');
+    }
+
     $consulta = $pdo->prepare(
-        'INSERT INTO usuarios (nome, email, senha_hash, tipo_usuario)
-         VALUES (:nome, :email, :senha_hash, :tipo_usuario)'
+        'INSERT INTO usuarios (nome, email, data_nascimento, senha_hash, tipo_usuario)
+         VALUES (:nome, :email, :data_nascimento, :senha_hash, :tipo_usuario)'
     );
     $consulta->execute([
         'nome' => $nome,
         'email' => $email,
+        'data_nascimento' => $nascimento,
         'senha_hash' => password_hash($senha, PASSWORD_DEFAULT),
         'tipo_usuario' => 'usuario',
     ]);
@@ -49,7 +57,7 @@ function consultarUsuarioPorEmail(PDO $pdo, string $email): ?array
 function consultarUsuarioPorId(PDO $pdo, int $usuarioId): ?array
 {
     $consulta = $pdo->prepare(
-        'SELECT id, nome, email, tipo_usuario, nome_usuario, sobre, site, foto, data_criacao
+        'SELECT id, nome, email, tipo_usuario, nome_usuario, sobre, site, foto, data_nascimento, data_criacao
          FROM usuarios
          WHERE id = :id
          LIMIT 1'

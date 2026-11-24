@@ -37,6 +37,29 @@ function emailValidado(string $email): string
     return mb_strtolower($email, 'UTF-8');
 }
 
+function dataNascimentoValidada(string $nascimento): string
+{
+    $nascimento = trim($nascimento);
+    $data = DateTimeImmutable::createFromFormat('!Y-m-d', $nascimento);
+    $erros = DateTimeImmutable::getLastErrors();
+
+    if (
+        !$data
+        || ($erros !== false && ($erros['warning_count'] > 0 || $erros['error_count'] > 0))
+        || $data->format('Y-m-d') !== $nascimento
+        || $data < new DateTimeImmutable('1900-01-01')
+        || $data > new DateTimeImmutable('today')
+    ) {
+        throw new InvalidArgumentException('Informe uma data de nascimento válida.');
+    }
+
+    if ($data->diff(new DateTimeImmutable('today'))->y < 13) {
+        throw new InvalidArgumentException('Você precisa ter pelo menos 13 anos.');
+    }
+
+    return $nascimento;
+}
+
 /**
  * Link opcional. Só aceita http:// e https:// para impedir links
  * como "javascript:", que executariam código ao serem clicados.

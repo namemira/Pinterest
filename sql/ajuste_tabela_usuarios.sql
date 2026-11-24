@@ -1,0 +1,9 @@
+USE pinterest;
+
+ALTER TABLE usuarios
+    ADD COLUMN IF NOT EXISTS data_nascimento DATE NULL,
+    ADD COLUMN IF NOT EXISTS nome_usuario VARCHAR(30) NULL,
+    ADD COLUMN IF NOT EXISTS sobre VARCHAR(500) NULL,
+    ADD COLUMN IF NOT EXISTS site VARCHAR(2048) NULL,
+    ADD COLUMN IF NOT EXISTS foto VARCHAR(255) NULL,
+    ADD UNIQUE INDEX IF NOT EXISTS uq_usuarios_nome_usuario (nome_usuario);

@@ -228,11 +228,11 @@ function configurarSugestoesPesquisa(campoPesquisa, containerPesquisa, container
 // Configura o filtro dos Pins e as sugestões no campo de pesquisa da página.
 function configurarPesquisaPins() {
     const campoPesquisa = document.querySelector(
-        '.pesquisa input[type="search"]'
+        '.pesquisa input[type="search"], .site-search input[type="search"]'
     );
 
     const containerPesquisa = campoPesquisa
-        ? campoPesquisa.closest('.pesquisa')
+        ? campoPesquisa.closest('.pesquisa, .site-search')
         : null;
 
     if (!campoPesquisa || !containerPesquisa) {
@@ -241,7 +241,9 @@ function configurarPesquisaPins() {
     }
 
     const botaoPesquisar =
-        containerPesquisa.querySelector('.pesquisa-icone');
+        containerPesquisa.querySelector(
+            '.pesquisa-icone, button[type="submit"]'
+        );
     const containerPins = document.querySelector('.postagens, #grade-pins');
     if (!containerPins) {
         function navegarParaExplorar() {
@@ -340,7 +342,8 @@ function configurarPesquisaPins() {
         campoPesquisa.focus();
         filtrarPins();
     });
-    const buscaInicial = new URLSearchParams(window.location.search).get('busca');
+    const parametrosBusca = new URLSearchParams(window.location.search);
+    const buscaInicial = parametrosBusca.get('busca') || parametrosBusca.get('q');
     if (buscaInicial) {
         campoPesquisa.value = buscaInicial;
         filtrarPins();

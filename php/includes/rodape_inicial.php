@@ -25,5 +25,5 @@
             <a href="cadastro.php">Criar conta</a>
             <a href="login.php">Entrar</a>
         </div>
-        <p class="footer-note">Clone do Pinterest feito para fins educacionais (Desenvolvimento Web I – IFC Concórdia). Sem vínculo com a Pinterest, Inc. Todos os dados exibidos são fictícios.</p>
+        <p class="footer-note">Clone do Pinterest feito para fins educacionais (Desenvolvimento Web I – IFC Concórdia). Sem vínculo com a Pinterest, Inc. Pins e categorias de Explorar são carregados do banco; outros elementos visuais podem ser ilustrativos.</p>
     </footer>

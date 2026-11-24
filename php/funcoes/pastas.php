@@ -135,7 +135,11 @@ function adicionarPinNaPasta(PDO $pdo, int $usuarioId, int $pastaId, int $pinId)
         throw new InvalidArgumentException('Pasta não encontrada.');
     }
 
-    $pdo->beginTransaction();
+    $iniciouTransacao = !$pdo->inTransaction();
+    if ($iniciouTransacao) {
+        $pdo->beginTransaction();
+    }
+
     try {
         salvarPin($pdo, $usuarioId, $pinId);
 
@@ -143,9 +147,13 @@ function adicionarPinNaPasta(PDO $pdo, int $usuarioId, int $pastaId, int $pinId)
             'INSERT IGNORE INTO pin_pasta (pasta_id, pin_id) VALUES (:pasta_id, :pin_id)'
         );
         $consulta->execute(['pasta_id' => $pastaId, 'pin_id' => $pinId]);
-        $pdo->commit();
+        if ($iniciouTransacao) {
+            $pdo->commit();
+        }
     } catch (Throwable $erro) {
-        $pdo->rollBack();
+        if ($iniciouTransacao && $pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
         throw $erro;
     }
 

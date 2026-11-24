@@ -166,6 +166,27 @@ function consultarPinPorId(PDO $pdo, int $pinId, ?int $usuarioLogado = null): ?a
     return $pin ?: null;
 }
 
+function removerImagemPinSeNaoCompartilhada(PDO $pdo, ?string $caminho): void
+{
+    if ($caminho === null || !preg_match('#^uploads/pins/[a-f0-9]{32}\.(jpg|png|webp)$#', $caminho)) {
+        return;
+    }
+
+    $consulta = $pdo->prepare(
+        'SELECT
+            (SELECT COUNT(*) FROM pins WHERE caminho_imagem = :caminho_pin)
+            + (SELECT COUNT(*) FROM usuarios WHERE foto = :caminho_foto)'
+    );
+    $consulta->execute([
+        'caminho_pin' => $caminho,
+        'caminho_foto' => $caminho,
+    ]);
+
+    if ((int) $consulta->fetchColumn() === 0) {
+        removerImagemEnviada($caminho);
+    }
+}
+
 /**
  * Edita um Pin. Somente o autor pode editar.
  * $caminhoImagem = null mantém a imagem atual.
@@ -220,8 +241,16 @@ function editarPin(
         'usuario_id' => $usuarioId,
     ]);
 
+    $verificarPropriedade = $pdo->prepare(
+        'SELECT 1 FROM pins WHERE id = :pin_id AND usuario_id = :usuario_id LIMIT 1'
+    );
+    $verificarPropriedade->execute(['pin_id' => $pinId, 'usuario_id' => $usuarioId]);
+    if (!$verificarPropriedade->fetchColumn()) {
+        return false;
+    }
+
     if ($caminhoImagem !== null && $caminhoImagem !== $pin['caminho_imagem']) {
-        removerImagemEnviada($pin['caminho_imagem']);
+        removerImagemPinSeNaoCompartilhada($pdo, $pin['caminho_imagem']);
     }
 
     return true;
@@ -243,11 +272,17 @@ function excluirPin(PDO $pdo, int $usuarioId, int $pinId, bool $comoAdmin = fals
         return false;
     }
 
-    $consulta = $pdo->prepare('DELETE FROM pins WHERE id = :pin_id');
-    $consulta->execute(['pin_id' => $pinId]);
+    $sql = 'DELETE FROM pins WHERE id = :pin_id';
+    $parametros = ['pin_id' => $pinId];
+    if (!$comoAdmin) {
+        $sql .= ' AND usuario_id = :usuario_id';
+        $parametros['usuario_id'] = $usuarioId;
+    }
+    $consulta = $pdo->prepare($sql);
+    $consulta->execute($parametros);
 
     if ($consulta->rowCount() > 0) {
-        removerImagemEnviada($pin['caminho_imagem']);
+        removerImagemPinSeNaoCompartilhada($pdo, $pin['caminho_imagem']);
         return true;
     }
     return false;

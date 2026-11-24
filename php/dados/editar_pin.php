@@ -59,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $novaImagem = salvarImagemEnviada('imagem', 'pins');
             }
 
-            editarPin(
+            if (!editarPin(
                 $pdo,
                 $usuarioId,
                 $pinId,
@@ -69,7 +69,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $dados['link'],
                 $novaImagem,
                 $dados['texto_alternativo']
-            );
+            )) {
+                throw new RuntimeException('Pin não encontrado ou você não tem permissão para editá-lo.');
+            }
 
             definirAviso('sucesso', 'Pin atualizado.');
             redirecionar('perfil.php?aba=criados#pin-' . $pinId);

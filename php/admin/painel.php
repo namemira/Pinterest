@@ -4,6 +4,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/../includes/inicializacao.php';
 
 // Acesso restrito: exige login e tipo_usuario = 'admin' (conferido no banco).
+exigirLoginNaPagina('../dados/login.php');
 $pdo = criarConexao();
 $adminId = exigirAdmin($pdo);
 

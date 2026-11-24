@@ -27,6 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $confirmacaoSenha = is_string($_POST['confirmar_senha'] ?? null) ? $_POST['confirmar_senha'] : '';
             $nascimento = is_string($_POST['nascimento'] ?? null) ? trim($_POST['nascimento']) : '';
             $nascimentoInformado = $nascimento;
+            $nascimento = dataNascimentoValidada($nascimento);
 
             if (mb_strlen($senha, 'UTF-8') < 8) {
                 throw new InvalidArgumentException('A senha deve ter pelo menos 8 caracteres.');
@@ -35,27 +36,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 throw new InvalidArgumentException('As senhas informadas não são iguais.');
             }
 
-            $dataNascimento = DateTimeImmutable::createFromFormat('!Y-m-d', $nascimento);
-            $errosData = DateTimeImmutable::getLastErrors();
-            if (
-                !$dataNascimento
-                || ($errosData !== false && ($errosData['warning_count'] > 0 || $errosData['error_count'] > 0))
-                || $dataNascimento->format('Y-m-d') !== $nascimento
-                || $dataNascimento < new DateTimeImmutable('1900-01-01')
-                || $dataNascimento > new DateTimeImmutable('today')
-            ) {
-                throw new InvalidArgumentException('Informe uma data de nascimento válida.');
-            }
-            if ($dataNascimento->diff(new DateTimeImmutable('today'))->y < 13) {
-                throw new InvalidArgumentException('Você precisa ter pelo menos 13 anos.');
-            }
-
             $pdo = criarConexao();
-            if (consultarUsuarioPorEmail($pdo, $email) !== null) {
-                throw new InvalidArgumentException('Este e-mail já está cadastrado.');
-            }
-
-            criarUsuario($pdo, $nome, $email, $senha);
+            criarUsuario($pdo, $nome, $email, $senha, $nascimento);
             definirAviso('sucesso', 'Cadastro realizado com sucesso. Agora você já pode entrar.');
             redirecionar('login.php');
         } catch (InvalidArgumentException $erro) {

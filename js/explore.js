@@ -1,99 +1,21 @@
-
 'use strict';
 
-// Conteúdo estático usado para montar as categorias da página Explorar.
-const categorias = [
-    {
-        nome: 'Moda',
-        imagem: '../../Imagens/moda.jpg'
-    },
-    {
-        nome: 'Decoração',
-        imagem: '../../Imagens/decoracao.jpg'
-    },
-    {
-        nome: 'Receitas',
-        imagem: '../../Imagens/receitas.jpg'
-    },
-    {
-        nome: 'Viagens',
-        imagem: '../../Imagens/viagens.jpg'
-    },
-    {
-        nome: 'Arte',
-        imagem: '../../Imagens/arte.jpg'
-    }
-];
-// Sugestões em destaque exibidas abaixo das categorias.
-const tendencias = [
-    {
-        titulo: 'Decoração minimalista',
-        imagem: '../../Imagens/decoracao.jpg'
-    },
-    {
-        titulo: 'Looks casuais',
-        imagem: '../../Imagens/moda.jpg'
-    },
-    {
-        titulo: 'Receitas fáceis',
-        imagem: '../../Imagens/receitas.jpg'
-    }
-];
-// Cria os cartões de categoria dentro da lista prevista no HTML.
-function carregarCategorias() {
-
-    const container = document.querySelector('#lista-categorias');
-    if (!container) {
-        return;
-    }
-
-    categorias.forEach((categoria) => {
-
-        const elemento = document.createElement('button');
-
-        elemento.classList.add('categoria');
-        elemento.type = 'button';
-        elemento.setAttribute('aria-pressed', 'false');
-        elemento.setAttribute(
-            'aria-label',
-            `Filtrar Pins pela categoria ${categoria.nome}`
-        );
-        elemento.dataset.categoria = categoria.nome;
-
-        const imagem = document.createElement('img');
-imagem.src = categoria.imagem;
-imagem.alt = categoria.nome;
-
-imagem.onerror = function () {
-    console.error('Não foi possível carregar:', imagem.src);
-};
-
-imagem.onload = function () {
-    console.log('Imagem carregada:', imagem.src);
-};
-        imagem.alt = categoria.nome;
-        const titulo = document.createElement('span');
-        titulo.className = 'categoria-titulo';
-        titulo.textContent = categoria.nome;
-        elemento.append(imagem, titulo);
-
-        container.appendChild(elemento);
-    });
-}
-
-// Filtra Pins pela categoria sem substituir o termo atual da pesquisa.
 function configurarFiltroCategorias() {
     const listaCategorias = document.querySelector('#lista-categorias');
     const containerPins = document.querySelector('#grade-pins');
     const campoPesquisa = document.querySelector(
-        '.pesquisa input[type="search"]'
+        '.pesquisa input[type="search"], .site-search input[type="search"]'
     );
     if (!listaCategorias || !containerPins) {
         return;
     }
 
-    let categoriaAtiva = '';
-    containerPins.dataset.categoriaSelecionada = '';
+    const categoriaInicial = listaCategorias.querySelector(
+        '.categoria[aria-pressed="true"]'
+    );
+    let categoriaAtiva = categoriaInicial?.dataset.categoria || '';
+    containerPins.dataset.categoriaSelecionada = categoriaAtiva;
+    const campoCategoria = document.querySelector('#explore-category-filter');
 
     const mensagemFiltro = document.createElement('p');
     mensagemFiltro.className = 'mensagem-categoria';
@@ -105,10 +27,30 @@ function configurarFiltroCategorias() {
     function selecionarCategoria(elemento) {
         const categoria = elemento.dataset.categoria;
         categoriaAtiva =
+            !categoria ||
             normalizarTexto(categoriaAtiva) === normalizarTexto(categoria)
                 ? ''
                 : categoria;
         containerPins.dataset.categoriaSelecionada = categoriaAtiva;
+        if (campoCategoria) {
+            campoCategoria.value = categoriaAtiva
+                ? elemento.dataset.categoriaId
+                : '';
+        }
+
+        const url = new URL(window.location.href);
+        if (categoriaAtiva) {
+            url.searchParams.set('categoria_id', elemento.dataset.categoriaId);
+        } else {
+            url.searchParams.delete('categoria_id');
+        }
+        if (campoPesquisa?.value.trim()) {
+            url.searchParams.set('q', campoPesquisa.value.trim());
+        } else {
+            url.searchParams.delete('q');
+        }
+        url.searchParams.delete('busca');
+        window.history.replaceState(null, '', url);
 
         listaCategorias.querySelectorAll('.categoria').forEach((item) => {
             const selecionada = item.dataset.categoria === categoriaAtiva;
@@ -116,16 +58,22 @@ function configurarFiltroCategorias() {
             item.setAttribute(
                 'aria-label',
                 selecionada
-                    ? `Categoria ${item.dataset.categoria} selecionada. Ative novamente para mostrar todas as categorias.`
-                    : `Filtrar Pins pela categoria ${item.dataset.categoria}`
+                    ? `Categoria ${item.dataset.categoriaLabel} selecionada. Ative novamente para mostrar todas as categorias.`
+                    : item.dataset.categoria
+                        ? `Filtrar Pins pela categoria ${item.dataset.categoriaLabel}`
+                        : 'Mostrar Pins de todas as categorias'
             );
         });
 
-        mensagemFiltro.textContent = categoriaAtiva
-            ? `Exibindo Pins da categoria ${categoriaAtiva}. Selecione novamente para mostrar todos.`
-            : campoPesquisa?.value.trim()
-                ? 'Filtro de categoria removido. A pesquisa atual continua aplicada.'
-                : 'Exibindo Pins de todas as categorias.';
+        if (categoriaAtiva) {
+            mensagemFiltro.textContent =
+                `Exibindo Pins da categoria ${elemento.dataset.categoriaLabel}. Selecione novamente para mostrar todos.`;
+        } else if (campoPesquisa?.value.trim()) {
+            mensagemFiltro.textContent =
+                'Filtro de categoria removido. A pesquisa atual continua aplicada.';
+        } else {
+            mensagemFiltro.textContent = 'Exibindo Pins de todas as categorias.';
+        }
         mensagemFiltro.hidden = false;
         document.dispatchEvent(new CustomEvent('pins:category-changed'));
     }
@@ -140,55 +88,6 @@ function configurarFiltroCategorias() {
             selecionarCategoria(elemento);
         }
     });
-
-}
-// Cria os cartões de tendências dentro da lista prevista no HTML.
-function carregarTendencias() {
-
-    const container = document.querySelector('#lista-tendencias');
-    if (!container) {
-        return;
-    }
-
-    tendencias.forEach((tendencia) => {
-
-        const elemento = document.createElement('div');
-
-        elemento.classList.add('tendencia');
-
-        elemento.innerHTML = `
-            <img src="${tendencia.imagem}" alt="${tendencia.titulo}">
-            <h3>${tendencia.titulo}</h3>
-        `;
-
-        container.appendChild(elemento);
-    });
 }
 
-// Reaproveita o catálogo e a renderização de Pins compartilhados pelo feed.
-function carregarPinsExplorar() {
-
-    const container = document.querySelector('#grade-pins');
-    const sistemaPins = window.pinterestPins;
-    if (!container || !sistemaPins) {
-        return;
-    }
-
-    sistemaPins.listarPins().forEach((pin) => {
-        container.appendChild(sistemaPins.criarCardPin(pin));
-    });
-
-    document.dispatchEvent(new CustomEvent('pins:updated'));
-}
-// Preenche a página depois que sua estrutura HTML está pronta.
-document.addEventListener('DOMContentLoaded', () => {
-
-    carregarCategorias();
-
-    configurarFiltroCategorias();
-
-    carregarTendencias();
-
-    carregarPinsExplorar();
-
-});
+document.addEventListener('DOMContentLoaded', configurarFiltroCategorias);
