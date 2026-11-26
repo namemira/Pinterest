@@ -117,6 +117,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <script src="../../js/pesquisa.js" defer></script>
 <script src="../../js/menu.js" defer></script>
 <script src="../../js/acoes_php.js" defer></script>
+<script src="../../js/criar_pin_preview.js" defer></script>
 <script src="../../js/tema.js" defer></script>
 </body>
 </html>

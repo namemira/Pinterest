@@ -144,8 +144,9 @@ body.pagina-admin {
 
 .admin-miniatura {
     width: 56px;
-    height: 56px;
-    object-fit: cover;
+    height: auto;
+    max-height: none;
+    object-fit: contain;
     border-radius: 10px;
 }
 

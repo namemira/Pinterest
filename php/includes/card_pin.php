@@ -13,10 +13,19 @@ $tituloCard = (string) $pin['titulo'];
 $voltarCard = paginaAtual();
 $ehDonoCard = $usuarioCard !== null && (int) $pin['usuario_id'] === $usuarioCard;
 $salvoCard = (bool) ($pin['salvo'] ?? false);
+$imagemCard = urlArquivo($pin['caminho_imagem']);
 ?>
-<article class="post" id="pin-<?= (int) $pin['id'] ?>" data-pin-id="<?= (int) $pin['id'] ?>">
+<article class="post" id="pin-<?= (int) $pin['id'] ?>" data-pin-id="<?= (int) $pin['id'] ?>"
+         aria-label="Pin: <?= e($tituloCard) ?>"
+         data-pin-titulo="<?= e($tituloCard) ?>"
+         data-pin-descricao="<?= e((string) ($pin['descricao'] ?? '')) ?>"
+         data-pin-categoria="<?= e((string) $pin['categoria']) ?>"
+         data-pin-link="<?= e((string) ($pin['link_destino'] ?? '')) ?>"
+         data-pin-autor="<?= e((string) $pin['autor']) ?>"
+         data-pin-autor-foto="<?= e(urlFotoPerfil($pin['autor_foto'] ?? null) ?? '') ?>"
+         data-pin-imagem="<?= e($imagemCard) ?>">
     <div class="post-image">
-        <img src="<?= e(urlArquivo($pin['caminho_imagem'])) ?>" alt="<?= e($pin['texto_alternativo'] ?: $tituloCard) ?>" loading="lazy">
+        <img src="<?= e($imagemCard) ?>" alt="<?= e($pin['texto_alternativo'] ?: $tituloCard) ?>" loading="lazy">
         <?php if ($usuarioCard !== null): ?>
         <div class="pin-actions" role="group" aria-label="Ações para <?= e($tituloCard) ?>">
             <!-- RN02: o botão alterna entre Salvar e Salvo; o servidor impede duplicatas -->
@@ -27,12 +36,21 @@ $salvoCard = (bool) ($pin['salvo'] ?? false);
                 <input type="hidden" name="voltar" value="<?= e($voltarCard . '#pin-' . (int) $pin['id']) ?>">
                 <button class="pin-action pin-action-salvar<?= $salvoCard ? ' pin-salvo' : '' ?>" type="submit"
                         data-label="<?= $salvoCard ? 'Salvo' : 'Salvar' ?>"
+                        data-label-salvo="Salvo"
                         aria-pressed="<?= $salvoCard ? 'true' : 'false' ?>"
                         aria-label="<?= $salvoCard ? 'Remover dos salvos' : 'Salvar Pin' ?>: <?= e($tituloCard) ?>"></button>
             </form>
+            <?php if (!empty($paginaFeed)): ?>
+            <button class="pin-action pin-action-compartilhar" type="button" data-acao-pin="compartilhar" data-label="Compartilhar"
+                    aria-label="Compartilhar Pin: <?= e($tituloCard) ?>"></button>
+            <button class="pin-action pin-action-mais" type="button" data-menu-pin
+                    aria-haspopup="menu" aria-controls="menu-opcoes-pin" aria-expanded="false"
+                    aria-label="Mais opções para <?= e($tituloCard) ?>"></button>
+            <?php endif; ?>
         </div>
         <?php endif; ?>
     </div>
+    <div class="post-informacoes"<?= !empty($paginaFeed) ? ' hidden' : '' ?>>
     <h2 class="post-titulo"><?= e($tituloCard) ?></h2>
     <?php if (!empty($pin['descricao'])): ?>
     <p class="post-descricao"><?= e($pin['descricao']) ?></p>
@@ -84,4 +102,5 @@ $salvoCard = (bool) ($pin['salvo'] ?? false);
         </form>
     </div>
     <?php endif; ?>
+    </div>
 </article>

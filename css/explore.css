@@ -87,8 +87,10 @@
 }
 
 #lista-tendencias .tendencia img {
-    height: 150px;
+    height: auto;
+    max-height: none;
     border-radius: 0;
+    object-fit: contain;
 }
 
 #lista-tendencias .tendencia h3 {
@@ -347,10 +349,13 @@
 }
 
 .pasta-destaque-imagens img {
-    width: 100%;
-    height: 100%;
-    min-height: 0;
-    object-fit: cover;
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    justify-self: center;
+    align-self: center;
 }
 
 .pasta-destaque-imagens img:first-child {
@@ -390,8 +395,10 @@
 }
 
 #lista-tendencias .tendencia img {
-    height: 130px;
+    height: auto;
+    max-height: none;
     border-radius: 0;
+    object-fit: contain;
 }
 
 #lista-tendencias .tendencia h3 {
@@ -454,85 +461,193 @@
         color: var(--cor-pinterest, #e60023);
         font-weight: 700;
     }
+}
 
+.explorar-conta {
+    box-sizing: border-box;
+    width: calc(100% - 84px);
+    max-width: 1500px;
+    margin-left: 84px;
+    padding: 28px clamp(20px, 4vw, 56px) 48px;
+}
+
+.explorar-conta .titulo-explorar {
+    margin: 4px auto 28px;
+    text-align: center;
+}
+
+.explorar-conta .titulo-explorar h1 {
+    margin: 0 0 8px;
+    font-size: clamp(28px, 3vw, 38px);
+    letter-spacing: -0.04em;
+}
+
+.explorar-suas-ideias {
+    margin: 0 0 30px;
+    padding: 22px 24px;
+    border: 1px solid #ededed;
+    border-radius: 20px;
+    background: #fafafa;
+}
+
+.explorar-suas-ideias h2 {
+    margin: 0 0 6px;
+    font-size: 20px;
+}
+
+.explorar-suas-ideias > p {
+    margin: 0 0 16px;
+    color: var(--cor-texto-secundario, #555);
+}
+
+.explorar-suas-previas {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
+    gap: 14px;
+    margin-bottom: 18px;
+}
+
+.explorar-suas-previas a {
+    min-width: 0;
+    color: inherit;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.explorar-suas-previas img {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: none;
+    aspect-ratio: auto;
+    border-radius: 14px;
+    object-fit: contain;
+    transition: transform 180ms ease;
+}
+
+.explorar-suas-previas a:hover img {
+    transform: translateY(-2px);
+}
+
+.explorar-suas-previas span {
+    display: block;
+    margin-top: 7px;
+    overflow-wrap: anywhere;
+}
+
+.explorar-conta-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 20px;
+}
+
+.explorar-conta-links a {
+    color: var(--cor-pinterest, #e60023);
+    font-weight: 700;
+}
+
+.explorar-conta .explore-categories {
+    margin-bottom: 26px;
+}
+
+.explorar-conta #lista-categorias {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+}
+
+.explorar-conta .pastas-destaque,
+.explorar-conta .tendencias,
+.explorar-conta .pins-explorar {
+    margin-bottom: 34px;
+}
+
+.explorar-conta .pastas-destaque h2,
+.explorar-conta .tendencias h2,
+.explorar-conta .pins-explorar h2 {
+    margin: 0 0 16px;
+    font-size: 22px;
+    letter-spacing: -0.025em;
+}
+
+.explorar-conta #grade-pins {
+    columns: 5 190px;
+    column-gap: 16px;
+}
+
+.explorar-conta #grade-pins .post {
+    margin: 0 0 18px;
+}
+
+body.tema-escuro .explorar-suas-ideias {
+    border-color: #333;
+    background: #171717;
+}
+
+body.tema-escuro .explorar-conta .explore-categories {
+    border-color: #444;
+    background: #000;
+}
+
+body.tema-escuro .explorar-conta .categoria[aria-pressed="true"]::after {
+    background: #fff;
+}
+
+@media (max-width: 767px) {
     .explorar-conta {
-        box-sizing: border-box;
-        max-width: 1380px;
-        margin-left: 84px;
-        padding: 24px clamp(16px, 3vw, 40px) 48px;
+        width: calc(100% - 64px);
+        margin-left: 64px;
+        padding: 22px 18px 40px;
+    }
+
+    .explorar-conta #lista-pastas-destaque {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .explorar-conta #lista-tendencias {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .explorar-conta #grade-pins {
+        columns: 3 145px;
+    }
+}
+
+@media (max-width: 520px) {
+    .explorar-conta {
+        padding: 20px 12px 32px;
+    }
+
+    .explorar-conta .titulo-explorar {
+        margin-bottom: 22px;
     }
 
     .explorar-suas-ideias {
-        margin-bottom: 32px;
-    }
-
-    .explorar-suas-ideias h2,
-    .explorar-suas-ideias p {
-        margin: 0 0 12px;
+        padding: 18px 14px;
     }
 
     .explorar-suas-previas {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(120px, 170px));
-        gap: 14px;
-        margin-bottom: 16px;
-    }
-
-    .explorar-suas-previas a {
-        min-width: 0;
-        color: inherit;
-        font-weight: 700;
-        text-decoration: none;
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 10px;
     }
 
     .explorar-suas-previas img {
-        display: block;
-        width: 100%;
-        height: 140px;
-        border-radius: 14px;
-        object-fit: cover;
+        height: auto;
     }
 
-    .explorar-suas-previas span {
-        display: block;
-        margin-top: 6px;
-        overflow-wrap: anywhere;
+    .explorar-conta #lista-pastas-destaque {
+        grid-auto-columns: minmax(150px, 1fr);
+        grid-auto-flow: column;
+        grid-template-columns: none;
+        gap: 12px;
+        overflow-x: auto;
+        padding-bottom: 8px;
     }
 
-    .explorar-conta-links {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px 20px;
-    }
-
-    .explorar-conta-links a {
-        color: var(--cor-pinterest, #e60023);
-        font-weight: 700;
-    }
-
-    .explorar-conta .explore-categories {
-        margin-bottom: 24px;
-    }
-
-    .explorar-conta #lista-categorias {
-        width: 100%;
-        max-width: none;
-    }
-
-    body.tema-escuro .explorar-conta .explore-categories {
-        border-color: #444;
-        background: #000;
-    }
-
-    body.tema-escuro .explorar-conta .categoria[aria-pressed="true"]::after {
-        background: #fff;
-    }
-
-    @media (max-width: 767px) {
-        .explorar-conta {
-            margin-left: 0;
-            padding: 20px 16px 40px;
-        }
+    .explorar-conta #grade-pins {
+        columns: 2 130px;
+        column-gap: 10px;
     }
 
     .pagina-explorar .brand img {

@@ -69,7 +69,7 @@ function categoriaExiste(PDO $pdo, int $categoriaId): bool
 const SQL_COLUNAS_PIN = 'p.id, p.titulo, p.descricao, p.link_destino,
         p.caminho_imagem, p.texto_alternativo,
         p.data_criacao, p.data_atualizacao,
-        u.id AS usuario_id, u.nome AS autor,
+        u.id AS usuario_id, u.nome AS autor, u.foto AS autor_foto,
         c.id AS categoria_id, c.nome AS categoria,
         (ps.id IS NOT NULL) AS salvo';
 

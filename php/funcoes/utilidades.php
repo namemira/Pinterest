@@ -25,6 +25,22 @@ function urlArquivo(?string $caminho, string $padrao = 'Imagens/dog.jpg'): strin
     return '../../' . $caminho;
 }
 
+function urlFotoPerfil(?string $caminho): ?string
+{
+    $caminho = trim((string) $caminho);
+    if ($caminho === '' || !preg_match('#^(Imagens|uploads)/[A-Za-z0-9_./-]+$#', $caminho) || str_contains($caminho, '..')) {
+        return null;
+    }
+
+    return '../../' . $caminho;
+}
+
+function inicialNome(string $nome): string
+{
+    $nome = trim($nome);
+    return $nome === '' ? '?' : mb_strtoupper(mb_substr($nome, 0, 1, 'UTF-8'), 'UTF-8');
+}
+
 function redirecionar(string $url): void
 {
     header('Location: ' . $url, true, 303);

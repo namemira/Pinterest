@@ -296,6 +296,24 @@
     object-fit: cover;
 }
 
+.avatar-placeholder {
+    display: inline-grid;
+    flex: 0 0 auto;
+    place-items: center;
+    border-radius: 50%;
+    background: #e9e9e9;
+    color: #555;
+    font-weight: 700;
+    line-height: 1;
+    user-select: none;
+}
+
+.perfil .avatar-placeholder,
+.perfil img.avatar-header {
+    width: 40px;
+    height: 40px;
+}
+
 .perfil-seta {
     width: 18px;
     height: 18px;
@@ -345,6 +363,9 @@
 .post img {
     width: 100%;
     height: auto;
+    max-height: none;
+    aspect-ratio: auto;
+    object-fit: contain;
     display: block;
     border-radius: 15px;
 }
@@ -365,6 +386,9 @@
 .post-image > img {
     width: 100%;
     height: auto;
+    max-height: none;
+    aspect-ratio: auto;
+    object-fit: contain;
     display: block;
     border-radius: 15px;
 }
@@ -372,7 +396,6 @@
 .post:hover,
 .post:focus-within {
     z-index: 1;
-    transform: translateY(-4px) scale(1.015);
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
 }
 
@@ -460,6 +483,29 @@
     content: none;
 }
 
+.pin-action-mais {
+    left: 12px;
+    bottom: 12px;
+    width: 44px;
+    height: 44px;
+    min-height: 44px;
+    justify-content: center;
+    padding: 0;
+    border-radius: 12px;
+    background: #fff;
+    color: #111;
+}
+
+.pin-action-mais::before {
+    content: "\2026";
+    font-size: 1.8em;
+    line-height: 1;
+}
+
+.pin-action-mais::after {
+    content: none;
+}
+
 .pin-action:hover {
     filter: brightness(0.9);
 }
@@ -477,6 +523,107 @@
     margin: 8px 24px 0 108px;
     padding: 8px 12px;
     color: #333;
+}
+
+.pin-interaction-status:empty {
+    display: none;
+}
+
+.pagina-feed .post[hidden] {
+    display: none !important;
+}
+
+.pin-context-menu[hidden] {
+    display: none !important;
+}
+
+.pin-context-menu {
+    position: fixed;
+    z-index: 2200;
+    box-sizing: border-box;
+    display: grid;
+    width: min(230px, calc(100vw - 24px));
+    padding: 6px;
+    border: 1px solid #e1e1e1;
+    border-radius: 14px;
+    background: #fff;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.2);
+}
+
+.pin-context-menu button,
+.pin-context-menu a {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    min-height: 42px;
+    box-sizing: border-box;
+    padding: 9px 12px;
+    border: 0;
+    border-radius: 9px;
+    background: transparent;
+    color: #222;
+    font: inherit;
+    font-size: 14px;
+    text-align: left;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.pin-context-menu button:hover,
+.pin-context-menu a:hover {
+    background: #f2f2f2;
+}
+
+.pin-context-menu :focus-visible {
+    outline: 3px solid #005fcc;
+    outline-offset: -2px;
+}
+
+.pin-denuncia-dialogo form {
+    display: grid;
+    gap: 10px;
+}
+
+.pin-denuncia-dialogo label {
+    margin-top: 4px;
+    font-weight: 700;
+}
+
+.pin-denuncia-dialogo select,
+.pin-denuncia-dialogo textarea {
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 44px;
+    padding: 10px 12px;
+    border: 1px solid #bcbcbc;
+    border-radius: 10px;
+    background: #fff;
+    color: #222;
+    font: inherit;
+}
+
+.pin-denuncia-dialogo textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.pin-denuncia-acoes {
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.pin-denuncia-acoes .botao-primario,
+.pin-denuncia-acoes .botao-secundario {
+    min-height: 44px;
+}
+
+.pin-mural-vazio {
+    margin: 32px 24px 32px 108px;
+    color: #555;
+    text-align: center;
 }
 
 @media (hover: none), (pointer: coarse) {
@@ -553,7 +700,7 @@
 .detalhes-pin-imagem {
     display: block;
     width: 100%;
-    height: 100%;
+    height: auto;
     max-height: min(90vh, 820px);
     object-fit: contain;
     background: #f3f3f3;
@@ -663,6 +810,29 @@
     object-fit: cover;
 }
 
+.detalhes-pin-avatar {
+    position: relative;
+    display: grid;
+    flex: 0 0 36px;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    overflow: hidden;
+    border-radius: 50%;
+}
+
+.detalhes-pin-avatar .avatar-placeholder,
+.detalhes-pin-avatar img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.detalhes-pin-avatar .avatar-placeholder {
+    font-size: 15px;
+}
+
 .detalhes-pin-link {
     display: inline-block;
     margin-top: 8px;
@@ -709,9 +879,10 @@
 .detalhes-pin-relacionado-abrir img {
     display: block;
     width: 100%;
-    max-height: 220px;
-    aspect-ratio: 4 / 5;
-    object-fit: cover;
+    height: auto;
+    max-height: none;
+    aspect-ratio: auto;
+    object-fit: contain;
 }
 
 .detalhes-pin-relacionado-abrir span {
@@ -769,7 +940,7 @@ body.detalhes-pin-abertos {
     .detalhes-pin-imagem {
         height: auto;
         max-height: 55vh;
-        aspect-ratio: 1 / 1;
+        aspect-ratio: auto;
     }
 
     .detalhes-pin-conteudo {
@@ -1067,9 +1238,11 @@ body.detalhes-pin-abertos {
 
 .pastas-pin img {
     width: 90px;
-    max-height: 110px;
+    height: auto;
+    max-height: none;
+    aspect-ratio: auto;
     border-radius: 8px;
-    object-fit: cover;
+    object-fit: contain;
 }
 
 .pastas-pin-informacoes {
@@ -1196,7 +1369,8 @@ body.detalhes-pin-abertos {
     }
 
     .pin-interaction-status,
-    .pins-carregamento {
+    .pins-carregamento,
+    .pin-mural-vazio {
         margin-left: 76px;
         margin-right: 12px;
     }
@@ -1259,6 +1433,27 @@ body.detalhes-pin-abertos {
 
 }
 
+.pagina-feed #feed.postagens {
+    --pin-coluna-minima: clamp(130px, 32vw, 250px);
+    display: grid;
+    columns: initial;
+    grid-template-columns: repeat(
+        auto-fit,
+        minmax(min(100%, var(--pin-coluna-minima)), 1fr)
+    );
+    grid-auto-rows: 8px;
+    grid-auto-flow: dense;
+    gap: clamp(8px, 1vw, 16px);
+}
+
+.pagina-feed #feed.postagens .post {
+    display: block;
+    align-self: start;
+    width: 100%;
+    margin: 0;
+    break-inside: auto;
+}
+
 body {
     display: flex;
     flex-direction: column;
@@ -1305,6 +1500,10 @@ main {
     flex: 0 0 96px;
     border-radius: 50%;
     object-fit: cover;
+}
+
+.perfil-pastas-foto.avatar-placeholder {
+    font-size: 30px;
 }
 
 .perfil-pastas-identidade {
@@ -1564,10 +1763,12 @@ main {
 }
 
 .pasta-capa img {
-    width: 100%;
-    height: 100%;
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 100%;
     min-height: 0;
-    object-fit: cover;
+    object-fit: contain;
 }
 
 .pasta-capa-1 {
@@ -1692,8 +1893,10 @@ main {
 .pasta-pin-pagina > img {
     display: block;
     width: 100%;
-    max-height: 320px;
-    object-fit: cover;
+    height: auto;
+    max-height: none;
+    aspect-ratio: auto;
+    object-fit: contain;
 }
 
 .pasta-pin-informacoes {
@@ -1887,6 +2090,22 @@ main {
     border-radius: 24px;
     background: #fff;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+}
+
+@media (max-width: 960px) {
+    .pagina-criar-pin {
+        width: calc(100% - 124px);
+        margin: 20px 20px 48px 104px;
+    }
+
+    .criar-pin-formulario {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 28px;
+    }
+
+    .criar-pin-soltar {
+        min-height: clamp(300px, 58vw, 480px);
+    }
 }
 
 .criar-pin-imagem {
@@ -2106,8 +2325,10 @@ main {
 .ideia-nao-organizada img {
     display: block;
     width: 100%;
-    max-height: 260px;
-    object-fit: cover;
+    height: auto;
+    max-height: none;
+    aspect-ratio: auto;
+    object-fit: contain;
 }
 
 .ideia-nao-organizada h3,
@@ -2241,8 +2462,10 @@ main {
 
 .tendencia img {
     width: 100%;
-    height: 130px;
-    object-fit: cover;
+    height: auto;
+    max-height: none;
+    aspect-ratio: auto;
+    object-fit: contain;
     border-radius: 12px;
 }
 
@@ -2347,6 +2570,12 @@ main {
     color: #666;
     font-size: 13px;
     overflow-wrap: anywhere;
+}
+
+.menu-perfil-conta > .avatar-placeholder {
+    background: #e9e9e9;
+    color: #555;
+    font-size: 19px;
 }
 
 .menu-perfil-secao {
@@ -2756,10 +2985,11 @@ main {
 .composicao-item img {
     display: block;
     width: 100%;
-    max-height: 150px;
-    aspect-ratio: 4 / 5;
+    height: auto;
+    max-height: none;
+    aspect-ratio: auto;
     border-radius: 8px;
-    object-fit: cover;
+    object-fit: contain;
 }
 
 .composicao-item > span {

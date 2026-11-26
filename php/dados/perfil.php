@@ -43,6 +43,7 @@ try {
 }
 
 $nomePerfil = $usuario['nome'] ?? $_SESSION['usuario_nome'];
+$fotoPerfil = urlFotoPerfil($usuario['foto'] ?? null);
 $rotulosAbas = ['pastas' => 'Pastas', 'criados' => 'Pins criados', 'salvos' => 'Pins salvos'];
 ?>
 <!DOCTYPE html>
@@ -68,7 +69,11 @@ $rotulosAbas = ['pastas' => 'Pastas', 'criados' => 'Pins criados', 'salvos' => '
     <section class="pagina-pastas" id="pagina-pastas" aria-labelledby="perfil-nome">
                 <!-- Dados do perfil vindos da tabela usuarios -->
                 <header class="perfil-pastas">
-                    <img class="perfil-pastas-foto" src="<?= e(urlArquivo($usuario['foto'] ?? '')) ?>" alt="Foto do perfil">
+                    <?php if ($fotoPerfil !== null): ?>
+                    <img class="perfil-pastas-foto" src="<?= e($fotoPerfil) ?>" alt="Foto do perfil">
+                    <?php else: ?>
+                    <span class="perfil-pastas-foto avatar-placeholder" aria-hidden="true"><?= e(inicialNome((string) $nomePerfil)) ?></span>
+                    <?php endif; ?>
                     <div class="perfil-pastas-identidade">
                         <h1 id="perfil-nome"><?= e($nomePerfil) ?></h1>
                         <?php if (!empty($usuario['nome_usuario'])): ?>

@@ -45,10 +45,19 @@
     titulo.id = 'detalhes-pin-titulo';
 
     const autor = criarElemento('div', 'detalhes-pin-autor');
+    const avatarAutor = criarElemento('span', 'detalhes-pin-avatar');
     const fotoAutor = document.createElement('img');
     fotoAutor.alt = '';
+    fotoAutor.hidden = true;
+    const inicialAutor = criarElemento(
+      'span',
+      'avatar-placeholder',
+      '?'
+    );
+    inicialAutor.setAttribute('aria-hidden', 'true');
+    avatarAutor.append(fotoAutor, inicialAutor);
     const nomeAutor = criarElemento('span', '', '');
-    autor.append(fotoAutor, nomeAutor);
+    autor.append(avatarAutor, nomeAutor);
 
     const descricao = criarElemento('p', 'detalhes-pin-descricao', '');
     descricao.id = 'detalhes-pin-descricao';
@@ -103,6 +112,7 @@
       titulo,
       autor,
       fotoAutor,
+      inicialAutor,
       nomeAutor,
       descricao,
       categoria,
@@ -121,9 +131,11 @@
     }
 
     const tituloElemento = card.querySelector('h2, h3, [data-pin-titulo]');
-    const titulo = tituloElemento
-      ? tituloElemento.textContent.trim()
-      : imagem.alt.trim();
+    const titulo = card.hasAttribute('data-pin-titulo')
+      ? card.dataset.pinTitulo
+      : tituloElemento
+        ? tituloElemento.textContent.trim()
+        : imagem.alt.trim();
     const paragrafos = Array.from(card.querySelectorAll('p'));
     const textoCategoria = paragrafos.find((paragrafo) =>
       /^categoria\s*:/i.test(paragrafo.textContent.trim())
@@ -141,9 +153,17 @@
       src: imagem.getAttribute('src'),
       alt: imagem.alt,
       titulo: titulo || imagem.alt || 'Pin',
-      descricao: descricaoElemento ? descricaoElemento.textContent.trim() : '',
+      descricao: card.hasAttribute('data-pin-descricao')
+        ? card.dataset.pinDescricao
+        : descricaoElemento
+          ? descricaoElemento.textContent.trim()
+          : '',
       categoria,
-      link: link ? link.href : '',
+      link: card.hasAttribute('data-pin-link')
+        ? card.dataset.pinLink
+        : link
+          ? link.href
+          : '',
       autor: card.dataset.pinAutor || '',
       fotoAutor: card.dataset.pinAutorFoto || ''
     };
@@ -300,19 +320,13 @@
       visualizacao.imagem.alt = dados.alt || dados.titulo;
       visualizacao.titulo.textContent = dados.titulo;
 
-      const perfilNome =
-        document.querySelector('.perfil-pastas-identidade h1') ||
-        document.querySelector('.perfil');
-      const perfilFoto = document.querySelector(
-        '.perfil-pastas-foto, .perfil img'
-      );
-      visualizacao.nomeAutor.textContent =
-        dados.autor ||
-        (perfilNome instanceof HTMLElement
-          ? perfilNome.textContent.trim()
-          : 'Seu perfil');
-      const fotoAutor = dados.fotoAutor || perfilFoto?.getAttribute('src') || '';
+      const nomeAutor = dados.autor || 'Autor do Pin';
+      visualizacao.nomeAutor.textContent = nomeAutor;
+      const fotoAutor = dados.fotoAutor || '';
       visualizacao.fotoAutor.hidden = !fotoAutor;
+      visualizacao.inicialAutor.hidden = Boolean(fotoAutor);
+      visualizacao.inicialAutor.textContent =
+        [...nomeAutor.trim()][0]?.toLocaleUpperCase() || '?';
       if (fotoAutor) {
         visualizacao.fotoAutor.src = new URL(fotoAutor, document.baseURI).href;
       }
@@ -510,7 +524,7 @@
     });
 
     document.addEventListener('boards:state-changed', (evento) => {
-      if (!cardAtual) {
+      if (!cardAtual || document.body.classList.contains('pagina-feed')) {
         return;
       }
 

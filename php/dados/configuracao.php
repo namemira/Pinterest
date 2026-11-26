@@ -25,6 +25,7 @@ $dados = [
     'descricao' => $usuario['sobre'] ?? '',
     'site' => $usuario['site'] ?? '',
 ];
+$fotoPerfil = urlFotoPerfil($usuario['foto'] ?? null);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     foreach (array_keys($dados) as $campo) {
@@ -37,6 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $aviso = ['tipo' => 'erro', 'texto' => 'Sua sessão expirou. Atualize a página e tente novamente.'];
     } else {
         $novaFoto = null;
+        $removerFoto = valorPost('remover_foto') === '1';
         try {
             // Valida os campos de texto antes de gravar a foto.
             textoValidado($dados['nome'], 60, 'nome');
@@ -48,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $novaFoto = salvarImagemEnviada('foto', 'perfil');
             }
 
-            atualizarPerfil($pdo, $usuarioId, $dados['nome'], $dados['usuario'], $dados['descricao'], $dados['site'], $novaFoto);
+            atualizarPerfil($pdo, $usuarioId, $dados['nome'], $dados['usuario'], $dados['descricao'], $dados['site'], $novaFoto, $removerFoto);
             definirAviso('sucesso', 'Perfil atualizado.');
             redirecionar('configuracao.php');
         } catch (InvalidArgumentException $erro) {
@@ -116,12 +118,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <form class="formulario-perfil" id="formulario-perfil" method="post" action="configuracao.php" enctype="multipart/form-data" novalidate>
         <?= campoCsrf() ?>
         <input type="hidden" name="MAX_FILE_SIZE" value="<?= TAMANHO_MAXIMO_IMAGEM ?>">
+        <input type="hidden" name="remover_foto" id="remover-foto-valor" value="0">
         <div class="foto-perfil-config">
 
-            <img src="<?= e(urlArquivo($usuario['foto'])) ?>" alt="Foto de perfil" id="imagem-perfil">
+            <?php if ($fotoPerfil !== null): ?>
+            <img src="<?= e($fotoPerfil) ?>" alt="Foto de perfil" id="imagem-perfil">
+            <span class="avatar-placeholder" id="imagem-perfil-neutra" aria-hidden="true" hidden><?= e(inicialNome((string) $dados['nome'])) ?></span>
+            <?php else: ?>
+            <img alt="Foto de perfil" id="imagem-perfil" hidden>
+            <span class="avatar-placeholder" id="imagem-perfil-neutra" aria-hidden="true"><?= e(inicialNome((string) $dados['nome'])) ?></span>
+            <?php endif; ?>
             <div>
                 <button type="button" id="alterar-foto">
                     Alterar foto
+                </button>
+                <button type="button" id="remover-foto"<?= $fotoPerfil === null ? ' hidden' : '' ?>>
+                    Remover foto
                 </button>
                 <input type="file" id="foto-perfil-input" name="foto" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" hidden>
                 <small class="dica-config">JPG, PNG ou WEBP, até 10 MB. A foto é salva ao clicar em Salvar alterações.</small>

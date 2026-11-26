@@ -17,6 +17,17 @@
     object-fit: cover;
 }
 
+.foto-perfil-config > img,
+.foto-perfil-config > .avatar-placeholder {
+    flex: 0 0 100px;
+    width: 100px;
+    height: 100px;
+}
+
+.foto-perfil-config > .avatar-placeholder {
+    font-size: 30px;
+}
+
 .foto-perfil-config button {
     padding: 10px 16px;
     border: none;
@@ -24,6 +35,10 @@
     background: #e9e9e9;
     font-weight: 600;
     cursor: pointer;
+}
+
+.foto-perfil-config button + button {
+    margin-left: 8px;
 }
 
 .formulario-perfil {

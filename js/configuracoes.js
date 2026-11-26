@@ -135,10 +135,12 @@ function configurarExibicao() {
 function configurarAlteracaoFoto() {
 
     const botaoAlterar = document.querySelector('#alterar-foto');
+    const botaoRemover = document.querySelector('#remover-foto');
     const inputFoto = document.querySelector('#foto-perfil-input');
-
     const imagemPerfil = document.querySelector('#imagem-perfil');
-    const imagemCabecalho = document.querySelector('.perfil img');
+    const imagemNeutra = document.querySelector('#imagem-perfil-neutra');
+    const removerFoto = document.querySelector('#remover-foto-valor');
+    const botaoPerfil = document.querySelector('#abrir-perfil');
 
     if (!botaoAlterar || !inputFoto || !imagemPerfil) {
         return;
@@ -146,9 +148,53 @@ function configurarAlteracaoFoto() {
 
     // Abrir seletor de arquivos
     botaoAlterar.addEventListener('click', () => {
-
         inputFoto.click();
+    });
 
+    function atualizarAvatarCabecalho(src) {
+        if (!botaoPerfil) {
+            return;
+        }
+
+        function substituirAvatar(atual, classe) {
+            if (!atual) {
+                return;
+            }
+
+            const avatar = src
+                ? document.createElement('img')
+                : document.createElement('span');
+            avatar.className = src
+                ? classe
+                : `avatar-placeholder ${classe}`;
+            if (src && avatar instanceof HTMLImageElement) {
+                avatar.alt = '';
+                avatar.src = src;
+            } else {
+                avatar.setAttribute('aria-hidden', 'true');
+                avatar.textContent = botaoPerfil.dataset.inicial || '?';
+            }
+            atual.replaceWith(avatar);
+        }
+
+        substituirAvatar(botaoPerfil.querySelector('.avatar-header'), 'avatar-header');
+        substituirAvatar(
+            document.querySelector('#menu-perfil .menu-perfil-foto'),
+            'menu-perfil-foto'
+        );
+    }
+
+    botaoRemover?.addEventListener('click', () => {
+        if (removerFoto) {
+            removerFoto.value = '1';
+        }
+        imagemPerfil.removeAttribute('src');
+        imagemPerfil.hidden = true;
+        if (imagemNeutra) {
+            imagemNeutra.hidden = false;
+        }
+        botaoRemover.hidden = true;
+        atualizarAvatarCabecalho('');
     });
 
     // Selecionar imagem
@@ -175,17 +221,29 @@ function configurarAlteracaoFoto() {
         const leitor = new FileReader();
 
         leitor.onload = () => {
-
             const imagem = leitor.result;
+            if (typeof imagem !== 'string') {
+                mostrarMensagemConfig('Não foi possível visualizar esta imagem.', true);
+                return;
+            }
 
             // Atualizar imagem do perfil
             imagemPerfil.src = imagem;
-
-            // Atualizar imagem do cabeçalho
-            if (imagemCabecalho) {
-                imagemCabecalho.src = imagem;
+            imagemPerfil.hidden = false;
+            if (imagemNeutra) {
+                imagemNeutra.hidden = true;
             }
+            if (removerFoto) {
+                removerFoto.value = '0';
+            }
+            if (botaoRemover) {
+                botaoRemover.hidden = false;
+            }
+            atualizarAvatarCabecalho(imagem);
+        };
 
+        leitor.onerror = () => {
+            mostrarMensagemConfig('Não foi possível ler a imagem selecionada.', true);
         };
 
         leitor.readAsDataURL(arquivo);

@@ -205,7 +205,7 @@ function configurarPainelCriar(menu) {
 }
 
 // Cria a estrutura compartilhada do menu de perfil.
-function criarMenuPerfil(container, imagemPerfil, dadosConta = {}) {
+function criarMenuPerfil(container, avatarPerfil, dadosConta = {}) {
   const menuPerfil = document.createElement('section');
   menuPerfil.className = 'menu-perfil';
   menuPerfil.id = 'menu-perfil';
@@ -214,11 +214,18 @@ function criarMenuPerfil(container, imagemPerfil, dadosConta = {}) {
 
   const conta = document.createElement('div');
   conta.className = 'menu-perfil-conta';
-  const foto = document.createElement('img');
-  foto.className = 'menu-perfil-foto';
-  foto.alt = '';
-  foto.src =
-    imagemPerfil?.getAttribute('src') || '../Imagens/dog.jpg';
+  const foto = avatarPerfil
+    ? avatarPerfil.cloneNode(true)
+    : document.createElement('span');
+  foto.classList.remove('avatar-header');
+  foto.classList.add('menu-perfil-foto');
+  if (foto instanceof HTMLImageElement) {
+    foto.alt = '';
+  } else {
+    foto.classList.add('avatar-placeholder');
+    foto.textContent = dadosConta.inicial || '?';
+    foto.setAttribute('aria-hidden', 'true');
+  }
 
   const identificacao = document.createElement('div');
   const nome = document.createElement('strong');
@@ -333,9 +340,10 @@ function configurarMenuPerfil() {
   if (!menuPerfil) {
     menuPerfil = criarMenuPerfil(
       container,
-      botaoPerfil.querySelector('img'),
+      botaoPerfil.querySelector('.avatar-header'),
       {
         nome: botaoPerfil.dataset.nome,
+        inicial: botaoPerfil.dataset.inicial,
         email: botaoPerfil.dataset.email,
         tipo: botaoPerfil.dataset.tipo
       }

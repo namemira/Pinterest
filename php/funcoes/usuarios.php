@@ -70,7 +70,7 @@ function consultarUsuarioPorId(PDO $pdo, int $usuarioId): ?array
 
 /**
  * Edição do perfil (página Configurações).
- * $novaFoto = null mantém a foto atual.
+ * $novaFoto = null mantém a foto atual, salvo quando $removerFoto é true.
  */
 function atualizarPerfil(
     PDO $pdo,
@@ -79,9 +79,14 @@ function atualizarPerfil(
     string $nomeUsuario,
     string $sobre,
     string $site,
-    ?string $novaFoto = null
+    ?string $novaFoto = null,
+    bool $removerFoto = false
 ): void {
     conferirUsuarioDaSessao($usuarioId);
+
+    if ($removerFoto && $novaFoto !== null) {
+        throw new InvalidArgumentException('Escolha uma foto nova ou remova a foto atual.');
+    }
 
     $nome = textoValidado($nome, 60, 'nome');
     $nomeUsuario = nomeUsuarioOpcional($nomeUsuario);
@@ -103,6 +108,8 @@ function atualizarPerfil(
         throw new RuntimeException('Usuário não encontrado.');
     }
 
+    $fotoAtualizada = $removerFoto ? null : ($novaFoto ?? $atual['foto']);
+
     try {
         $consulta = $pdo->prepare(
             'UPDATE usuarios
@@ -110,7 +117,7 @@ function atualizarPerfil(
                  nome_usuario = :nome_usuario,
                  sobre = :sobre,
                  site = :site,
-                 foto = COALESCE(:foto, foto)
+                 foto = :foto
              WHERE id = :id'
         );
         $consulta->execute([
@@ -118,7 +125,7 @@ function atualizarPerfil(
             'nome_usuario' => $nomeUsuario,
             'sobre' => $sobre,
             'site' => $site,
-            'foto' => $novaFoto,
+            'foto' => $fotoAtualizada,
             'id' => $usuarioId,
         ]);
     } catch (PDOException $erro) {
@@ -128,11 +135,11 @@ function atualizarPerfil(
         throw $erro;
     }
 
-    if ($novaFoto !== null && $novaFoto !== $atual['foto']) {
+    if (($novaFoto !== null || $removerFoto) && $fotoAtualizada !== $atual['foto']) {
         removerImagemEnviada($atual['foto']);
     }
 
-    atualizarDadosSessao($nome, $novaFoto ?? $atual['foto']);
+    atualizarDadosSessao($nome, $fotoAtualizada);
 }
 
 /**

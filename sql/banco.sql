@@ -117,3 +117,29 @@ CREATE TABLE mensagens (
     data_envio DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE denuncias_pins (
+    id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    usuario_id INT UNSIGNED NOT NULL,
+    pin_id INT UNSIGNED NOT NULL,
+    motivo ENUM(
+        'conteudo_inadequado',
+        'spam',
+        'direitos_autorais',
+        'outro'
+    ) NOT NULL,
+    detalhes VARCHAR(500) NULL,
+    estado ENUM('pendente', 'em_analise', 'resolvida') NOT NULL DEFAULT 'pendente',
+    data_criacao DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    UNIQUE KEY uq_denuncias_usuario_pin (usuario_id, pin_id),
+    KEY idx_denuncias_estado_data (estado, data_criacao),
+    CONSTRAINT fk_denuncias_pins_usuario
+        FOREIGN KEY (usuario_id) REFERENCES usuarios (id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT fk_denuncias_pins_pin
+        FOREIGN KEY (pin_id) REFERENCES pins (id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

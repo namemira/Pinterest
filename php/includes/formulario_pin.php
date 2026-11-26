@@ -17,7 +17,7 @@ $textoBotao = $modoEdicao ? 'Salvar alterações' : 'Publicar Pin';
             </header>
 
             <!-- enctype multipart: necessário para enviar a imagem ao PHP -->
-            <form class="criar-pin-formulario" id="formulario-criar-pin" method="post" enctype="multipart/form-data" novalidate>
+            <form class="criar-pin-formulario" id="formulario-criar-pin" method="post" enctype="multipart/form-data" novalidate data-imagem-obrigatoria="<?= $modoEdicao ? 'false' : 'true' ?>">
                 <?= campoCsrf() ?>
                 <input type="hidden" name="MAX_FILE_SIZE" value="<?= TAMANHO_MAXIMO_IMAGEM ?>">
                 <section class="criar-pin-imagem" aria-label="Imagem do Pin">
@@ -28,7 +28,7 @@ $textoBotao = $modoEdicao ? 'Salvar alterações' : 'Publicar Pin';
                             <span>ou arraste e solte aqui</span>
                             <small>JPG, PNG ou WEBP · até 10 MB</small>
                         </div>
-                        <input class="criar-pin-arquivo" id="criar-pin-arquivo" name="imagem" type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" hidden<?= $modoEdicao ? '' : ' required' ?>>
+                        <input class="criar-pin-arquivo" id="criar-pin-arquivo" name="imagem" type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" data-tamanho-maximo="<?= TAMANHO_MAXIMO_IMAGEM ?>" hidden>
                         <div class="criar-pin-previa" id="criar-pin-previa"<?= $imagemAtual ? '' : ' hidden' ?>>
                             <img id="criar-pin-imagem" alt="Prévia da imagem do Pin"<?= $imagemAtual ? ' src="' . e($imagemAtual) . '"' : '' ?>>
                         </div>

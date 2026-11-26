@@ -20,13 +20,19 @@
             </div>
             <?php endif; ?>
             <?php if (usuarioEstaAutenticado()): ?>
+            <?php $fotoCabecalho = urlFotoPerfil($_SESSION['usuario_foto'] ?? null); ?>
             <div class="perfil-conta">
                 <!-- Nome e e-mail usados pelo menu do perfil (menu.js) -->
                 <button class="perfil" type="button" aria-label="Abrir menu do perfil" id="abrir-perfil" aria-controls="menu-perfil" aria-expanded="false" data-menu-perfil
                         data-nome="<?= e($_SESSION['usuario_nome']) ?>"
+                        data-inicial="<?= e(inicialNome((string) $_SESSION['usuario_nome'])) ?>"
                         data-email="<?= e($_SESSION['usuario_email'] ?? '') ?>"
                         data-tipo="<?= usuarioEhAdmin() ? 'Administrador' : 'Conta pessoal' ?>">
-                    <img src="<?= e(urlArquivo($_SESSION['usuario_foto'] ?? '')) ?>" alt="">
+                    <?php if ($fotoCabecalho !== null): ?>
+                    <img class="avatar-header" src="<?= e($fotoCabecalho) ?>" alt="">
+                    <?php else: ?>
+                    <span class="avatar-placeholder avatar-header" aria-hidden="true"><?= e(inicialNome((string) $_SESSION['usuario_nome'])) ?></span>
+                    <?php endif; ?>
                     <svg class="perfil-seta" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
                 </button>
             </div>

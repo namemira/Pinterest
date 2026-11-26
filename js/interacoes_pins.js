@@ -2,7 +2,7 @@
 
 (() => {
   // Mantém a lista local sincronizada com as pastas para atualizar os botões Salvar.
-  let pinsSalvos = new Set();
+  let pinsSalvos = null;
 
   // Cria ou reutiliza a região acessível que anuncia o resultado das ações.
   function criarMensagemStatus(containerPins) {
@@ -146,7 +146,9 @@
       return;
     }
 
-    const salvo = Boolean(pinsSalvos && pinsSalvos.has(card.dataset.pinId));
+    const salvo = pinsSalvos
+      ? pinsSalvos.has(card.dataset.pinId)
+      : botao.getAttribute('aria-pressed') === 'true';
     botao.setAttribute('aria-pressed', String(salvo));
     botao.dataset.label = salvo
       ? botao.dataset.labelSalvo
@@ -325,6 +327,9 @@
     });
 
     document.addEventListener('boards:state-changed', (evento) => {
+      if (document.body.classList.contains('pagina-feed')) {
+        return;
+      }
       pinsSalvos = new Set(evento.detail?.pinIds || []);
       Array.from(containerPins.querySelectorAll('.post')).forEach((card) => {
         atualizarBotaoSalvar(card, pinsSalvos);
