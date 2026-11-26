@@ -13,7 +13,7 @@ $itemAtivo = static function (string $pagina) use ($paginaMenu): string {
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.8 12 3l9 7.8v9.1a1.1 1.1 0 0 1-1.1 1.1h-5.3v-6.3H9.4V21H4.1A1.1 1.1 0 0 1 3 19.9z"/></svg>
                 <span class="menu-tooltip">Página inicial</span>
             </a>
-            <a class="menu-item<?= $itemAtivo('explore.php') ?>" href="explore.php" aria-label="Explorar">
+            <a class="menu-item<?= $itemAtivo('explorar.php') ?>" href="explorar.php" aria-label="Explorar">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m15.8 8.2-2.2 5.4-5.4 2.2 2.2-5.4z"/></svg>
                 <span class="menu-tooltip">Explorar</span>
             </a>

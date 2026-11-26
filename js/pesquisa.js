@@ -253,7 +253,10 @@ function configurarPesquisaPins() {
                 return;
             }
 
-            const url = new URL('explore.php', window.location.href);
+            const url = new URL(
+                containerPesquisa.dataset.destinoExplorar || 'explore.php',
+                window.location.href
+            );
             url.searchParams.set('busca', termo);
             window.location.href = url.href;
         }
@@ -311,6 +314,7 @@ function configurarPesquisaPins() {
         });
 
         const nenhumResultado =
+            containerPins.dataset.erroCarregamento !== 'true' &&
             (termo !== '' || categoriaSelecionada !== '') &&
             quantidadeVisivel === 0;
 
@@ -343,11 +347,11 @@ function configurarPesquisaPins() {
         filtrarPins();
     });
     const parametrosBusca = new URLSearchParams(window.location.search);
-    const buscaInicial = parametrosBusca.get('busca') || parametrosBusca.get('q');
+    const buscaInicial = parametrosBusca.get('q') || parametrosBusca.get('busca');
     if (buscaInicial) {
         campoPesquisa.value = buscaInicial;
-        filtrarPins();
     }
+    filtrarPins();
     configurarSugestoesPesquisa(
         campoPesquisa,
         containerPesquisa,

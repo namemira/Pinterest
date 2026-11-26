@@ -3,6 +3,17 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../includes/inicializacao.php';
 
+if (usuarioEstaAutenticado()) {
+    $parametros = [];
+    foreach (['q', 'busca', 'categoria_id'] as $campo) {
+        if (valorGet($campo) !== '') {
+            $parametros[$campo] = valorGet($campo);
+        }
+    }
+    header('Location: explorar.php' . ($parametros ? '?' . http_build_query($parametros) : ''), true, 303);
+    exit;
+}
+
 $busca = mb_substr(
     valorGet('q') !== '' ? valorGet('q') : valorGet('busca'),
     0,
@@ -37,36 +48,9 @@ try {
         }
     }
 
-    $pins = listarPins($pdo, null, $busca, usuarioLogadoId());
+    $pins = listarPins($pdo, null, $busca, null);
 
-    foreach ($pins as $pin) {
-        $categoriaId = (int) $pin['categoria_id'];
-        if ($categoriaSelecionadaId !== null && $categoriaId !== $categoriaSelecionadaId) {
-            continue;
-        }
-
-        if (!isset($gruposCategoria[$categoriaId])) {
-            $gruposCategoria[$categoriaId] = [
-                'nome' => (string) $pin['categoria'],
-                'total' => 0,
-                'imagens' => [],
-            ];
-        }
-
-        $gruposCategoria[$categoriaId]['total']++;
-        if (count($gruposCategoria[$categoriaId]['imagens']) < 2) {
-            $gruposCategoria[$categoriaId]['imagens'][] = [
-                'caminho' => (string) $pin['caminho_imagem'],
-                'alt' => (string) ($pin['texto_alternativo'] ?: $pin['titulo']),
-            ];
-        }
-    }
-
-    uasort(
-        $gruposCategoria,
-        static fn (array $a, array $b): int => ($b['total'] <=> $a['total'])
-            ?: strcasecmp($a['nome'], $b['nome'])
-    );
+    $gruposCategoria = agruparPinsPorCategoria($pins, $categoriaSelecionadaId);
 } catch (Throwable $erro) {
     error_log('Falha ao carregar Explorar: ' . $erro->getMessage());
     $categorias = [];
@@ -118,6 +102,7 @@ $aviso = obterAviso();
                 <span class="explore-label">Explorar</span>
                 <h1 id="titulo-explorar">Encontre sua próxima ideia</h1>
                 <p>Comece de qualquer lugar e descubra ideias que levam você a novos lugares.</p>
+                <p class="explore-convite"><a href="cadastro.php">Crie uma conta</a> ou <a href="login.php">entre</a> para salvar suas ideias.</p>
             </div>
             <div class="explore-hero-mosaic" role="group" aria-label="Inspirações de arte, moda, decoração, receitas e viagens">
                 <img class="mosaic-dog" src="../../Imagens/dog.jpg" alt="Filhote de cachorro diante de um fundo azul">
@@ -128,39 +113,7 @@ $aviso = obterAviso();
             </div>
         </section>
 
-        <?php if ($gruposCategoria): ?>
-        <section class="pastas-destaque" aria-labelledby="titulo-pastas-destaque">
-            <h2 id="titulo-pastas-destaque">Ideias por categoria</h2>
-            <div id="lista-pastas-destaque">
-                <?php foreach (array_slice($gruposCategoria, 0, 5, true) as $grupo): ?>
-                <article class="pasta-destaque">
-                    <div class="pasta-destaque-imagens">
-                        <?php foreach ($grupo['imagens'] as $imagem): ?>
-                        <img src="<?= e(urlArquivo($imagem['caminho'])) ?>" alt="<?= e($imagem['alt']) ?>" loading="lazy">
-                        <?php endforeach; ?>
-                    </div>
-                    <h3><?= e($grupo['nome']) ?></h3>
-                    <p><?= e(contarPins((int) $grupo['total'])) ?></p>
-                </article>
-                <?php endforeach; ?>
-            </div>
-        </section>
-
-        <section class="tendencias" aria-labelledby="titulo-tendencias">
-            <h2 id="titulo-tendencias">Mais Pins por categoria</h2>
-            <div id="lista-tendencias">
-                <?php foreach (array_slice($gruposCategoria, 0, 3, true) as $grupo): ?>
-                <?php $imagemDestaque = $grupo['imagens'][0] ?? null; ?>
-                <?php if ($imagemDestaque !== null): ?>
-                <article class="tendencia">
-                    <img src="<?= e(urlArquivo($imagemDestaque['caminho'])) ?>" alt="<?= e($imagemDestaque['alt']) ?>" loading="lazy">
-                    <h3><?= e($grupo['nome']) ?> · <?= e(contarPins((int) $grupo['total'])) ?></h3>
-                </article>
-                <?php endif; ?>
-                <?php endforeach; ?>
-            </div>
-        </section>
-        <?php endif; ?>
+        <?php require __DIR__ . '/../includes/destaques_explorar.php'; ?>
 
         <section class="pins-explorar" aria-labelledby="titulo-pins">
             <h2 id="titulo-pins">Inspirações para você</h2>
@@ -182,7 +135,7 @@ $aviso = obterAviso();
                 </div>
             </noscript>
             <?php endif; ?>
-            <div id="grade-pins" data-categoria-selecionada="<?= e($categoriaSelecionada) ?>" aria-live="polite">
+            <div id="grade-pins" data-categoria-selecionada="<?= e($categoriaSelecionada) ?>" data-erro-carregamento="<?= $erroCarregamento !== '' ? 'true' : 'false' ?>" aria-live="polite">
                 <?php foreach ($pins as $pin): ?>
                     <?php require __DIR__ . '/../includes/card_pin.php'; ?>
                 <?php endforeach; ?>

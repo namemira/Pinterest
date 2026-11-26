@@ -103,7 +103,7 @@ function exigirPostComCsrf(string $destinoErro): void
 function destinoRetorno(string $padrao = 'principal.php'): string
 {
     $voltar = valorPost('voltar');
-    if (preg_match('/^[a-z_]+\.php(\?[A-Za-z0-9_=&%.\-]*)?(#[A-Za-z0-9_\-]+)?$/', $voltar)) {
+    if (preg_match('/^[a-z_]+\.php(\?[A-Za-z0-9_=&%.+\-]*)?(#[A-Za-z0-9_\-]+)?$/', $voltar)) {
         return '../dados/' . $voltar;
     }
 

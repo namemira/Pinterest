@@ -51,6 +51,12 @@ function configurarFiltroCategorias() {
         }
         url.searchParams.delete('busca');
         window.history.replaceState(null, '', url);
+        containerPins.querySelectorAll('input[name="voltar"]').forEach((campo) => {
+            const ancora = campo.value.includes('#')
+                ? `#${campo.value.split('#')[1]}`
+                : '';
+            campo.value = `${url.pathname.split('/').pop()}${url.search}${ancora}`;
+        });
 
         listaCategorias.querySelectorAll('.categoria').forEach((item) => {
             const selecionada = item.dataset.categoria === categoriaAtiva;

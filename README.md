@@ -59,6 +59,12 @@ PROMPTS.md      Registro do uso de inteligência artificial
 
 Nesta etapa, a validação dos formulários é realizada no navegador. A implementação do cadastro, do login e do armazenamento de dados em banco de dados está prevista para a Parte 3, com PHP e MySQL.
 
+### Explorar na versão PHP
+
+- Visitantes acessam `php/dados/explore.php`, com prévias de Pins e links para entrar ou criar conta.
+- Pessoas autenticadas usam `php/dados/explorar.php`, com navegação da conta, Pins criados e salvos, pesquisa e filtros. O acesso autenticado à rota pública é redirecionado para essa página.
+- Para testar, acesse a rota pública sem sessão e confirme que não há ações de conta; depois entre e confira pesquisa, categorias, salvar, editar e excluir Pins próprios.
+
 ## Painel administrativo
 
 O painel administrativo fica em `php/admin/painel.php` e só pode ser acessado por uma sessão autenticada cujo tipo seja `admin`.

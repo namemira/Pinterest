@@ -20,6 +20,39 @@ function listarCategorias(PDO $pdo): array
     )->fetchAll();
 }
 
+function agruparPinsPorCategoria(array $pins, ?int $categoriaSelecionadaId = null): array
+{
+    $grupos = [];
+    foreach ($pins as $pin) {
+        $categoriaId = (int) $pin['categoria_id'];
+        if ($categoriaSelecionadaId !== null && $categoriaId !== $categoriaSelecionadaId) {
+            continue;
+        }
+
+        if (!isset($grupos[$categoriaId])) {
+            $grupos[$categoriaId] = [
+                'nome' => (string) $pin['categoria'],
+                'total' => 0,
+                'imagens' => [],
+            ];
+        }
+        $grupos[$categoriaId]['total']++;
+        if (count($grupos[$categoriaId]['imagens']) < 2) {
+            $grupos[$categoriaId]['imagens'][] = [
+                'caminho' => (string) $pin['caminho_imagem'],
+                'alt' => (string) ($pin['texto_alternativo'] ?: $pin['titulo']),
+            ];
+        }
+    }
+
+    uasort(
+        $grupos,
+        static fn (array $a, array $b): int => ($b['total'] <=> $a['total'])
+            ?: strcasecmp($a['nome'], $b['nome'])
+    );
+    return $grupos;
+}
+
 function categoriaExiste(PDO $pdo, int $categoriaId): bool
 {
     $consulta = $pdo->prepare('SELECT 1 FROM categorias WHERE id = :id LIMIT 1');
