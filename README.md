@@ -1,80 +1,145 @@
-Clone do Pinterest – Desenvolvimento Web I
+# Pinterest — Desenvolvimento Web I
 
-Projeto acadêmico desenvolvido para o Trabalho III da disciplina Desenvolvimento Web I, ministrada pelo professor Alisson Borges Zanetti no Instituto Federal Catarinense, Campus Concórdia.
+Projeto acadêmico desenvolvido para o Trabalho III da disciplina Desenvolvimento Web I, ministrada pelo professor Alisson Borges Zanetti no Instituto Federal Catarinense (IFC), Campus Concórdia.
+O projeto consiste no desenvolvimento de uma aplicação web inspirada no Pinterest, permitindo o cadastro de usuários, publicação de Pins, organização de conteúdos e gerenciamento de informações.
+Este projeto possui finalidade exclusivamente educacional e não possui vínculo com a Pinterest, Inc.
 
-Este projeto tem finalidade exclusivamente educacional e não possui vínculo com a Pinterest, Inc. Os usuários, Pins e mensagens apresentados são fictícios.
-
-## Sobre o site de referência
-
-[Pinterest](https://br.pinterest.com) é uma rede social que permite descobrir, salvar e organizar ideias em Pins e pastas.
-
-## Integrantes
-
+Integrantes
 - Jéssica Rubas
-- Nicole Bet
+- Nicole Bonassi Bet
 - Samira Vieira
 
-## Descrição do projeto
+Tecnologias utilizadas
+- HTML5
+- CSS3
+- JavaScript
+- PHP
+- MariaDB
+- PDO
+- XAMPP
 
-Protótipo funcional de interface, desenvolvido com HTML5, CSS3 e JavaScript, sem o uso de frameworks.
+Funcionalidades
+- Cadastro e login de usuários;
+- Página inicial e exploração de conteúdos;
+- Criação, visualização, edição e exclusão de Pins;
+- Envio e pré-visualização de imagens;
+- Organização de Pins em pastas;
+- Salvamento de Pins;
+- Perfil e configurações de usuário;
+- Sistema de mensagens;
+- Painel administrativo;
+- Gerenciamento de denúncias de Pins.
 
-### Páginas
+Estrutura do projeto
 
-| Página | Arquivo | Descrição |
-|---|---|---|
-| Inicial | `html/Inicial.html` | Apresentação do site, busca entre seções e formulário de cadastro |
-| Login | `html/Login.html` | Formulário de acesso com validação e opção para exibir ou ocultar a senha |
-| Cadastro | `html/Cadastro.html` | Formulário de cadastro com validação |
-| Página principal | `html/Principal.html` | Feed de Pins, menu do perfil e painel de criação |
-| Explorar | `html/Explore.html` | Categorias, tendências e Pins gerados por JavaScript |
-| Perfil e pastas | `html/Perfil.html` | Pins salvos e pastas, com opções de filtragem |
-| Criação de Pin | `html/CriarPin.html` | Formulário para publicar um Pin com imagem |
-| Configurações | `html/Configuracao.html` | Edição do perfil e seleção entre os temas claro e escuro |
+Pinterest/
+├── css/                  # Arquivos de estilização
+├── html/                 # Páginas HTML
+├── Imagens/              # Imagens utilizadas no projeto
+├── js/                   # Arquivos JavaScript
+├── php/
+│   ├── acoes/             # Ações do sistema
+│   ├── admin/             # Administração
+│   ├── config/            # Configurações e conexão
+│   ├── dados/             # Páginas e processamento
+│   ├── funcoes/           # Funções do sistema
+│   └── includes/          # Arquivos compartilhados
+├── sql/
+│   └── banco.sql          # Estrutura do banco de dados
+├── uploads/
+│   ├── pins/              # Imagens dos Pins
+│   └── perfil/            # Fotos de perfil
+├── index.php
+└── README.md
 
-### Funcionalidades em JavaScript
+Como executar localmente
 
-- Validação de formulários com mensagens exibidas na própria página
-- Menu lateral responsivo, com controles de abertura e fechamento em dispositivos móveis
-- Busca com sugestões e filtragem de Pins
-- Geração de Pins e categorias a partir de arrays de objetos
-- Armazenamento de pastas e Pins no `localStorage`
-- Janelas modais para detalhes de Pins, avisos e criação de colagens e cartões
-- Alternância entre os temas claro e escuro
+1. Requisitos
+- XAMPP instalado;
+- PHP;
+- MariaDB ou MySQL;
+- Navegador web.
 
-### Organização das pastas
+2. Baixar o projeto
+Clone o repositório dentro da pasta `htdocs` do XAMPP:
 
+```bash
+git clone https://github.com/namemira/Pinterest.git
 ```
-index.html      Página de entrada, que direciona para html/Inicial.html
-html/           Páginas do site
-css/            Folhas de estilo
-js/             Scripts
-Imagens/        Imagens utilizadas no site
-PROMPTS.md      Registro do uso de inteligência artificial
+
+O projeto ficará localizado em:
+
+```text
+C:\xampp\htdocs\Pinterest
 ```
 
-## Como usar
+3. Iniciar o XAMPP
+Abra o XAMPP Control Panel e inicie os serviços:
+- Apache;
+- MySQL.
 
-- Acesse a versão on-line pelo [GitHub Pages](https://namemira.github.io/Pinterest/).
-- Para executar localmente, baixe ou clone o repositório e abra o arquivo `index.html` em um navegador. Não é necessário instalar dependências.
+4. Configurar o banco de dados
+Acesse o phpMyAdmin:
+http://localhost/phpmyadmin
+Selecione a opção Importar e escolha o arquivo:
 
-Nesta etapa, a validação dos formulários é realizada no navegador. A implementação do cadastro, do login e do armazenamento de dados em banco de dados está prevista para a Parte 3, com PHP e MySQL.
+```text
+sql/banco.sql
+```
 
-### Explorar na versão PHP
+Execute a importação para criar o banco `pinterest` e suas tabelas.
+Essa etapa deve ser realizada na instalação inicial, em um banco vazio. Evite importar novamente sobre um banco que já contenha dados.
 
-- Visitantes acessam `php/dados/explore.php`, com prévias de Pins e links para entrar ou criar conta.
-- Pessoas autenticadas usam `php/dados/explorar.php`, com navegação da conta, Pins criados e salvos, pesquisa e filtros. O acesso autenticado à rota pública é redirecionado para essa página.
-- Para testar, acesse a rota pública sem sessão e confirme que não há ações de conta; depois entre e confira pesquisa, categorias, salvar, editar e excluir Pins próprios.
+5. Configurar a conexão local
+Na pasta `php/config/`, crie o arquivo `conexao_local.php` com as configurações do banco local:
+```php
+<?php
 
-## Painel administrativo
+return [
+    'host' => '127.0.0.1',
+    'port' => '3306',
+    'dbname' => 'pinterest',
+    'charset' => 'utf8mb4',
+    'user' => 'root',
+    'pass' => ''
+];
+```
+Os valores devem corresponder à configuração do MySQL ou MariaDB instalado no computador.
+Esse arquivo é utilizado por `php/config/conexao.php` e está incluído no `.gitignore`, portanto não deve ser enviado ao repositório.
 
-O painel administrativo fica em `php/admin/painel.php` e só pode ser acessado por uma sessão autenticada cujo tipo seja `admin`.
+6. Acessar o sistema
 
-### Criar a primeira conta administradora
+Após iniciar o Apache e o MySQL e configurar o banco de dados, acesse:
+http://localhost/Pinterest/
+O sistema será direcionado para a página inicial.
 
-No Windows, com o XAMPP configurado e o banco `pinterest` disponível, execute no terminal a partir da raiz do projeto:
+Criar administrador
+
+Para criar uma conta administradora, abra o PowerShell e execute:
 
 ```powershell
-php php\admin\criar_admin.php
+cd C:\xampp\htdocs\Pinterest
+
+C:\xampp\php\php.exe php\admin\criar_admin.php
 ```
 
-O procedimento solicita nome, e-mail e senha interativamente. Não existem usuário ou senha padrão. Ele usa `password_hash()`, PDO e consultas preparadas. Se já existir um administrador, o procedimento encerra sem criar outra conta. Ele também é bloqueado quando acessado pela internet.
+Informe os dados solicitados pelo terminal.
+
+O acesso ao painel administrativo é permitido somente para usuários autenticados com perfil de administrador.
+
+Acesso à hospedagem
+O projeto também está disponível na hospedagem:
+
+**Site:** https://pinterestifcconcordia.kesug.com/
+
+**Página inicial:** https://pinterestifcconcordia.kesug.com/php/dados/Inicial.php
+
+--Banco de dados
+
+O projeto utiliza MariaDB para armazenar informações de usuários, Pins, categorias, pastas, mensagens e denúncias.
+A comunicação entre o PHP e o banco de dados é realizada por meio do PDO.
+A estrutura do banco está disponível em `sql/banco.sql`.
+
+## Observação
+
+Projeto desenvolvido para fins acadêmicos na disciplina Desenvolvimento Web I — IFC Campus Concórdia.
