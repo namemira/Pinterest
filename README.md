@@ -32,6 +32,7 @@ Funcionalidades
 
 Estrutura do projeto
 
+```text
 Pinterest/
 ├── css/                  # Arquivos de estilização
 ├── html/                 # Páginas HTML
@@ -51,6 +52,7 @@ Pinterest/
 │   └── perfil/            # Fotos de perfil
 ├── index.php
 └── README.md
+```
 
 Como executar localmente
 
@@ -105,7 +107,6 @@ return [
 ];
 ```
 Os valores devem corresponder à configuração do MySQL ou MariaDB instalado no computador.
-Esse arquivo é utilizado por `php/config/conexao.php` e está incluído no `.gitignore`, portanto não deve ser enviado ao repositório.
 
 6. Acessar o sistema
 
@@ -130,16 +131,14 @@ O acesso ao painel administrativo é permitido somente para usuários autenticad
 Acesso à hospedagem
 O projeto também está disponível na hospedagem:
 
-**Site:** https://pinterestifcconcordia.kesug.com/
+Site: https://pinterestifcconcordia.kesug.com/
 
-**Página inicial:** https://pinterestifcconcordia.kesug.com/php/dados/Inicial.php
+Página inicial: https://pinterestifcconcordia.kesug.com/php/dados/Inicial.php
 
---Banco de dados
+Banco de dados
 
 O projeto utiliza MariaDB para armazenar informações de usuários, Pins, categorias, pastas, mensagens e denúncias.
 A comunicação entre o PHP e o banco de dados é realizada por meio do PDO.
 A estrutura do banco está disponível em `sql/banco.sql`.
 
-## Observação
-
-Projeto desenvolvido para fins acadêmicos na disciplina Desenvolvimento Web I — IFC Campus Concórdia.
+**Observação: Projeto desenvolvido para fins acadêmicos na disciplina Desenvolvimento Web I — IFC Campus Concórdia.**
