@@ -271,3 +271,58 @@ Troquei a letra "G" pelo mesmo SVG colorido do Cadastro no Login.html e no Inici
 --Revisão dos critérios da Parte 2
 Prompt: verifica o que falta para estar de acordo com todos os criterios da parte dois, me encaminha o que precisa alterar, a linha de cada coisa que deve ser editada
 A IA comparou o projeto com o PDF do trabalho e mostrou as correções necessárias: rodapé com aviso de clone em todas as páginas, variáveis CSS no principal.css e no cadastro.css, labels e atributos de validação no Cadastro.html, formulário de perfil validado sem alert() em Configuracao.html/configuracoes.js, links de Configurações no menu, títulos h1, remoção de id duplicado, alt descritivo nas imagens do Explorar, README.md preenchido e remoção de arquivos CSS vazios.
+
+Registro de uso de Inteligência Artificial – ChatGPT
+Integrante: Samira
+Parte do trabalho: Parte 3
+1. Criação da página Explore
+Prompt: Me ajude a organizar a criação da página Explore, separando HTML, JavaScript e CSS.
+Prompt: Analise a estrutura dos arquivos do projeto e me oriente sobre como separar o código da página Explore, mantendo as funcionalidades e a aparência.
+Prompt: Organize o código da página Explore de acordo com a estrutura utilizada nas demais páginas do projeto, evitando deixar HTML, CSS e JavaScript misturados.
+Prompt: Mostre quais trechos precisam ser movidos para arquivos separados e quais caminhos devem ser utilizados para importar os arquivos.
+Como utilizei as respostas: Usei as orientações para organizar a página Explore em arquivos independentes, mantendo a estrutura HTML responsável pelo conteúdo, o CSS pela aparência e o JavaScript pelas funcionalidades e interações. Também ajustei as referências aos arquivos externos para que a página continuasse funcionando corretamente.
+2. Organização da página Configurações
+Prompt: Organize a página Configurações seguindo a mesma estrutura utilizada nas outras páginas do projeto, separando HTML, CSS e JavaScript.
+Prompt: Ajude a identificar quais partes do código devem permanecer no arquivo HTML e quais devem ser transferidas para os arquivos CSS e JavaScript.
+Prompt: Verifique se os arquivos estão corretamente conectados e se a separação mantém as funcionalidades existentes da página.
+Como utilizei as respostas: Utilizei as orientações para estruturar a página Configurações seguindo o mesmo padrão adotado na página Explore. O HTML ficou responsável pela estrutura da página, o CSS pela estilização e o JavaScript pelo comportamento dos elementos e pelo processamento das interações.
+3. Ajustes de estilização e organização do CSS
+Código CSS utilizado:
+background-color: white;
+display: flex;
+align-items: center;
+z-index: 1000;
+box-sizing: border-box;
+Prompt: Explique a função das propriedades CSS utilizadas e como elas influenciam a organização e a aparência dos elementos da página.
+Como utilizei as respostas: Usei as explicações para compreender a finalidade das propriedades CSS e manter a organização visual dos componentes, especialmente no posicionamento, alinhamento e sobreposição dos elementos da interface.
+4. Padronização da estrutura das páginas
+Prompt: Utilize a organização dos arquivos de uma página já desenvolvida como referência para estruturar as demais páginas do projeto.
+Prompt: Ajude a manter um padrão de organização entre as páginas, separando os arquivos HTML, CSS e JavaScript e preservando as funcionalidades existentes.
+Como utilizei as respostas: A organização adotada na página Explore serviu como referência para a construção da página Configurações. Dessa forma, as duas páginas seguiram o mesmo padrão de separação de responsabilidades, facilitando a manutenção e a compreensão do código.
+5. Implementação e personalização do modo claro e escuro
+Prompt: Ajude a alterar as cores dos elementos da interface quando o modo escuro estiver ativado, incluindo textos, fundos, bordas, ícones e botões.
+Prompt: Explique como utilizar a classe tema-escuro para personalizar os elementos da página sem prejudicar a aparência do modo claro.
+Como utilizei as respostas: Utilizei as orientações para criar e ajustar regras CSS específicas para o modo escuro, modificando as cores de fundo, textos, bordas e componentes da interface. Também preservei algumas cores específicas, como o vermelho utilizado nos botões.
+6. Aplicação global do tema nas páginas
+Prompt: Como posso utilizar as configurações de aparência já existentes para aplicar o modo claro e escuro em todo o site, mantendo a preferência do usuário ao mudar de página?
+Prompt: Oriente como utilizar localStorage para salvar a escolha do tema e recuperá-la automaticamente quando outra página for aberta.
+Prompt: Explique como organizar os arquivos CSS e JavaScript para que o tema funcione em todas as páginas do projeto.
+Como utilizei as respostas: Recebi orientações para separar as regras globais de aparência em um arquivo CSS compartilhado e utilizar um arquivo JavaScript chamado tema.js para salvar e recuperar a preferência do usuário por meio do localStorage. Também foi discutida a inclusão desses arquivos nas diferentes páginas HTML.
+7. Correção das cores dos ícones do menu lateral
+Prompt: Identifique por que alguns ícones SVG do menu lateral permanecem brancos ou apresentam cores diferentes dos demais no modo escuro.
+Prompt: Explique como alterar a cor dos contornos dos ícones SVG utilizando as propriedades stroke e fill.
+Como utilizei as respostas: UtilizeI as orientações para ajustar as propriedades CSS dos ícones do menu lateral, utilizando seletores como .menu-item svg e .menu-configuracoes svg. O objetivo foi padronizar a aparência dos ícones nos diferentes temas.
+8. Personalização do menu de perfil
+Prompt: Ajude a identificar e alterar a cor de fundo do menu de perfil que aparece ao clicar na foto do usuário, mantendo o restante da interface sem alterações.
+Prompt: Como adicionar um efeito hover aos itens do menu de perfil no modo escuro?
+Como utilizei as respostas: Utilizei as orientações para identificar os seletores .menu-perfil e .menu-perfil-item, ajustando a cor de fundo do menu e o efeito de destaque ao passar o mouse sobre as opções.
+9. Correção de bordas e efeitos de interação
+Prompt: Ajude a identificar por que as bordas dos elementos não estavam sendo aplicadas corretamente no modo escuro.
+Prompt: Explique como configurar corretamente a propriedade border, definindo espessura, estilo e cor.
+Como utilizei as respostas: UtilizeI os exemplos fornecidos para revisar a aplicação das bordas no menu lateral e em outros componentes, além de ajustar os efeitos de interação utilizando :hover.
+10. Personalização da tela de detalhes do Pin
+Prompt: Como alterar a cor dos textos da tela de detalhes do Pin no modo escuro, mantendo o fundo branco do painel?
+Prompt: Ajude a modificar as cores dos botões Fechar, Salvar e Compartilhar, incluindo seus efeitos ao passar o mouse.
+Como utilizei as respostas: UtilizeI as orientações para trabalhar com seletores específicos dos componentes da tela de detalhes do Pin, como .detalhes-pin-conteudo, .detalhes-pin-fechar e .detalhes-pin-acoes. Dessa forma, foi possível definir cores específicas para textos e botões sem modificar os demais elementos do site.
+Observação: As respostas da IA foram utilizadas como apoio durante o desenvolvimento, auxiliando na organização dos arquivos, na padronização da estrutura das páginas, na implementação do modo escuro e nos ajustes visuais dos componentes. As orientações também contribuíram para identificar problemas de estilização e compreender melhor a utilização de seletores CSS, propriedades de cores e efeitos de interação.
+
