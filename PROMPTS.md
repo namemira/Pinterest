@@ -352,3 +352,29 @@ A IA orientou a enviar só os arquivos alterados, sem sobrescrever o conexao_loc
 Prompt: somos em três editando os arquivos e vai precisar subir algumas correções, como fazer
 Prompt: faça essa criação para quando alterar no git, alterar no site também
 A IA criou o arquivo .github/workflows/deploy.yml (GitHub Actions), que envia por FTP para o InfinityFree os arquivos alterados a cada push na branch main, sem enviar o conexao_local.php. [PREENCHER: se o arquivo foi adicionado ao repositório e o secret FTP_PASSWORD foi configurado], porém não deu certo
+
+Registro de uso de Inteligência Artificial(ChatGPT (OpenAI))
+Integrante: Jéssica Fernanda Rubas
+
+-- Implementação e estruturação do banco de dados
+Analise a estrutura atual do projeto Pinterest e implemente a estrutura necessária do banco de dados utilizando MariaDB/MySQL e PHP com PDO. O banco deve contemplar as tabelas usuarios, categorias, pins, pins_salvos, pastas, pin_pasta e mensagens. Considere os relacionamentos entre as tabelas, chaves primárias, chaves estrangeiras, índices e restrições de integridade. A tabela de usuários deve contemplar os dados necessários para cadastro, autenticação e perfil. A tabela de Pins deve permitir armazenar imagens, títulos, descrições e categorias. Organize o SQL de maneira consistente e mantenha a compatibilidade com o MariaDB utilizado pelo XAMPP. Não crie estruturas duplicadas nem remova dados existentes sem autorização.
+
+-- Criação do administrador e controle de acesso
+Implemente um mecanismo de criação do primeiro administrador do sistema Pinterest. A criação do administrador deverá ser realizada por um procedimento específico, utilizando o arquivo php/admin/criar_admin.php. O cadastro público do sistema deverá continuar criando somente usuários comuns. Implemente a diferenciação entre administrador e usuário comum, garantindo que apenas contas com permissão administrativa possam acessar as funcionalidades administrativas. Não permita que um usuário comum consiga acessar o painel administrativo alterando diretamente a URL. Mantenha o processo de autenticação integrado às sessões do PHP.
+
+-- Desenvolvimento do painel administrativo
+Implemente e ajuste a área administrativa do Pinterest. O painel deverá permitir que o administrador tenha acesso às funcionalidades de gerenciamento previstas no projeto. Considere a identificação e validação da sessão administrativa, restrição de acesso para usuários comuns, organização visual do painel, navegação entre as funcionalidades administrativas, opção de encerramento da sessão e integração com o banco de dados. Mantenha a identidade visual do projeto e não misture a navegação administrativa com a experiência de navegação dos usuários comuns.
+
+-- CRUD e gerenciamento dos Pins
+Implemente e revise as operações CRUD dos Pins. O sistema deve permitir criar novos Pins, visualizar os Pins cadastrados, editar informações de Pins existentes e excluir Pins. A criação deve permitir o envio de imagem, título, descrição e categoria. A edição deve carregar os dados existentes e permitir sua atualização. A exclusão deve remover o registro correspondente respeitando os relacionamentos do banco de dados. Utilize PHP e PDO para processar as operações e JavaScript quando necessário para melhorar a experiência da interface. Garanta que as operações respeitem as permissões do usuário autenticado.
+
+-- Upload e exibição das imagens
+Revise o funcionamento do envio, armazenamento e exibição das imagens dos Pins. O sistema deverá permitir selecionar imagens durante a criação de Pins, exibir uma pré-visualização antes do envio, validar os arquivos recebidos, armazenar as imagens na pasta apropriada, registrar os caminhos das imagens no banco de dados e exibir corretamente as imagens nos cards e nas páginas do projeto. Verifique também os caminhos relativos e absolutos utilizados para carregar os arquivos. Evite que as imagens fiquem concentradas em apenas um canto da página ou que sejam cortadas indevidamente. Preserve os arquivos enviados pelos usuários e não apague conteúdos existentes.
+
+--Funcionalidades complementares do usuário
+Revise e implemente a integração das funcionalidades complementares do sistema com o banco de dados. Considere o salvamento de Pins, organização de Pins em pastas, relacionamento entre Pins e pastas, envio e recebimento de mensagens, configurações e atualização do perfil e exibição das informações do usuário. A atualização do perfil deve contemplar os campos previstos no projeto, como data de nascimento, nome de usuário, descrição, site e foto de perfil. Garanta que as informações sejam persistidas corretamente no banco de dados e que cada usuário tenha acesso somente aos recursos permitidos para sua conta.
+
+--Auditoria geral e validação da terceira parte
+Realize uma auditoria técnica e funcional completa da terceira parte do projeto Pinterest. Verifique a estrutura e conexão com o banco de dados, cadastro e autenticação, criação e acesso do administrador, proteção do painel administrativo, operações CRUD, upload e exibição de imagens, página principal e organização do mural, funcionalidades de salvamento e pastas, mensagens, perfil e configurações, navegação entre as telas, responsividade, segurança e validação dos dados e integridade dos relacionamentos do banco. Para cada item, informe o que foi implementado, onde está implementado, se o código está presente, se o funcionamento foi efetivamente testado, quais problemas foram encontrados e quais ajustes ainda são necessários. Não considere uma funcionalidade concluída apenas porque existe um arquivo ou trecho de código. Diferencie implementação, teste parcial e funcionamento comprovado. Não exclua arquivos, não remova funcionalidades e não altere o banco de dados sem autorização. Apresente um relatório final com os resultados da auditoria e as pendências encontradas.
+
+
