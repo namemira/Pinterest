@@ -326,3 +326,29 @@ Prompt: Ajude a modificar as cores dos botões Fechar, Salvar e Compartilhar, in
 Como utilizei as respostas: UtilizeI as orientações para trabalhar com seletores específicos dos componentes da tela de detalhes do Pin, como .detalhes-pin-conteudo, .detalhes-pin-fechar e .detalhes-pin-acoes. Dessa forma, foi possível definir cores específicas para textos e botões sem modificar os demais elementos do site.
 Observação: As respostas da IA foram utilizadas como apoio durante o desenvolvimento, auxiliando na organização dos arquivos, na padronização da estrutura das páginas, na implementação do modo escuro e nos ajustes visuais dos componentes. As orientações também contribuíram para identificar problemas de estilização e compreender melhor a utilização de seletores CSS, propriedades de cores e efeitos de interação.
 
+Registro de uso de Inteligência Artificial (Claude (Anthropic) – Claude Code)
+Integrante: Nicole Bet
+Parte do trabalho: Parte 3 – Back-end e publicação
+
+--Destaque das categorias na página Explorar
+Prompt: tem partes no código que ao passar o mouse fica um quadradão vermelho, o que precisa ajustar para só deixar destacado a linha vermelha
+A IA identificou que o quadrado vinha do box-shadow vermelho aplicado à categoria selecionada no explore.css (somado ao border-radius: 0). Usei a orientação para remover esse box-shadow e deixar vermelha apenas a linha inferior (::after) da categoria selecionada.
+
+--Escolha da hospedagem
+Prompt: (print do Render) consegue fazer a publicação neste site
+Prompt: e se usar o hostinger / precisa pagar o hostinger?
+A IA gerou um Dockerfile (PHP 8.3 com Apache e pdo_mysql) e um .dockerignore, mas explicou que o Render não oferece MySQL, apaga os uploads no plano grátis e estava com plano pago selecionado. A Hostinger é paga, então optamos pelo InfinityFree, que é gratuito e já tem PHP e MySQL.
+
+--Publicação no InfinityFree
+Prompt: abri conta na infinity, como podemos fazer?
+Com a IA, ajustei o banco.sql (removendo CREATE DATABASE e USE, que a hospedagem não aceita), montei um .zip sem a pasta sql/ e sem o index.html da raiz, criei o banco MySQL e importei as tabelas pelo phpMyAdmin. Enviei os arquivos para o htdocs e criei o conexao_local.php com os dados do banco; a senha eu mesma digitei. A IA conferiu que o aviso de clone acadêmico aparece no rodapé e acrescentou "Não use a senha de outros sites." no rodapé do login e do cadastro.
+
+--Atualização do site e acesso ao banco
+Prompt: se mexer no código, tenho que subir tudo de novo?
+Prompt: como outra pessoa loga no banco? / tenho que passar todo o login do infinity?
+A IA orientou a enviar só os arquivos alterados, sem sobrescrever o conexao_local.php do servidor e rodando no phpMyAdmin as mudanças de banco. Para o banco, explicou que não é preciso passar o login do painel do InfinityFree e sugeriu exportar o .sql ou usar o Adminer.
+
+--Publicação automática pelo GitHub
+Prompt: somos em três editando os arquivos e vai precisar subir algumas correções, como fazer
+Prompt: faça essa criação para quando alterar no git, alterar no site também
+A IA criou o arquivo .github/workflows/deploy.yml (GitHub Actions), que envia por FTP para o InfinityFree os arquivos alterados a cada push na branch main, sem enviar o conexao_local.php. [PREENCHER: se o arquivo foi adicionado ao repositório e o secret FTP_PASSWORD foi configurado], porém não deu certo
